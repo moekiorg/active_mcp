@@ -1,0 +1,18 @@
+class <%= class_name %> < ActiveMcp::Tool
+  description "<%= file_name.humanize %>"
+  
+  property :param1, :string, required: true, description: "First parameter description"
+  property :param2, :string, required: false, description: "Second parameter description"
+  # Add more parameters as needed
+  
+  def call(param1:, param2: nil, auth_info: nil, **args)
+    # Authentication information can be accessed via _auth_info parameter
+    # auth_info = { type: :bearer, token: "xxx", header: "Bearer xxx" }
+    # or { type: :basic, token: "base64encoded", header: "Basic base64encoded" }
+
+    # Implement tool logic here
+
+    # Return a string, hash, or any JSON-serializable object
+    "Tool executed successfully with #{param1}"
+  end
+end
