@@ -56,11 +56,25 @@ end
 3. Start the MCP server:
 
 ```ruby
+# server.rb
 server = ActiveMcp::Server.new(
   name: "ActiveMcp DEMO",
   uri: 'https://your-app.example.com/mcp'
 )
 server.start
+```
+
+4. Set up MCP Client
+
+```json
+{
+  "mcpServers": {
+    "active-mcp-demo": {
+      "command": "/path/to/ruby",
+      "args": ["/path/to/server.rb"]
+    }
+  }
+}
 ```
 
 ## Rails Generators
