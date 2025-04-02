@@ -1,6 +1,8 @@
-# Active Context
+# Active MCP
 
 A Ruby on Rails engine that provides [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) capabilities to Rails applications. This gem allows you to easily create and expose MCP-compatible tools from your Rails application.
+
+![Active MCP](./docs/active_mcp.png)
 
 ## Installation
 
