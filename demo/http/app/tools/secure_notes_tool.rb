@@ -1,3 +1,5 @@
+require 'cgi'
+
 class SecureNotesTool < ActiveMcp::Tool
   description "認証済みユーザーのみが利用できる安全なメモ機能"
 
@@ -57,7 +59,7 @@ class SecureNotesTool < ActiveMcp::Tool
       response += "ノートはまだ作成されていません。"
     else
       notes.each do |id, note|
-        response += "ID: #{id} - #{note[:title]}\n"
+        response += "ID: #{id} - #{CGI.escapeHTML(note[:title].to_s)}\n"
       end
     end
 
@@ -72,7 +74,7 @@ class SecureNotesTool < ActiveMcp::Tool
 
     {
       type: "text",
-      content: "✅ ノートが作成されました！\n\nID: #{note_id}\nタイトル: #{title}"
+      content: "✅ ノートが作成されました！\n\nID: #{note_id}\nタイトル: #{CGI.escapeHTML(title.to_s)}"
     }
   end
 
@@ -81,7 +83,7 @@ class SecureNotesTool < ActiveMcp::Tool
 
     {
       type: "text",
-      content: "📝 ノート内容:\n\nタイトル: #{note[:title]}\n\n#{note[:content]}"
+      content: "📝 ノート内容:\n\nタイトル: #{CGI.escapeHTML(note[:title].to_s)}\n\n#{CGI.escapeHTML(note[:content].to_s)}"
     }
   end
 
