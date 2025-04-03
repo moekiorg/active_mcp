@@ -76,9 +76,11 @@ module ActiveMcp
             }
           end
         rescue => e
+          # ログに詳細を記録
+          log_error("Error calling tool", e)
           {
             isError: true,
-            content: [{type: "text", text: "Error calling tool: #{e.message}"}]
+            content: [{type: "text", text: "Error calling tool"}]
           }
         end
       end
@@ -110,7 +112,8 @@ module ActiveMcp
 
           result = JSON.parse(response.body, symbolize_names: true)
           @tools = result[:result]
-        rescue
+        rescue => e
+          log_error("Error fetching tools", e)
           @tools = []
         end
       end
@@ -123,6 +126,18 @@ module ActiveMcp
           {content: [{type: "text", text: result.to_json}]}
         else
           {content: [{type: "text", text: result.to_s}]}
+        end
+      end
+      
+      def log_error(message, error)
+        error_details = "#{message}: #{error.message}\n"
+        error_details += error.backtrace.join("\n") if error.backtrace
+        
+        if defined?(Rails)
+          Rails.logger.error(error_details)
+        else
+          # Fallback to standard error output if Rails is not available
+          $stderr.puts(error_details)
         end
       end
     end

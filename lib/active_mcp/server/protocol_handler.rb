@@ -17,9 +17,11 @@ module ActiveMcp
           request = JSON.parse(message, symbolize_names: true)
           handle_request(request)
         rescue JSON::ParserError => e
-          error_response(nil, ErrorCode::PARSE_ERROR, "Invalid JSON: #{e.message}")
+          log_error("JSON parse error", e)
+          error_response(nil, ErrorCode::PARSE_ERROR, "Invalid JSON format")
         rescue => e
-          error_response(nil, ErrorCode::INTERNAL_ERROR, e.message)
+          log_error("Internal error during message processing", e)
+          error_response(nil, ErrorCode::INTERNAL_ERROR, "An internal error occurred")
         end
 
         json_result = JSON.generate(result).force_encoding("UTF-8") if result
@@ -123,7 +125,8 @@ module ActiveMcp
 
           success_response(request[:id], result)
         rescue => e
-          error_response(request[:id], ErrorCode::INTERNAL_ERROR, e.message)
+          log_error("Error calling tool #{name}", e)
+          error_response(request[:id], ErrorCode::INTERNAL_ERROR, "An error occurred while calling the tool")
         end
       end
 
@@ -161,6 +164,18 @@ module ActiveMcp
         }
         response[:error][:data] = data if data
         response
+      end
+      
+      def log_error(message, error)
+        error_details = "#{message}: #{error.message}\n"
+        error_details += error.backtrace.join("\n") if error.backtrace
+        
+        if defined?(Rails)
+          Rails.logger.error(error_details)
+        else
+          # Fallback to standard error output if Rails is not available
+          $stderr.puts(error_details)
+        end
       end
     end
   end
