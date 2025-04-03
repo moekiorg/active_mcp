@@ -36,6 +36,15 @@ module ActiveMcp
       def invoke_tool(name, arguments)
         require "net/http"
         uri = URI.parse(@uri.to_s)
+        
+        # 本番環境ではHTTPSを強制
+        if defined?(Rails) && Rails.env.production? && uri.scheme != "https"
+          return {
+            isError: true,
+            content: [{type: "text", text: "HTTPS is required in production environment"}]
+          }
+        end
+        
         request = Net::HTTP::Post.new(uri)
         request.body = JSON.generate({
           method: "tools/call",
@@ -79,6 +88,13 @@ module ActiveMcp
 
         require "net/http"
         uri = URI.parse(@uri.to_s)
+        
+        # 本番環境ではHTTPSを強制
+        if defined?(Rails) && Rails.env.production? && uri.scheme != "https"
+          Rails.logger.error("HTTPS is required in production environment")
+          return
+        end
+        
         request = Net::HTTP::Post.new(uri)
         request.body = JSON.generate({
           method: "tools/list",
