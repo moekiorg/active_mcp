@@ -35,13 +35,40 @@ module ActiveMcp
 
       def invoke_tool(name, arguments)
         require "net/http"
-        uri = URI.parse(@uri.to_s)
         
-        # 本番環境ではHTTPSを強制
-        if defined?(Rails) && Rails.env.production? && uri.scheme != "https"
+        # URIの検証
+        unless @uri.is_a?(URI) || @uri.is_a?(String)
+          log_error("Invalid URI type", StandardError.new("URI must be a String or URI object"))
           return {
             isError: true,
-            content: [{type: "text", text: "HTTPS is required in production environment"}]
+            content: [{type: "text", text: "Invalid URI configuration"}]
+          }
+        end
+        
+        begin
+          uri = URI.parse(@uri.to_s)
+          
+          # 有効なスキームとホストの検証
+          unless uri.scheme =~ /\Ahttps?\z/ && !uri.host.nil?
+            log_error("Invalid URI", StandardError.new("URI must have a valid scheme and host"))
+            return {
+              isError: true,
+              content: [{type: "text", text: "Invalid URI configuration"}]
+            }
+          end
+          
+          # 本番環境ではHTTPSを強制
+          if defined?(Rails) && Rails.env.production? && uri.scheme != "https"
+            return {
+              isError: true,
+              content: [{type: "text", text: "HTTPS is required in production environment"}]
+            }
+          end
+        rescue URI::InvalidURIError => e
+          log_error("Invalid URI format", e)
+          return {
+            isError: true,
+            content: [{type: "text", text: "Invalid URI format"}]
           }
         end
         
@@ -89,11 +116,29 @@ module ActiveMcp
         return unless @uri
 
         require "net/http"
-        uri = URI.parse(@uri.to_s)
         
-        # 本番環境ではHTTPSを強制
-        if defined?(Rails) && Rails.env.production? && uri.scheme != "https"
-          Rails.logger.error("HTTPS is required in production environment")
+        # URIの検証
+        unless @uri.is_a?(URI) || @uri.is_a?(String)
+          log_error("Invalid URI type", StandardError.new("URI must be a String or URI object"))
+          return
+        end
+        
+        begin
+          uri = URI.parse(@uri.to_s)
+          
+          # 有効なスキームとホストの検証
+          unless uri.scheme =~ /\Ahttps?\z/ && !uri.host.nil?
+            log_error("Invalid URI", StandardError.new("URI must have a valid scheme and host"))
+            return
+          end
+          
+          # 本番環境ではHTTPSを強制
+          if defined?(Rails) && Rails.env.production? && uri.scheme != "https"
+            log_error("HTTPS is required in production environment", StandardError.new("Non-HTTPS URI in production"))
+            return
+          end
+        rescue URI::InvalidURIError => e
+          log_error("Invalid URI format", e)
           return
         end
         
