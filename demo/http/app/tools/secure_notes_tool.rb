@@ -14,7 +14,8 @@ class SecureNotesTool < ActiveMcp::Tool
     auth_type = auth_info[:type]
     token = auth_info[:token]
 
-    unless auth_type == :bearer && token == "valid-token"
+    valid_token = ENV["API_TOKEN"] || "valid-token-dev-only"
+    unless auth_type == :bearer && token == valid_token
       raise "無効な認証情報です"
     end
 

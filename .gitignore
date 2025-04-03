@@ -16,6 +16,7 @@
 /tmp/*
 !/log/.keep
 !/tmp/.keep
+/tmp/local_secret.txt
 /demo/http/log/*
 /demo/http/tmp/*
 !/demo/http/log/.keep
