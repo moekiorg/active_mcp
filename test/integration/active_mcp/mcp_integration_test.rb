@@ -3,7 +3,7 @@ require "test_helper"
 module ActiveMcp
   class McpIntegrationTest < ActionDispatch::IntegrationTest
     setup do
-      @routes = Rails.application.routes
+      @routes = Engine.routes
       
       Tool.registered_tools = []
       
@@ -24,8 +24,8 @@ module ActiveMcp
     end
     
     test "should list available tools" do
-      post "/mcp", params: { 
-        jsonrpc: "2.0",
+      post "/", params: { 
+        jsonrpc: ActiveMcp::JSON_RPC_VERSION,
         id: 1,
         method: Method::TOOLS_LIST
       }, as: :json
@@ -41,10 +41,14 @@ module ActiveMcp
     end
     
     test "should call a tool successfully" do
-      post "/mcp", params: { 
+      post "/", params: { 
+        jsonrpc: ActiveMcp::JSON_RPC_VERSION,
+        id: 2,
         method: Method::TOOLS_CALL,
-        name: "mcp_test_tool",
-        arguments: { name: "Test", value: 42 }.to_json
+        params: {
+          name: "mcp_test_tool",
+          arguments: { name: "Test", value: 42 }
+        }
       }, as: :json
       
       assert_response :success
@@ -55,10 +59,14 @@ module ActiveMcp
     end
     
     test "should handle validation errors" do
-      post "/mcp", params: { 
+      post "/", params: { 
+        jsonrpc: ActiveMcp::JSON_RPC_VERSION,
+        id: 3,
         method: Method::TOOLS_CALL,
-        name: "mcp_test_tool",
-        arguments: { value: 42 }.to_json
+        params: {
+          name: "mcp_test_tool",
+          arguments: { value: 42 }
+        }
       }, as: :json
       
       assert_response :success
@@ -68,10 +76,14 @@ module ActiveMcp
     end
     
     test "should handle tool not found error" do
-      post "/mcp", params: { 
+      post "/", params: { 
+        jsonrpc: ActiveMcp::JSON_RPC_VERSION,
+        id: 4,
         method: Method::TOOLS_CALL,
-        name: "nonexistent_tool",
-        arguments: {}.to_json
+        params: {
+          name: "nonexistent_tool",
+          arguments: {}
+        }
       }, as: :json
       
       assert_response :not_found
@@ -81,7 +93,9 @@ module ActiveMcp
     end
     
     test "should handle invalid method" do
-      post "/mcp", params: { 
+      post "/", params: { 
+        jsonrpc: ActiveMcp::JSON_RPC_VERSION,
+        id: 5,
         method: "invalid/method"
       }, as: :json
       
@@ -92,7 +106,7 @@ module ActiveMcp
     end
     
     test "should check health endpoint" do
-      get "/mcp/health", as: :json
+      get "/health", as: :json
       
       assert_response :success
       assert_equal "OK", response.body
