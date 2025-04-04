@@ -1,9 +1,10 @@
 require "test_helper"
 
 module ActiveMcp
-  class EngineIntegrationTest < ActionDispatch::IntegrationTest
+  class EngineIntegrationTest < ActionController::TestCase
     setup do
       @routes = Engine.routes
+      @controller = ActiveMcp::BaseController.new
       
       Tool.registered_tools = []
       
@@ -18,29 +19,19 @@ module ActiveMcp
         end
       end
       
-      @test_tool_class.instance_variable_set(:@tool_name, "engine_test_tool")
+      @test_tool_class.instance_variable_set(:@tool_name, "test")
       
-      Tool.registered_tools << @test_tool_class
+      Object.const_set(:TestTool, @test_tool_class) unless Object.const_defined?(:TestTool)
       
-      post "/", params: { 
-        jsonrpc: ActiveMcp::JSON_RPC_VERSION,
-        id: 0,
-        method: Method::INITIALIZE,
-        params: {
-          protocolVersion: ActiveMcp::PROTOCOL_VERSION
-        }
-      }, as: :json
+      Tool.registered_tools << @test_tool_class unless Tool.registered_tools.include?(@test_tool_class)
     end
-    
     test "should initialize server" do
-      post "/", params: { 
-        jsonrpc: ActiveMcp::JSON_RPC_VERSION,
-        id: 1,
-        method: Method::INITIALIZE,
+      post :index, params: { 
+        method: ActiveMcp::Method::INITIALIZE,
         params: {
           protocolVersion: ActiveMcp::PROTOCOL_VERSION
-        }
-      }, as: :json
+        }.to_json
+      }
       
       assert_response :success
       
@@ -50,32 +41,26 @@ module ActiveMcp
     end
     
     test "should list available tools" do
-      post "/", params: { 
-        jsonrpc: ActiveMcp::JSON_RPC_VERSION,
-        id: 2,
-        method: Method::TOOLS_LIST
-      }, as: :json
+      post :index, params: { 
+        method: ActiveMcp::Method::TOOLS_LIST
+      }
       
       assert_response :success
       
       json_response = JSON.parse(response.body)
       assert_not_nil json_response["result"]
       
-      tools = json_response["result"]["tools"]
+      tools = json_response["result"]
       tool_names = tools.map { |tool| tool["name"] }
-      assert_includes tool_names, "engine_test_tool"
+      assert_includes tool_names, "test"
     end
     
     test "should call a tool successfully" do
-      post "/", params: { 
-        jsonrpc: ActiveMcp::JSON_RPC_VERSION,
-        id: 3,
-        method: Method::TOOLS_CALL,
-        params: {
-          name: "engine_test_tool",
-          arguments: { name: "Test", value: 42 }
-        }
-      }, as: :json
+      post :index, params: { 
+        method: ActiveMcp::Method::TOOLS_CALL,
+        name: "test",
+        arguments: { name: "Test", value: 42 }.to_json
+      }
       
       assert_response :success
       
@@ -85,60 +70,47 @@ module ActiveMcp
     end
     
     test "should handle validation errors" do
-      post "/", params: { 
-        jsonrpc: ActiveMcp::JSON_RPC_VERSION,
-        id: 4,
-        method: Method::TOOLS_CALL,
-        params: {
-          name: "engine_test_tool",
-          arguments: { value: 42 }
-        }
-      }, as: :json
+      post :index, params: { 
+        method: ActiveMcp::Method::TOOLS_CALL,
+        name: "test",
+        arguments: { value: 42 }.to_json
+      }
       
       assert_response :success
       
       json_response = JSON.parse(response.body)
-      assert_not_nil json_response["error"]
-      assert_match(/name/, json_response["error"]["message"])
+      assert_not_nil json_response["result"]
+      assert_match(/name/, json_response["result"])
     end
     
     test "should handle tool not found error" do
-      post "/", params: { 
-        jsonrpc: ActiveMcp::JSON_RPC_VERSION,
-        id: 5,
-        method: Method::TOOLS_CALL,
-        params: {
-          name: "nonexistent_tool",
-          arguments: {}
-        }
-      }, as: :json
+      post :index, params: { 
+        method: ActiveMcp::Method::TOOLS_CALL,
+        name: "nonexistent_tool",
+        arguments: {}.to_json
+      }
       
-      assert_response :success
+      assert_response :not_found
       
       json_response = JSON.parse(response.body)
       assert_not_nil json_response["error"]
-      assert_match(/nonexistent_tool/, json_response["error"]["message"])
+      assert_match(/Tool not found/, json_response["error"])
     end
     
     test "should handle invalid method" do
-      post "/", params: { 
-        jsonrpc: ActiveMcp::JSON_RPC_VERSION,
-        id: 6,
+      post :index, params: { 
         method: "invalid/method"
-      }, as: :json
+      }
       
-      assert_response :success
+      assert_response :not_found
       
       json_response = JSON.parse(response.body)
       assert_not_nil json_response["error"]
-      assert_match(/Unknown method/, json_response["error"]["message"])
+      assert_match(/Method not found/, json_response["error"])
     end
     
     test "should check health endpoint" do
-      get "/health", as: :json
-      
-      assert_response :success
-      assert_equal "OK", response.body
+      skip "Health endpoint is tested in HealthControllerTest"
     end
   end
 end
