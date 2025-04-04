@@ -8,6 +8,12 @@ class SecureNotesTool < ActiveMcp::Tool
   property :title, :string, required: false, description: "ノートタイトル（createで必要）"
   property :content, :string, required: false, description: "ノート内容（createで必要）"
 
+  def self.authorized?(auth_info)
+    return false unless auth_info
+    return false unless auth_info[:type] == :bearer
+    auth_info[:token] == "valid-token" || auth_info[:token] == "admin-token"
+  end
+
   def call(action:, note_id: nil, title: nil, content: nil, auth_info: nil, **args)
     unless auth_info.present?
       raise "この機能は認証されたユーザーのみ利用できます"

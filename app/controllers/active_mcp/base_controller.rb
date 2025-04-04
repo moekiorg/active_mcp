@@ -37,7 +37,11 @@ module ActiveMcp
     end
 
     def render_tools_list
-      tools = Tool.registered_tools.map do |tool_class|
+      # 認可チェックを含めてツールリストをフィルタリング
+      tools = Tool.registered_tools.select do |tool_class|
+        # 認可チェック - ツールがauthorized?メソッドでtrueを返すもののみを選択
+        tool_class.authorized?(@auth_info)
+      end.map do |tool_class|
         {
           name: tool_class.tool_name,
           description: tool_class.desc,
@@ -63,6 +67,12 @@ module ActiveMcp
 
       unless tool_class
         render json: {error: "Tool not found: #{tool_name}"}, status: 404
+        return
+      end
+      
+      # 認可チェック
+      unless tool_class.authorized?(@auth_info)
+        render json: {error: "Unauthorized: Access to tool '#{tool_name}' denied"}, status: 403
         return
       end
 

@@ -5,6 +5,23 @@ class <%= class_name %> < ActiveMcp::Tool
   property :param2, :string, required: false, description: "Second parameter description"
   # Add more parameters as needed
   
+  # Uncomment and modify this method to implement authorization control
+  # This controls who can see and use this tool
+  # def self.authorized?(auth_info)
+  #   # Example: require authentication
+  #   # return false unless auth_info
+  #   
+  #   # Example: require a specific authentication type
+  #   # return false unless auth_info[:type] == :bearer
+  #   
+  #   # Example: check for admin permissions
+  #   # admin_tokens = ["admin-token"]
+  #   # return admin_tokens.include?(auth_info[:token])
+  #   
+  #   # Default: allow all access
+  #   true
+  # end
+  
   def call(param1:, param2: nil, auth_info: nil, **args)
     # Authentication information can be accessed via _auth_info parameter
     # auth_info = { type: :bearer, token: "xxx", header: "Bearer xxx" }
