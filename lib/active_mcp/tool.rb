@@ -34,6 +34,10 @@ module ActiveMcp
       def inherited(subclass)
         registered_tools << subclass
       end
+
+      def authorized?(auth_info)
+        true
+      end
     end
 
     def initialize

@@ -4,6 +4,12 @@ class AuthProtectedTool < ActiveMcp::Tool
   property :resource_id, :string, required: true, description: "ID of the protected resource"
   property :action, :string, required: false, description: "Action to perform on the resource"
 
+  def self.authorized?(auth_info)
+    return false unless auth_info
+    return false unless auth_info[:type] == :bearer
+    auth_info[:token] == "valid-token" || auth_info[:token] == "admin-token"
+  end
+
   def call(resource_id:, action: "read", auth_info: nil, **args)
     unless auth_info.present?
       raise "Authentication is required to access protected resources"
@@ -35,6 +41,8 @@ class AuthProtectedTool < ActiveMcp::Tool
   def authenticate_user(auth_type, token)
     if auth_type == :bearer && token == "valid-token"
       {id: 1, name: "Admin User"}
+    elsif auth_type == :bearer && token == "admin-token"
+      {id: 1, name: "Super Admin"}
     elsif auth_type == :basic && token == "dXNlcjpwYXNz" # user:pass in base64
       {id: 2, name: "Regular User"}
     else

@@ -136,7 +136,43 @@ http://your-app.example.com/mcp
 
 Clients will discover the available tools and their input schemas automatically through the MCP protocol.
 
-## Authentication Flow
+## Authorization & Authentication
+
+ActiveMcp supports both authentication (verifying who a user is) and authorization (controlling what resources they can access).
+
+### Authorization for Tools
+
+You can control which tools are visible and accessible to different users by overriding the `authorized?` class method:
+
+```ruby
+class AdminOnlyTool < ActiveMcp::Tool
+  description "This tool is only accessible by admins"
+
+  property :command, :string, required: true, description: "Admin command to execute"
+
+  # Define authorization logic - only admin tokens can access this tool
+  def self.authorized?(auth_info)
+    return false unless auth_info
+    return false unless auth_info[:type] == :bearer
+    
+    # Check if the token belongs to an admin
+    auth_info[:token] == "admin-token" || User.find_by_token(auth_info[:token])&.admin?
+  end
+
+  def call(command:, auth_info: nil)
+    # Tool implementation
+  end
+end
+```
+
+When a user makes a request to the MCP server:
+1. Only tools that return `true` from their `authorized?` method will be included in the tools list
+2. Users can only call tools that they're authorized to use
+3. Unauthorized access attempts will return a 403 Forbidden response
+
+This makes it easy to create role-based access control for your MCP tools.
+
+### Authentication Flow
 
 ActiveMcp supports receiving authentication credentials from MCP clients and forwarding them to your Rails application. There are two ways to handle authentication:
 
