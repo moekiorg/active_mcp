@@ -1,0 +1,27 @@
+{
+  "name": "active-mcp",
+  "version": "1.0.0",
+  "description": "A Ruby on Rails engine that provides [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) capabilities to Rails applications. This gem allows you to easily create and expose MCP-compatible tools from your Rails application.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moekiorg/active_mcp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/moekiorg/active_mcp/issues"
+  },
+  "homepage": "https://github.com/moekiorg/active_mcp#readme",
+  "devDependencies": {
+    "mcp-testing-library": "^1.0.1"
+  }
+}

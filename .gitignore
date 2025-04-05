@@ -48,3 +48,5 @@
 .ruby-version
 
 *.gem
+
+node_modules
