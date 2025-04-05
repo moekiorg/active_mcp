@@ -76,7 +76,7 @@ module ActiveMcp
         request.body = JSON.generate({
           method: "tools/call",
           name:,
-          arguments: arguments.to_json
+          arguments: arguments
         })
         request["Content-Type"] = "application/json"
         request["Authorization"] = @auth_header

@@ -11,6 +11,9 @@ Gem::Specification.new do |spec|
   spec.license = "MIT"
 
   spec.files = Dir.glob("{app,config,db,lib}/**/*") + ["MIT-LICENSE", "Rakefile", "README.md"]
+  spec.bindir = "exe"
+  spec.executables = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  spec.require_paths = ["lib"]
 
   spec.add_dependency "rails", ">= 6.0.0", "< 8.0.0"
   spec.add_dependency "json-schema"

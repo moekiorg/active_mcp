@@ -4,6 +4,7 @@ module ActiveMcp
   module Method
     INITIALIZE = "initialize"
     INITIALIZED = "notifications/initialized"
+    CANCELLED = "notifications/cancelled"
     PING = "ping"
     TOOLS_LIST = "tools/list"
     TOOLS_CALL = "tools/call"

@@ -5,7 +5,26 @@ All notable changes to Active MCP will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.2.0] - 2025-04-05
+## [0.3.0] - 2025-04-06
+
+### Added
+- New `install` generator for easy setup (`rails generate active_mcp:install`)
+- Configuration system with initializer template
+- MCP server script generation for production deployments
+- Comprehensive documentation for generators
+- Updated README with installation and usage instructions
+
+### Changed
+- Improved tool generator to place files in the configured tools directory
+- Updated documentation to reflect new setup process
+
+## [0.2.1] - 2025-04-05
+
+### Fixed
+- Fixed bug in authentication header parsing
+- Improved error handling for invalid tool parameters
+
+## [0.2.0] - 2025-04-01
 
 ### Added
 - Authorization control for MCP tools using `authorized?` class method
