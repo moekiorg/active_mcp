@@ -2,8 +2,6 @@
 
 A Ruby on Rails engine that provides [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) capabilities to Rails applications. This gem allows you to easily create and expose MCP-compatible tools from your Rails application.
 
-![Active MCP](./docs/active_mcp.png)
-
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -25,6 +23,25 @@ $ gem install active_mcp
 ```
 
 ## Setup
+
+### Using the Install Generator (Recommended)
+
+The easiest way to set up Active MCP in your Rails application is to use the install generator:
+
+```bash
+$ rails generate active_mcp:install
+```
+
+This generator will:
+
+1. Create a configuration initializer at `config/initializers/active_mcp.rb`
+2. Mount the ActiveMcp engine in your routes
+
+After running the generator, follow the displayed instructions to create and configure your MCP tools.
+
+### Manual Setup
+
+If you prefer to set up manually:
 
 1. Mount the ActiveMcp engine in your `config/routes.rb`:
 
@@ -53,7 +70,13 @@ class CreateNoteTool < ActiveMcp::Tool
 end
 ```
 
-3. Start the MCP server:
+#### with streamable HTTP
+
+Set MCP destination as `https:your-app.example.com/mcp`
+
+#### with independent MCP Server
+
+Start the MCP server:
 
 ```ruby
 # server.rb
@@ -64,7 +87,7 @@ server = ActiveMcp::Server.new(
 server.start
 ```
 
-4. Set up MCP Client
+Set up MCP Client
 
 ```json
 {
@@ -79,14 +102,28 @@ server.start
 
 ## Rails Generators
 
-MCP Rails provides generators to help you quickly create new MCP tools:
+Active MCP provides generators to help you quickly set up and extend your MCP integration:
+
+### Install Generator
+
+Initialize Active MCP in your Rails application:
+
+```bash
+$ rails generate active_mcp:install
+```
+
+This sets up all necessary configuration files and mounts the MCP engine in your routes.
+
+### Tool Generator
+
+Create new MCP tools quickly:
 
 ```bash
 # Generate a new MCP tool
 $ rails generate active_mcp:tool search_users
 ```
 
-This creates a new tool file at `app/models/tools/search_users_tool.rb` with the following starter code:
+This creates a new tool file at `app/tools/search_users_tool.rb` with the following starter code:
 
 ```ruby
 class SearchUsersTool < ActiveMcp::Tool
@@ -154,7 +191,7 @@ class AdminOnlyTool < ActiveMcp::Tool
   def self.authorized?(auth_info)
     return false unless auth_info
     return false unless auth_info[:type] == :bearer
-    
+
     # Check if the token belongs to an admin
     auth_info[:token] == "admin-token" || User.find_by_token(auth_info[:token])&.admin?
   end
@@ -166,6 +203,7 @@ end
 ```
 
 When a user makes a request to the MCP server:
+
 1. Only tools that return `true` from their `authorized?` method will be included in the tools list
 2. Users can only call tools that they're authorized to use
 3. Unauthorized access attempts will return a 403 Forbidden response

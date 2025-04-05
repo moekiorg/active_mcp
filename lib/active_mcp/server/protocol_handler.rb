@@ -173,7 +173,7 @@ module ActiveMcp
         if defined?(Rails)
           Rails.logger.error(error_details)
         else
-          # Fallback to standard error output if Rails is not available
+          # Fresallback to standard error output if Rails is not available
           $stderr.puts(error_details)
         end
       end

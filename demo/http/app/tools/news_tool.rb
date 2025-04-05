@@ -14,13 +14,10 @@ class NewsTool < ActiveMcp::Tool
     news_items = get_mock_news(category, limit)
 
     if news_items.empty?
-      raise "指定されたカテゴリのニュースが見つかりませんでした: #{category}"
+      return "指定されたカテゴリのニュースが見つかりませんでした: #{category}"
     end
 
-    {
-      type: "text",
-      content: format_news_response(category, news_items, user_info)
-    }
+    format_news_response(category, news_items, user_info)
   end
 
   private

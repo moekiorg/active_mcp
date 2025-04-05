@@ -25,9 +25,6 @@ class NoteSearchTool < ActiveMcp::Tool
       end
     end
 
-    {
-      type: "text",
-      content: result
-    }
+    result
   end
 end

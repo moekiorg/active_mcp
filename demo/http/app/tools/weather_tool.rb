@@ -5,15 +5,13 @@ class WeatherTool < ActiveMcp::Tool
   property :country, :string, required: false, description: "国名（オプション）"
 
   def call(city:, country: nil, auth_info: nil, **args)
+
     weather_data = get_mock_weather_data(city, country)
 
     if weather_data
-      {
-        type: "text",
-        content: format_weather_response(weather_data)
-      }
+      format_weather_response(weather_data)
     else
-      raise "指定された都市の天気情報が見つかりませんでした: #{city}"
+      "指定された都市の天気情報が見つかりませんでした: #{city}"
     end
   end
 

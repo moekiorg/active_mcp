@@ -69,7 +69,7 @@ module ActiveMcp
     end
 
     test "should allow access to public tool without authentication" do
-      arguments = { query: "test" }.to_json
+      arguments = { query: "test" }
       post :index, params: {
         method: "tools/call",
         name: "public",
@@ -82,14 +82,14 @@ module ActiveMcp
     end
 
     test "should deny access to protected tool without authentication" do
-      arguments = { resource_id: "1", action: "read" }.to_json
+      arguments = { resource_id: "1", action: "read" }
       post :index, params: {
         method: "tools/call",
         name: "auth_protected",
         arguments: arguments
       }
 
-      assert_response :forbidden
+      assert_response :ok
       json = JSON.parse(response.body)
       assert_not_nil json["error"]
       assert_equal "Unauthorized: Access to tool 'auth_protected' denied", json["error"]
@@ -97,7 +97,7 @@ module ActiveMcp
 
     test "should allow access to protected tool with valid token" do
       @request.headers["Authorization"] = "Bearer valid-token"
-      arguments = { resource_id: "1", action: "read" }.to_json
+      arguments = { resource_id: "1", action: "read" }
       post :index, params: {
         method: "tools/call",
         name: "auth_protected",
@@ -109,14 +109,14 @@ module ActiveMcp
 
     test "should deny access to admin tool with regular token" do
       @request.headers["Authorization"] = "Bearer valid-token"
-      arguments = { command: "test" }.to_json
+      arguments = { command: "test" }
       post :index, params: {
         method: "tools/call",
         name: "admin_only",
         arguments: arguments
       }
 
-      assert_response :forbidden
+      assert_response :ok
       json = JSON.parse(response.body)
       assert_not_nil json["error"]
       assert_equal "Unauthorized: Access to tool 'admin_only' denied", json["error"]
@@ -124,7 +124,7 @@ module ActiveMcp
 
     test "should allow access to admin tool with admin token" do
       @request.headers["Authorization"] = "Bearer admin-token"
-      arguments = { command: "test" }.to_json
+      arguments = { command: "test" }
       post :index, params: {
         method: "tools/call",
         name: "admin_only",

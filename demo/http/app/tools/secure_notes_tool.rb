@@ -16,7 +16,7 @@ class SecureNotesTool < ActiveMcp::Tool
 
   def call(action:, note_id: nil, title: nil, content: nil, auth_info: nil, **args)
     unless auth_info.present?
-      raise "この機能は認証されたユーザーのみ利用できます"
+      return "この機能は認証されたユーザーのみ利用できます"
     end
 
     auth_type = auth_info[:type]
@@ -24,7 +24,7 @@ class SecureNotesTool < ActiveMcp::Tool
 
     valid_token = ENV["API_TOKEN"] || "valid-token-dev-only"
     unless auth_type == :bearer && token == valid_token
-      raise "無効な認証情報です"
+      return "無効な認証情報です"
     end
 
     case action.downcase
@@ -40,20 +40,20 @@ class SecureNotesTool < ActiveMcp::Tool
       validate_note_id(note_id)
       delete_note(note_id)
     else
-      raise "不明なアクション: #{action}。サポートされているアクションは list, create, read, delete です。"
+      return "不明なアクション: #{action}。サポートされているアクションは list, create, read, delete です。"
     end
   end
 
   private
 
   def validate_create_params(title, content)
-    raise "ノートの作成にはtitleパラメータが必要です" if title.blank?
-    raise "ノートの作成にはcontentパラメータが必要です" if content.blank?
+    return "ノートの作成にはtitleパラメータが必要です" if title.blank?
+    return "ノートの作成にはcontentパラメータが必要です" if content.blank?
   end
 
   def validate_note_id(note_id)
-    raise "note_idパラメータが必要です" if note_id.blank?
-    raise "指定されたIDのノートが見つかりません: #{note_id}" unless get_mock_notes.key?(note_id)
+    return "note_idパラメータが必要です" if note_id.blank?
+    return "指定されたIDのノートが見つかりません: #{note_id}" unless get_mock_notes.key?(note_id)
   end
 
   def list_notes
@@ -69,35 +69,23 @@ class SecureNotesTool < ActiveMcp::Tool
       end
     end
 
-    {
-      type: "text",
-      content: response
-    }
+    response
   end
 
   def create_note(title, content)
     note_id = SecureRandom.hex(4)
 
-    {
-      type: "text",
-      content: "✅ ノートが作成されました！\n\nID: #{note_id}\nタイトル: #{CGI.escapeHTML(title.to_s)}"
-    }
+    "✅ ノートが作成されました！\n\nID: #{note_id}\nタイトル: #{CGI.escapeHTML(title.to_s)}"
   end
 
   def read_note(note_id)
     note = get_mock_notes[note_id]
 
-    {
-      type: "text",
-      content: "📝 ノート内容:\n\nタイトル: #{CGI.escapeHTML(note[:title].to_s)}\n\n#{CGI.escapeHTML(note[:content].to_s)}"
-    }
+    "📝 ノート内容:\n\nタイトル: #{CGI.escapeHTML(note[:title].to_s)}\n\n#{CGI.escapeHTML(note[:content].to_s)}"
   end
 
   def delete_note(note_id)
-    {
-      type: "text",
-      content: "🗑️ ノート（ID: #{note_id}）が削除されました。"
-    }
+    "🗑️ ノート（ID: #{note_id}）が削除されました。"
   end
 
   def get_mock_notes
