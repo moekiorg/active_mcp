@@ -72,7 +72,7 @@ end
 
 #### with streamable HTTP
 
-Set MCP destination as `https:your-app.example.com/mcp`
+Set MCP destination to `https:your-app.example.com/mcp`
 
 #### with independent MCP Server
 
