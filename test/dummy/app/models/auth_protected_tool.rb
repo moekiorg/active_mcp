@@ -1,7 +1,7 @@
 class AuthProtectedTool < ActiveMcp::Tool
   description "Access a protected resource with authentication"
 
-  property :resource_id, :string, required: true, description: "ID of the protected resource"
+  property :resource_id, :integer, required: true, description: "ID of the protected resource"
   property :action, :string, required: false, description: "Action to perform on the resource"
 
   def self.authorized?(auth_info)
@@ -52,9 +52,9 @@ class AuthProtectedTool < ActiveMcp::Tool
 
   def find_resource(resource_id)
     resources = {
-      "1" => {id: "1", name: "Admin Document", content: "Confidential admin data", owner_id: 1},
-      "2" => {id: "2", name: "User Document", content: "Regular user data", owner_id: 2},
-      "3" => {id: "3", name: "Public Document", content: "Public data", owner_id: 3}
+      1 => {id: "1", name: "Admin Document", content: "Confidential admin data", owner_id: 1},
+      2 => {id: "2", name: "User Document", content: "Regular user data", owner_id: 2},
+      3 => {id: "3", name: "Public Document", content: "Public data", owner_id: 3}
     }
 
     resources[resource_id] || {id: resource_id, name: "Not found", content: "Resource not found", owner_id: -1}

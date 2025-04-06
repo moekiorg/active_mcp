@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "active_mcp/version"
-require_relative "active_mcp/config"
+require_relative "active_mcp/configuration"
 require_relative "active_mcp/tool"
 require_relative "active_mcp/server"
 

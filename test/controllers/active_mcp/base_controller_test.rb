@@ -93,7 +93,7 @@ module ActiveMcp
 
     test "should handle missing tool name" do
       post "index", params: {method: "tools/call", arguments: {}}
-      assert_response :ok
+      assert_response :bad_request
 
       json = JSON.parse(response.body)
       assert_not_nil json["error"]
@@ -107,7 +107,7 @@ module ActiveMcp
         arguments: "{}"
       }
 
-      assert_response :ok
+      assert_response :not_found
 
       json = JSON.parse(response.body)
       assert_not_nil json["error"]
@@ -121,7 +121,7 @@ module ActiveMcp
         arguments: {value: 123}
       }
 
-      assert_response :success
+      assert_response :bad_request
 
       json = JSON.parse(response.body)
       assert json["result"].include?("name")
@@ -138,6 +138,7 @@ module ActiveMcp
       }
 
       json = JSON.parse(response.body)
+      p response.body
       assert json["result"].include?("Authenticated tool result")
     end
 
@@ -147,7 +148,7 @@ module ActiveMcp
 
       json = JSON.parse(response.body)
       assert_not_nil json["error"]
-      assert_equal "Method not found: unknown_method", json["error"]
+      assert_equal "Method not found", json["error"]
     end
   end
 end
