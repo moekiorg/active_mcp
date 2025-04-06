@@ -7,6 +7,7 @@
 [![Rails](https://img.shields.io/badge/Rails-%3E%3D%206.0.0-red.svg)](https://rubyonrails.org/)
 
 A Ruby on Rails engine for the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) - connect your Rails apps to AI tools with minimal effort.
+
 </div>
 
 ## 📖 Table of Contents
@@ -197,10 +198,7 @@ class SearchUsersTool < ActiveMcp::Tool
 
     users = User.where(criteria).limit(limit)
 
-    {
-      type: "text",
-      content: users.to_json(only: [:id, :name, :email, :created_at])
-    }
+    users.attributes
   end
 end
 ```
@@ -218,15 +216,15 @@ argument :preferences, :object, required: false, description: 'User preferences'
 
 Supported types:
 
-| Type | Description |
-| --- | --- |
-| `:string` | Text values |
-| `:integer` | Whole numbers |
-| `:number` | Decimal numbers (float/decimal) |
-| `:boolean` | True/false values |
-| `:array` | Lists of values |
-| `:object` | Hash/dictionary structures |
-| `:null` | Null values |
+| Type       | Description                     |
+| ---------- | ------------------------------- |
+| `:string`  | Text values                     |
+| `:integer` | Whole numbers                   |
+| `:number`  | Decimal numbers (float/decimal) |
+| `:boolean` | True/false values               |
+| `:array`   | Lists of values                 |
+| `:object`  | Hash/dictionary structures      |
+| `:null`    | Null values                     |
 
 ## 🔐 Authorization & Authentication
 
@@ -244,7 +242,7 @@ class AdminOnlyTool < ActiveMcp::Tool
   def self.visible?(auth_info)
     return false unless auth_info
     return false unless auth_info[:type] == :bearer
-    
+
     # Check if the token belongs to an admin
     auth_info[:token] == "admin-token" || User.find_by_token(auth_info[:token])&.admin?
   end
@@ -282,11 +280,11 @@ def call(resource_id:, auth_info: nil, **args)
 
   # Verify the token
   user = User.authenticate_with_token(auth_info[:token])
-  
+
   unless user
     raise "Invalid authentication token"
   end
-  
+
   # Proceed with authenticated operation
   # ...
 end
@@ -338,9 +336,9 @@ Always validate and sanitize inputs in your tool implementations:
 def call(user_id:, **args)
   # Validate input
   unless user_id.is_a?(Integer) || user_id.to_s.match?(/^\d+$/)
-    return { error: "Invalid user ID format" }
+    raise "Invalid user ID format"
   end
-  
+
   # Proceed with validated data
   user = User.find_by(id: user_id)
   # ...
@@ -354,9 +352,8 @@ Return structured responses that are easy for AI to parse:
 ```ruby
 def call(query:, **args)
   results = User.search(query)
-  
+
   {
-    type: "text",
     content: results.to_json(only: [:id, :name, :email]),
     metadata: {
       count: results.size,
@@ -377,4 +374,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/moekio
 ## 📄 License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
