@@ -14,11 +14,7 @@ module ActiveMcp
       end
 
       def property(name, type, required: false, description: nil)
-        @schema ||= {
-          "type" => "object",
-          "properties" => {},
-          "required" => []
-        }
+        @schema ||= default_schema
 
         @schema["properties"][name.to_s] = {"type" => type.to_s}
         @schema["properties"][name.to_s]["description"] = description if description
@@ -46,7 +42,7 @@ module ActiveMcp
           true
         end
       end
-      
+
       def authorized_tools(auth_info = nil)
         registered_tools.select do |tool_class|
           tool_class.visible?(auth_info)
@@ -54,9 +50,17 @@ module ActiveMcp
           {
             name: tool_class.tool_name,
             description: tool_class.desc,
-            inputSchema: tool_class.schema
+            inputSchema: tool_class.schema || default_schema
           }
         end
+      end
+
+      def default_schema
+        {
+          "type" => "object",
+          "properties" => {},
+          "required" => []
+        }
       end
     end
 

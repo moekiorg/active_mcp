@@ -23,9 +23,16 @@ module ActiveMcp
         end
       end
 
+      @no_argument_tool = Class.new(ActiveMcp::Tool) do
+        def call(auth_info: nil)
+        end
+      end
+
       Object.const_set(:TestTool, @test_tool_class)
+      Object.const_set(:NoArgumentTool, @no_argument_tool)
 
       ActiveMcp::Tool.registered_tools << @test_tool_class unless ActiveMcp::Tool.registered_tools.include?(@test_tool_class)
+      ActiveMcp::Tool.registered_tools << @no_argument_tool unless ActiveMcp::Tool.registered_tools.include?(@no_argument_tool)
     end
 
     test "should return tools list" do
