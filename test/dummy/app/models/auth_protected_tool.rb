@@ -4,7 +4,7 @@ class AuthProtectedTool < ActiveMcp::Tool
   property :resource_id, :integer, required: true, description: "ID of the protected resource"
   property :action, :string, required: false, description: "Action to perform on the resource"
 
-  def self.authorized?(auth_info)
+  def self.visible?(auth_info)
     return false unless auth_info
     return false unless auth_info[:type] == :bearer
     auth_info[:token] == "valid-token" || auth_info[:token] == "admin-token"

@@ -35,7 +35,7 @@ module ActiveMcp
         registered_tools << subclass
       end
 
-      def authorized?(auth_info)
+      def visible?(auth_info)
         true
       end
     end

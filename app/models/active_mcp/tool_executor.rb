@@ -31,7 +31,7 @@ module ActiveMcp
         }
       end
 
-      unless tool_class.authorized?(auth_info)
+      unless tool_class.visible?(auth_info)
         return {
           isError: true,
           content: [

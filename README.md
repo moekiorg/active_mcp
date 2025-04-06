@@ -179,7 +179,7 @@ ActiveMcp supports both authentication (verifying who a user is) and authorizati
 
 ### Authorization for Tools
 
-You can control which tools are visible and accessible to different users by overriding the `authorized?` class method:
+You can control which tools are visible and accessible to different users by overriding the `visible?` class method:
 
 ```ruby
 class AdminOnlyTool < ActiveMcp::Tool
@@ -188,7 +188,7 @@ class AdminOnlyTool < ActiveMcp::Tool
   property :command, :string, required: true, description: "Admin command to execute"
 
   # Define authorization logic - only admin tokens can access this tool
-  def self.authorized?(auth_info)
+  def self.visible?(auth_info)
     return false unless auth_info
     return false unless auth_info[:type] == :bearer
 

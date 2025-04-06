@@ -3,7 +3,7 @@ class AdminOnlyTool < ActiveMcp::Tool
 
   property :command, :string, required: true, description: "Admin command to execute"
 
-  def self.authorized?(auth_info)
+  def self.visible?(auth_info)
     return false unless auth_info
     return false unless auth_info[:type] == :bearer
     auth_info[:token] == "admin-token"

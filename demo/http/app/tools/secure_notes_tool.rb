@@ -14,6 +14,10 @@ class SecureNotesTool < ActiveMcp::Tool
     auth_info[:token] == "valid-token" || auth_info[:token] == "admin-token"
   end
 
+  def self.visible?(...)
+    self.authorized?(...)
+  end
+
   def call(action:, note_id: nil, title: nil, content: nil, auth_info: nil, **args)
     unless auth_info.present?
       return "この機能は認証されたユーザーのみ利用できます"
