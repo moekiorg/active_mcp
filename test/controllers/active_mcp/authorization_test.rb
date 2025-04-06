@@ -82,14 +82,14 @@ module ActiveMcp
     end
 
     test "should deny access to protected tool without authentication" do
-      arguments = { resource_id: "1", action: "read" }
+      arguments = { resource_id: 1, action: "read" }
       post :index, params: {
         method: "tools/call",
         name: "auth_protected",
         arguments: arguments
       }
 
-      assert_response :ok
+      assert_response :unauthorized
       json = JSON.parse(response.body)
       assert_not_nil json["error"]
       assert_equal "Unauthorized: Access to tool 'auth_protected' denied", json["error"]
@@ -97,7 +97,7 @@ module ActiveMcp
 
     test "should allow access to protected tool with valid token" do
       @request.headers["Authorization"] = "Bearer valid-token"
-      arguments = { resource_id: "1", action: "read" }
+      arguments = { resource_id: 1, action: "read" }
       post :index, params: {
         method: "tools/call",
         name: "auth_protected",
@@ -116,7 +116,7 @@ module ActiveMcp
         arguments: arguments
       }
 
-      assert_response :ok
+      assert_response :unauthorized
       json = JSON.parse(response.body)
       assert_not_nil json["error"]
       assert_equal "Unauthorized: Access to tool 'admin_only' denied", json["error"]
@@ -131,7 +131,7 @@ module ActiveMcp
         arguments: arguments
       }
 
-      assert_response :success
+      assert_response :ok
       json = JSON.parse(response.body)
       assert_equal "Admin command executed: test", json["result"]
     end
