@@ -4,6 +4,7 @@ require "jbuilder"
 require_relative "active_mcp/version"
 require_relative "active_mcp/configuration"
 require_relative "active_mcp/tool"
+require_relative "active_mcp/resource"
 require_relative "active_mcp/server"
 
 if defined? ::Rails

@@ -35,36 +35,6 @@ module ActiveMcp
       ActiveMcp::Tool.registered_tools << @no_argument_tool unless ActiveMcp::Tool.registered_tools.include?(@no_argument_tool)
     end
 
-    test "should return tools list" do
-      post "index", params: {method: "tools/list"}
-
-      assert_response :success
-
-      json = JSON.parse(response.body)
-      assert_not_nil json["result"]
-
-      tools = json["result"]
-      test_tool = tools.find { |t| t["name"] == "test" }
-      assert_not_nil test_tool
-      assert_equal "Test tool for controller testing", test_tool["description"]
-      assert_not_nil test_tool["inputSchema"]
-    end
-
-    test "should return tools list when jsonrpc" do
-      post "index", params: {jsonrpc: "2.0", method: "tools/list"}
-
-      assert_response :success
-
-      json = JSON.parse(response.body)
-      assert_not_nil json["result"]
-
-      tools = json["result"]["tools"]
-      test_tool = tools.find { |t| t["name"] == "test" }
-      assert_not_nil test_tool
-      assert_equal "Test tool for controller testing", test_tool["description"]
-      assert_not_nil test_tool["inputSchema"]
-    end
-
     test "should call tool successfully" do
       arguments = {name: "test-name", value: 42}
 

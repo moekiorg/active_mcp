@@ -35,6 +35,14 @@ module ActiveMcp
         render 'active_mcp/initialized', formats: :json
       when Method::CANCELLED
         render 'active_mcp/cancelled', formats: :json
+      when Method::RESOURCES_LIST
+        @resources = ActiveMcp::Resource.authorized_resources(auth_info)
+        @format = :jsonrpc
+        render 'active_mcp/resources_list', formats: :json
+      when Method::RESOURCES_READ
+        @resource = ActiveMcp::ResourceReader.read(params:, auth_info:)
+        @format = :jsonrpc
+        render 'active_mcp/resources_read', formats: :json
       when Method::TOOLS_LIST
         @tools = ActiveMcp::Tool.authorized_tools(auth_info)
         @format = :jsonrpc
@@ -53,6 +61,14 @@ module ActiveMcp
       @auth_info = auth_info
       
       case params[:method]
+      when Method::RESOURCES_LIST
+        @resources = ActiveMcp::Resource.authorized_resources(auth_info)
+        @format = :json
+        render 'active_mcp/resources_list', formats: :json
+      when Method::RESOURCES_READ
+        @resource = ActiveMcp::ResourceReader.read(params:, auth_info:)
+        @format = :json
+        render 'active_mcp/resources_read', formats: :json
       when Method::TOOLS_LIST
         @tools = ActiveMcp::Tool.authorized_tools(auth_info)
         @format = :json
