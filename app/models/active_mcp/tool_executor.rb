@@ -84,7 +84,7 @@ module ActiveMcp
           content: [
             {
               type: "text",
-              text: formatted(tool.call(**arguments.symbolize_keys, auth_info:))
+              text: formatted(tool.call(**arguments.symbolize_keys))
             }
           ]
         }
