@@ -4,8 +4,7 @@ module ActiveMcp
       class Json
         def self.call(tools:)
           {
-            body: { result: tools},
-            status: 200
+            result: tools
           }
         end
       end

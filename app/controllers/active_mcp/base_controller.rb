@@ -28,7 +28,7 @@ module ActiveMcp
         result = Response::NoMethod.call
       end
 
-      render json: result[:body], status: result[:status]
+      render json: result, status: 200
     end
 
     def process_request_from_mcp_client
@@ -50,7 +50,7 @@ module ActiveMcp
         result = Response::NoMethod.call
       end
 
-      render json: result[:body], status: result[:status]
+      render json: result, status: 200
     end
 
     def authenticate

@@ -67,7 +67,7 @@ module ActiveMcp
 
       assert_response :success
       json = JSON.parse(response.body)
-      assert_equal "Public search result for: test", json["result"]
+      assert_equal "Public search result for: test", json["content"][0]["text"]
     end
 
     test "should deny access to protected tool without authentication" do
@@ -78,9 +78,9 @@ module ActiveMcp
         arguments: arguments
       }
 
-      assert_response :unauthorized
+      assert_response :ok
       json = JSON.parse(response.body)
-      assert_equal "Unauthorized: Access to tool 'auth_protected' denied", json["result"]
+      assert_equal "Unauthorized: Access to tool 'auth_protected' denied", json["content"][0]["text"]
     end
 
     test "should allow access to protected tool with valid token" do
@@ -104,9 +104,9 @@ module ActiveMcp
         arguments: arguments
       }
 
-      assert_response :unauthorized
+      assert_response :ok
       json = JSON.parse(response.body)
-      assert_equal "Unauthorized: Access to tool 'admin_only' denied", json["result"]
+      assert_equal "Unauthorized: Access to tool 'admin_only' denied", json["content"][0]["text"]
     end
 
     test "should allow access to admin tool with admin token" do
@@ -120,7 +120,7 @@ module ActiveMcp
 
       assert_response :ok
       json = JSON.parse(response.body)
-      assert_equal "Admin command executed: test", json["result"]
+      assert_equal "Admin command executed: test", json["content"][0]["text"]
     end
   end
 end

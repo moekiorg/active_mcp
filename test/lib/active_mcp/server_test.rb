@@ -59,15 +59,5 @@ module ActiveMcp
       assert_includes @server.tools.keys, "test_tool"
       assert_equal "Test tool description", @server.tools["test_tool"][:description]
     end
-
-    test "should format string result" do
-      result = @server.tool_manager.send(:format_result, "Test result")
-      assert_equal({content: [{type: "text", text: "Test result"}]}, result)
-    end
-
-    test "should format hash result" do
-      result = @server.tool_manager.send(:format_result, {foo: "bar"})
-      assert_equal({content: [{type: "text", text: '{"foo":"bar"}'}]}, result)
-    end
   end
 end

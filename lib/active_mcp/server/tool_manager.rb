@@ -36,7 +36,6 @@ module ActiveMcp
       def invoke_tool(name, arguments)
         require "net/http"
         
-        # URIの検証
         unless @uri.is_a?(URI) || @uri.is_a?(String)
           log_error("Invalid URI type", StandardError.new("URI must be a String or URI object"))
           return {
@@ -48,7 +47,6 @@ module ActiveMcp
         begin
           uri = URI.parse(@uri.to_s)
           
-          # 有効なスキームとホストの検証
           unless uri.scheme =~ /\Ahttps?\z/ && !uri.host.nil?
             log_error("Invalid URI", StandardError.new("URI must have a valid scheme and host"))
             return {
@@ -57,7 +55,6 @@ module ActiveMcp
             }
           end
           
-          # 本番環境ではHTTPSを強制
           if defined?(Rails) && Rails.env.production? && uri.scheme != "https"
             return {
               isError: true,
@@ -87,15 +84,7 @@ module ActiveMcp
           end
 
           if response.code == "200"
-            body = JSON.parse(response.body, symbolize_names: true)
-            if body[:error]
-              {
-                isError: true,
-                content: [{type: "text", text: body[:error]}]
-              }
-            else
-              format_result(body[:result])
-            end
+            JSON.parse(response.body, symbolize_names: true)
           else
             {
               isError: true,
@@ -103,7 +92,6 @@ module ActiveMcp
             }
           end
         rescue => e
-          # ログに詳細を記録
           log_error("Error calling tool", e)
           {
             isError: true,
@@ -117,7 +105,6 @@ module ActiveMcp
 
         require "net/http"
         
-        # URIの検証
         unless @uri.is_a?(URI) || @uri.is_a?(String)
           log_error("Invalid URI type", StandardError.new("URI must be a String or URI object"))
           return
@@ -126,13 +113,11 @@ module ActiveMcp
         begin
           uri = URI.parse(@uri.to_s)
           
-          # 有効なスキームとホストの検証
           unless uri.scheme =~ /\Ahttps?\z/ && !uri.host.nil?
             log_error("Invalid URI", StandardError.new("URI must have a valid scheme and host"))
             return
           end
           
-          # 本番環境ではHTTPSを強制
           if defined?(Rails) && Rails.env.production? && uri.scheme != "https"
             log_error("HTTPS is required in production environment", StandardError.new("Non-HTTPS URI in production"))
             return
@@ -162,17 +147,6 @@ module ActiveMcp
           @tools = []
         end
       end
-
-      def format_result(result)
-        case result
-        when String
-          {content: [{type: "text", text: result}]}
-        when Hash
-          {content: [{type: "text", text: result.to_json}]}
-        else
-          {content: [{type: "text", text: result.to_s}]}
-        end
-      end
       
       def log_error(message, error)
         error_details = "#{message}: #{error.message}\n"
@@ -181,7 +155,6 @@ module ActiveMcp
         if defined?(Rails)
           Rails.logger.error(error_details)
         else
-          # Fallback to standard error output if Rails is not available
           $stderr.puts(error_details)
         end
       end

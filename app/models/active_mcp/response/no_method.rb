@@ -3,8 +3,7 @@ module ActiveMcp
     class NoMethod
       def self.call
         {
-          body: { error: "Method not found" },
-          status: 404
+          error: "Method not found"
         }
       end
     end

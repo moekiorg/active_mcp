@@ -70,7 +70,7 @@ module ActiveMcp
       assert_response :success
 
       json = JSON.parse(response.body)
-      assert json["result"].include?("Test tool result with name: test-name, value: 42")
+      assert json["content"][0]["text"].include?("Test tool result with name: test-name, value: 42")
     end
 
     test "should call tool successfully when jsonrpc" do
@@ -96,7 +96,7 @@ module ActiveMcp
       assert_response :ok
 
       json = JSON.parse(response.body)
-      assert_equal "Invalid params: missing tool name", json["result"]
+      assert_equal "Invalid params: missing tool name", json["content"][0]["text"]
     end
 
     test "should handle tool not found" do
@@ -109,7 +109,7 @@ module ActiveMcp
       assert_response :ok
 
       json = JSON.parse(response.body)
-      assert_equal "Tool not found: nonexistent_tool", json["result"]
+      assert_equal "Tool not found: nonexistent_tool", json["content"][0]["text"]
     end
 
     test "should validate arguments" do
@@ -122,7 +122,7 @@ module ActiveMcp
       assert_response :ok
 
       json = JSON.parse(response.body)
-      assert json["result"].include?("name")
+      assert json["content"][0]["text"].include?("name")
     end
 
     test "should pass authentication info to tool" do
@@ -136,12 +136,12 @@ module ActiveMcp
       }
 
       json = JSON.parse(response.body)
-      assert json["result"].include?("Authenticated tool result")
+      assert json["content"][0]["text"].include?("Authenticated tool result")
     end
 
     test "should handle unknown method" do
       post "index", params: {method: "unknown_method"}
-      assert_response :not_found
+      assert_response :ok
 
       json = JSON.parse(response.body)
       assert_not_nil json["error"]
