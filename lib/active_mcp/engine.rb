@@ -10,12 +10,5 @@ module ActiveMcp
         end
       end
     end
-    
-    initializer "active_mcp.configure_jbuilder" do |app|
-      if Rails.env.development?
-        Jbuilder.key_format camelize: :lower
-        Jbuilder.prettify if Jbuilder.respond_to?(:prettify) 
-      end
-    end
   end
 end
