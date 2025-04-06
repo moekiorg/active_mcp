@@ -25,6 +25,7 @@ A Ruby on Rails engine for the [Model Context Protocol (MCP)](https://modelconte
   - [🛠 Rails Generators](#-rails-generators)
     - [Install Generator](#install-generator)
     - [Tool Generator](#tool-generator)
+    - [Resource Generator](#resource-generator)
   - [🧰 Creating MCP Tools](#-creating-mcp-tools)
   - [📋 Input Schema](#-input-schema)
   - [🔐 Authorization \& Authentication](#-authorization--authentication)
@@ -32,6 +33,9 @@ A Ruby on Rails engine for the [Model Context Protocol (MCP)](https://modelconte
     - [Authentication Options](#authentication-options)
       - [1. Server Configuration](#1-server-configuration)
       - [2. Token Verification in Tools](#2-token-verification-in-tools)
+  - [📦 MCP Resources](#-mcp-resources)
+    - [Creating Resources](#creating-resources)
+    - [Resource Types](#resource-types)
   - [⚙️ Advanced Configuration](#️-advanced-configuration)
     - [Custom Controller](#custom-controller)
   - [💡 Best Practices](#-best-practices)
@@ -45,7 +49,8 @@ A Ruby on Rails engine for the [Model Context Protocol (MCP)](https://modelconte
 ## ✨ Features
 
 - **Simple Integration**: Easily expose Rails functionality as MCP tools
-- **Powerful Generators**: Quickly scaffold MCP tools with Rails generators
+- **Resource Support**: Share files and data with AI assistants through MCP resources
+- **Powerful Generators**: Quickly scaffold MCP tools and resources with Rails generators
 - **Authentication Support**: Built-in authentication and authorization capabilities
 - **Flexible Configuration**: Multiple deployment and connection options
 
@@ -179,6 +184,16 @@ $ rails generate active_mcp:tool search_users
 
 This creates a new tool file at `app/tools/search_users_tool.rb` with ready-to-customize starter code.
 
+### Resource Generator
+
+Generate new MCP resources to share data with AI:
+
+```bash
+$ rails generate active_mcp:resource profile_image
+```
+
+This creates a new resource file at `app/resources/profile_image_resource.rb` that you can customize to provide various types of content to AI assistants.
+
 ## 🧰 Creating MCP Tools
 
 MCP tools are Ruby classes that inherit from `ActiveMcp::Tool` and define an interface for AI to interact with your application:
@@ -287,6 +302,75 @@ def call(resource_id:, auth_info: nil, **args)
 
   # Proceed with authenticated operation
   # ...
+end
+```
+
+## 📦 MCP Resources
+
+MCP Resources allow you to share data and files with AI assistants. Resources have a URI, MIME type, and can return either text or binary data.
+
+### Creating Resources
+
+Resources are Ruby classes that inherit from `ActiveMcp::Resource`:
+
+```ruby
+class UserResource < ActiveMcp::Resource
+  uri "data://localhost/user"
+  mime_type "application/json"
+  description "User profile data"
+
+  def text(auth_info: nil)
+    # Authenticate if needed
+    user = User.find_by(id: 1)
+
+    # Return JSON data
+    {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      created_at: user.created_at
+    }
+  end
+end
+```
+
+### Resource Types
+
+Resources can return two types of content:
+
+1. **Text Content** - Use the `text` method to return structured data:
+
+```ruby
+def text(auth_info: nil)
+  # Return strings, arrays, hashes, or any JSON-serializable object
+  { items: Product.all.map(&:attributes) }
+end
+```
+
+2. **Binary Content** - Use the `blob` method to return binary files:
+
+```ruby
+class ImageResource < ActiveMcp::Resource
+  uri "data://localhost/image"
+  mime_type "image/png"
+  description "Profile image"
+
+  def blob(auth_info: nil)
+    # Return binary file content
+    File.read(Rails.root.join("public", "profile.png"))
+  end
+end
+```
+
+Resources can be protected using the same authorization mechanism as tools:
+
+```ruby
+def self.visible?(auth_info)
+  return false unless auth_info
+  return false unless auth_info[:type] == :bearer
+
+  # Check if the token belongs to an admin
+  User.find_by_token(auth_info[:token])&.admin?
 end
 ```
 

@@ -1,14 +1,15 @@
 require "json"
 require "English"
-require_relative "server/methods"
+require_relative "server/method"
 require_relative "server/error_codes"
 require_relative "server/stdio_connection"
+require_relative "server/resource_manager"
 require_relative "server/tool_manager"
 require_relative "server/protocol_handler"
 
 module ActiveMcp
   class Server
-    attr_reader :name, :version, :uri, :tool_manager, :protocol_handler
+    attr_reader :name, :version, :uri, :tool_manager, :protocol_handler, :resource_manager
 
     def initialize(
       version: ActiveMcp::VERSION,
@@ -19,9 +20,11 @@ module ActiveMcp
       @name = name
       @version = version
       @uri = uri
+      @resource_manager = ResourceManager.new(uri:, auth:)
       @tool_manager = ToolManager.new(uri: uri, auth:)
       @protocol_handler = ProtocolHandler.new(self)
       @tool_manager.load_registered_tools
+      @resource_manager.load_registered_resources
     end
 
     def start

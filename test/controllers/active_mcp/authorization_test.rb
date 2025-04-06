@@ -8,9 +8,9 @@ module ActiveMcp
 
       ActiveMcp::Tool.registered_tools = []
 
-      require_relative "../../dummy/app/models/public_tool"
-      require_relative "../../dummy/app/models/auth_protected_tool"
-      require_relative "../../dummy/app/models/admin_only_tool"
+      require_relative "../../dummy/app/tools/public_tool"
+      require_relative "../../dummy/app/tools/auth_protected_tool"
+      require_relative "../../dummy/app/tools/admin_only_tool"
 
       ActiveMcp::Tool.registered_tools << PublicTool
       ActiveMcp::Tool.registered_tools << AuthProtectedTool

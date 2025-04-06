@@ -48,12 +48,12 @@ module ActiveMcp
           handle_initialized(request)
         when Method::PING
           handle_ping(request)
+        when Method::RESOURCES_LIST
+          handle_list_resources(request)
         when Method::TOOLS_LIST
           handle_list_tools(request)
         when Method::TOOLS_CALL
           handle_use_tool(request)
-        when Method::RESOURCES_LIST
-          handle_list_resources(request)
         when Method::RESOURCES_READ
           handle_read_resource(request)
         else
@@ -112,6 +112,10 @@ module ActiveMcp
         success_response(request[:id], {})
       end
 
+      def handle_list_resources(request)
+        success_response(request[:id], {resources: @server.resource_manager.resources})
+      end
+
       def handle_list_tools(request)
         success_response(request[:id], {tools: @server.tool_manager.tools})
       end
@@ -130,19 +134,16 @@ module ActiveMcp
         end
       end
 
-      def handle_list_resources(request)
-        success_response(
-          request[:id],
-          {
-            resources: [],
-            nextCursor: "0"
-          }
-        )
-      end
-
       def handle_read_resource(request)
         uri = request.dig(:params, :uri)
-        error_response(request[:id], ErrorCode::INVALID_REQUEST, "Resource not found", {uri: uri})
+        begin
+          result = @server.resource_manager.read_resource(uri)
+
+          success_response(request[:id], result)
+        rescue => e
+          log_error("Error reading resource #{uri}", e)
+          error_response(request[:id], ErrorCode::INTERNAL_ERROR, "An error occurred while reading the resource")
+        end
       end
 
       def success_response(id, result)
