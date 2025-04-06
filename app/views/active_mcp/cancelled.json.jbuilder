@@ -1,2 +1,2 @@
 json.jsonrpc ActiveMcp::JSON_RPC_VERSION
-json.result true
+json.method ActiveMcp::Method::CANCELLED

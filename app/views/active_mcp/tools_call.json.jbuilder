@@ -5,5 +5,10 @@ if @format == :jsonrpc
   json.result @tool_result
 else
   json.isError @tool_result[:isError] if @tool_result[:isError]
-  json.content @tool_result[:content]
+  json.content do
+    json.array!(@tool_result[:content]) do |content|
+      json.type content[:type]
+      json.text raw content[:text]
+    end
+  end
 end

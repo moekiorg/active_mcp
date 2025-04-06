@@ -9,7 +9,7 @@ class WeatherTool < ActiveMcp::Tool
     weather_data = get_mock_weather_data(city, country)
 
     if weather_data
-      format_weather_response(weather_data)
+      weather_data
     else
       "指定された都市の天気情報が見つかりませんでした: #{city}"
     end
@@ -47,16 +47,5 @@ class WeatherTool < ActiveMcp::Tool
 
     city_key = city.downcase
     mock_data[city_key]
-  end
-
-  def format_weather_response(weather_data)
-    <<~TEXT
-      🌤️ 天気情報:
-      
-      気温: #{weather_data[:temperature]}°C
-      状態: #{weather_data[:condition]}
-      湿度: #{weather_data[:humidity]}%
-      風速: #{weather_data[:wind]}
-    TEXT
   end
 end
