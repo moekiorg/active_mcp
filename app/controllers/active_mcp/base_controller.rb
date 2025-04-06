@@ -7,6 +7,31 @@ module ActiveMcp
     before_action :authenticate, only: [:index]
 
     def index
+      if params[:jsonrpc]
+        process_request_from_mcp_client
+      else
+        process_request_from_mcp_server
+      end
+    end
+
+    private
+
+    def process_request_from_mcp_server
+      case params[:method]
+      when Method::TOOLS_LIST
+        result = Response::ToolsList::Json.call(
+          tools: Response::Tools.to_hash(auth_info: @auth_info)
+        )
+      when Method::TOOLS_CALL
+        result = Response::ToolsCall::Json.call(params:, auth_info: @auth_info)
+      else
+        result = Response::NoMethod.call
+      end
+
+      render json: result[:body], status: result[:status]
+    end
+
+    def process_request_from_mcp_client
       case params[:method]
       when Method::INITIALIZE
         result = Response::Initialize.call(id: params[:id])
@@ -15,26 +40,18 @@ module ActiveMcp
       when Method::CANCELLED
         result = Response::Cancelled.call
       when Method::TOOLS_LIST
-        tools = Response::Tools.to_hash(auth_info: @auth_info)
-        if params[:jsonrpc]
-          result = Response::ToolsList::Jsonrpc.call(id: params[:id], tools:)
-        else
-          result = Response::ToolsList::Json.call(tools:)
-        end
+        result = Response::ToolsList::Jsonrpc.call(
+          id: params[:id],
+          tools: Response::Tools.to_hash(auth_info: @auth_info)
+        )
       when Method::TOOLS_CALL
-        if params[:jsonrpc]
-          result = Response::ToolsCall::Jsonrpc.call(id: params[:id], params:, auth_info: @auth_info)
-        else
-          result = Response::ToolsCall::Json.call(params:, auth_info: @auth_info)
-        end
+        result = Response::ToolsCall::Jsonrpc.call(id: params[:id], params:, auth_info: @auth_info)
       else
         result = Response::NoMethod.call
       end
 
       render json: result[:body], status: result[:status]
     end
-
-    private
 
     def authenticate
       auth_header = request.headers["Authorization"]
