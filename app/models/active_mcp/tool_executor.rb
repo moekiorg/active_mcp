@@ -49,16 +49,20 @@ module ActiveMcp
         }
       end
 
-      if tool_params
-        arguments = tool_params.permit!.to_hash.symbolize_keys.transform_values do |value|
-          if !value.is_a?(String)
-            value
-          else
-            value.match(/^\d+$/) ? value.to_i : value
-          end
-        end
+      if tool_params.is_a?(String)
+        arguments = JSON.parse(tool_params).symbolize_keys
+      elsif tool_params
+        arguments = tool_params.permit!.to_hash.symbolize_keys
       else
         arguments = {}
+      end
+
+      arguments = arguments.transform_values do |value|
+        if !value.is_a?(String)
+          value
+        else
+          value.match(/^\d+$/) ? value.to_i : value
+        end
       end
 
       tool = tool_class.new
