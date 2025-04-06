@@ -110,7 +110,7 @@ module ActiveMcp
       when String
         object
       when Hash
-        object.to_json
+        object.to_yaml
       else
         object.to_s
       end
