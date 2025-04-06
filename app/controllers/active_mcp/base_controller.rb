@@ -4,7 +4,7 @@ module ActiveMcp
   class BaseController < ActionController::Base
     protect_from_forgery with: :null_session
     skip_before_action :verify_authenticity_token
-    before_action :process_authentication, only: [:index]
+    before_action :authenticate, only: [:index]
 
     def index
       case params[:method]
@@ -36,7 +36,7 @@ module ActiveMcp
 
     private
 
-    def process_authentication
+    def authenticate
       auth_header = request.headers["Authorization"]
       if auth_header.present?
         @auth_info = {

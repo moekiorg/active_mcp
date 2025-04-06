@@ -4,7 +4,7 @@ class CustomController < ActiveMcp::BaseController
   private
 
   def authenticate_request
-    process_authentication
+    authenticate
 
     if @auth_info&.dig(:type) == :bearer
       token = @auth_info[:token]
