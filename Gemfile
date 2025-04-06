@@ -16,6 +16,7 @@ group :development, :test do
   gem "minitest"
   gem "minitest-reporters"
   gem "json-schema"
+  gem "jbuilder", "~> 2.7"
   gem "mocha", require: false
 end
 

@@ -1,8 +1,14 @@
 module ActiveMcp
-  module ToolExecutor
-    def self.call(params:, auth_info:)
-      tool_name = params[:name]
-
+  class ToolExecutor
+    def self.execute(params:, auth_info:)
+      if params[:jsonrpc].present?
+        tool_name = params[:params][:name]
+        tool_params = params[:params][:arguments]
+      else
+        tool_name = params[:name]
+        tool_params = params[:arguments]
+      end
+      
       unless tool_name
         return {
           isError: true,
@@ -18,7 +24,7 @@ module ActiveMcp
       tool_class = Tool.registered_tools.find do |tc|
         tc.tool_name == tool_name
       end
-
+      
       unless tool_class
         return {
           isError: true,
@@ -30,7 +36,7 @@ module ActiveMcp
           ]
         }
       end
-
+      
       unless tool_class.visible?(auth_info)
         return {
           isError: true,
@@ -43,12 +49,16 @@ module ActiveMcp
         }
       end
 
-      arguments = params[:arguments].permit!.to_hash.symbolize_keys.transform_values do |value|
-        if !value.is_a?(String)
-          value
-        else
-          value.match(/^\d+$/) ? value.to_i : value
+      if tool_params
+        arguments = tool_params.permit!.to_hash.symbolize_keys.transform_values do |value|
+          if !value.is_a?(String)
+            value
+          else
+            value.match(/^\d+$/) ? value.to_i : value
+          end
         end
+      else
+        arguments = {}
       end
 
       tool = tool_class.new
@@ -65,10 +75,11 @@ module ActiveMcp
           ]
         }
       end
-
+      
+      # Execute the tool
       begin
         arguments[:auth_info] = auth_info if auth_info.present?
-
+        
         return {
           content: [
             {
@@ -89,7 +100,7 @@ module ActiveMcp
         }
       end
     end
-
+    
     def self.formatted(object)
       case object
       when String

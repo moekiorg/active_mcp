@@ -40,7 +40,23 @@ module ActiveMcp
       end
 
       def visible?(auth_info)
-        true
+        if respond_to?(:authorized?)
+          authorized?(auth_info)
+        else
+          true
+        end
+      end
+      
+      def authorized_tools(auth_info = nil)
+        registered_tools.select do |tool_class|
+          tool_class.visible?(auth_info)
+        end.map do |tool_class|
+          {
+            name: tool_class.tool_name,
+            description: tool_class.desc,
+            inputSchema: tool_class.schema
+          }
+        end
       end
     end
 

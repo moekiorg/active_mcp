@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     active_mcp (0.3.3)
+      jbuilder (>= 2.7)
       json-schema
       rails (>= 6.0.0, < 8.0.0)
 
@@ -102,6 +103,9 @@ GEM
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
+    jbuilder (2.13.0)
+      actionview (>= 5.0.0)
+      activesupport (>= 5.0.0)
     json (2.10.2)
     json-schema (5.1.1)
       addressable (~> 2.8)
@@ -278,6 +282,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_mcp!
+  jbuilder (~> 2.7)
   json-schema
   minitest
   minitest-reporters
