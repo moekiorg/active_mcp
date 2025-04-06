@@ -1,8 +1,8 @@
 class CreateNoteTestTool < ActiveMcp::Tool
   description "Create a new test note"
 
-  property :title, :string, required: true, description: "Title of the note"
-  property :content, :string, required: true, description: "Content of the note"
+  argument :title, :string, required: true, description: "Title of the note"
+  argument :content, :string, required: true, description: "Content of the note"
 
   def call(title:, content:)
     note = TestNote.create(title: title, content: content)

@@ -59,8 +59,8 @@ end
 class CreateNoteTool < ActiveMcp::Tool
   description "Create Note!!"
 
-  property :title, :string
-  property :content, :string
+  argument :title, :string
+  argument :content, :string
 
   def call(title:, content:)
     Note.create(title:, content:)
@@ -129,8 +129,8 @@ This creates a new tool file at `app/tools/search_users_tool.rb` with the follow
 class SearchUsersTool < ActiveMcp::Tool
   description 'Search users'
 
-  property :param1, :string, required: true, description: 'First parameter description'
-  property :param2, :string, required: false, description: 'Second parameter description'
+  argument :param1, :string, required: true, description: 'First parameter description'
+  argument :param2, :string, required: false, description: 'Second parameter description'
   # Add more parameters as needed
 
   def call(param1:, param2: nil, auth_info: nil, **args)
@@ -147,10 +147,10 @@ You can then customize the generated tool to fit your needs.
 ## Input Schema
 
 ```ruby
-property :name, :string, required: true, description: 'User name'
-property :age, :integer, required: false, description: 'User age'
-property :addresses, :array, required: false, description: 'User addresses'
-property :preferences, :object, required: false, description: 'User preferences'
+argument :name, :string, required: true, description: 'User name'
+argument :age, :integer, required: false, description: 'User age'
+argument :addresses, :array, required: false, description: 'User addresses'
+argument :preferences, :object, required: false, description: 'User preferences'
 ```
 
 Supported types include:
@@ -185,7 +185,7 @@ You can control which tools are visible and accessible to different users by ove
 class AdminOnlyTool < ActiveMcp::Tool
   description "This tool is only accessible by admins"
 
-  property :command, :string, required: true, description: "Admin command to execute"
+  argument :command, :string, required: true, description: "Admin command to execute"
 
   # Define authorization logic - only admin tokens can access this tool
   def self.visible?(auth_info)
@@ -274,7 +274,7 @@ Authentication information is automatically passed to your tools through the `au
 class SecuredDataTool < ActiveMcp::Tool
   description 'Access secured data'
 
-  property :resource_id, :string, required: true, description: 'ID of the resource to access'
+  argument :resource_id, :string, required: true, description: 'ID of the resource to access'
 
   def call(resource_id:, auth_info: nil, **args)
     # Check if auth info exists
@@ -345,9 +345,9 @@ For example, instead of creating a generic search tool, create specific search t
 class SearchUsersTool < ActiveMcp::Tool
   description 'Search users by criteria'
 
-  property :email, :string, required: false, description: 'Email to search for'
-  property :name, :string, required: false, description: 'Name to search for'
-  property :limit, :integer, required: false, description: 'Maximum number of records to return'
+  argument :email, :string, required: false, description: 'Email to search for'
+  argument :name, :string, required: false, description: 'Name to search for'
+  argument :limit, :integer, required: false, description: 'Maximum number of records to return'
 
   def call(email: nil, name: nil, limit: 10)
     criteria = {}
@@ -367,9 +367,9 @@ end
 class SearchPostsTool < ActiveMcp::Tool
   description 'Search posts by criteria'
 
-  property :title, :string, required: false, description: 'Title to search for'
-  property :author_id, :integer, required: false, description: 'Author ID to filter by'
-  property :limit, :integer, required: false, description: 'Maximum number of records to return'
+  argument :title, :string, required: false, description: 'Title to search for'
+  argument :author_id, :integer, required: false, description: 'Author ID to filter by'
+  argument :limit, :integer, required: false, description: 'Maximum number of records to return'
 
   def call(title: nil, author_id: nil, limit: 10)
     criteria = {}

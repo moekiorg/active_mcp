@@ -1,7 +1,7 @@
 class AdminOnlyTool < ActiveMcp::Tool
   description "This tool is only accessible by admins"
 
-  property :command, :string, required: true, description: "Admin command to execute"
+  argument :command, :string, required: true, description: "Admin command to execute"
 
   def self.visible?(auth_info)
     return false unless auth_info

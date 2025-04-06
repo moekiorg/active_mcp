@@ -1,8 +1,8 @@
 class NewsTool < ActiveMcp::Tool
   description "指定したカテゴリの最新ニュースを取得します"
 
-  property :category, :string, required: true, description: "ニュースカテゴリ（tech, business, sports, etc.）"
-  property :limit, :integer, required: false, description: "取得するニュース数の上限"
+  argument :category, :string, required: true, description: "ニュースカテゴリ（tech, business, sports, etc.）"
+  argument :limit, :integer, required: false, description: "取得するニュース数の上限"
 
   def call(category:, limit: 5, auth_info: nil, **args)
     user_info = if auth_info.present?

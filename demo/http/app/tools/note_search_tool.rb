@@ -1,8 +1,8 @@
 class NoteSearchTool < ActiveMcp::Tool
   description "ノートを検索します"
 
-  property :query, :string, required: true, description: "検索キーワード"
-  property :limit, :integer, required: false, description: "結果の最大数"
+  argument :query, :string, required: true, description: "検索キーワード"
+  argument :limit, :integer, required: false, description: "結果の最大数"
 
   def call(query:, limit: 10, auth_info: nil, **args)
     user_info = if auth_info.present?

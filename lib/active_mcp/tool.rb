@@ -25,6 +25,10 @@ module ActiveMcp
         @schema["required"] << name.to_s if required
       end
 
+      def argument(...)
+        property(...)
+      end
+
       def registered_tools
         @registered_tools ||= []
       end

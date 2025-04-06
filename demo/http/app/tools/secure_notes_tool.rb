@@ -3,10 +3,10 @@ require 'cgi'
 class SecureNotesTool < ActiveMcp::Tool
   description "認証済みユーザーのみが利用できる安全なメモ機能"
 
-  property :action, :string, required: true, description: "アクション（list, create, read, delete）"
-  property :note_id, :string, required: false, description: "ノートID（read, deleteで必要）"
-  property :title, :string, required: false, description: "ノートタイトル（createで必要）"
-  property :content, :string, required: false, description: "ノート内容（createで必要）"
+  argument :action, :string, required: true, description: "アクション（list, create, read, delete）"
+  argument :note_id, :string, required: false, description: "ノートID（read, deleteで必要）"
+  argument :title, :string, required: false, description: "ノートタイトル（createで必要）"
+  argument :content, :string, required: false, description: "ノート内容（createで必要）"
 
   def self.authorized?(auth_info)
     return false unless auth_info

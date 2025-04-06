@@ -1,8 +1,8 @@
 class WeatherTool < ActiveMcp::Tool
   description "指定した都市の天気情報を取得します"
 
-  property :city, :string, required: true, description: "天気を取得する都市名"
-  property :country, :string, required: false, description: "国名（オプション）"
+  argument :city, :string, required: true, description: "天気を取得する都市名"
+  argument :country, :string, required: false, description: "国名（オプション）"
 
   def call(city:, country: nil, auth_info: nil, **args)
 

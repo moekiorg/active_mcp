@@ -1,8 +1,8 @@
 class AuthProtectedTool < ActiveMcp::Tool
   description "Access a protected resource with authentication"
 
-  property :resource_id, :integer, required: true, description: "ID of the protected resource"
-  property :action, :string, required: false, description: "Action to perform on the resource"
+  argument :resource_id, :integer, required: true, description: "ID of the protected resource"
+  argument :action, :string, required: false, description: "Action to perform on the resource"
 
   def self.visible?(auth_info)
     return false unless auth_info

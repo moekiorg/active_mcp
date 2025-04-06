@@ -12,8 +12,8 @@ module ActiveMcp
 
     test "should define schema with properties" do
       tool_class = Class.new(ActiveMcp::Tool) do
-        property :name, :string, required: true, description: "Name description"
-        property :age, :integer, required: false
+        argument :name, :string, required: true, description: "Name description"
+        argument :age, :integer, required: false
       end
 
       schema = tool_class.schema
@@ -29,8 +29,8 @@ module ActiveMcp
       tool_class = Class.new(ActiveMcp::Tool) do
         description "validation_tool"
 
-        property :name, :string, required: true
-        property :age, :integer, required: false
+        argument :name, :string, required: true
+        argument :age, :integer, required: false
       end
 
       tool = tool_class.new
@@ -64,7 +64,7 @@ module ActiveMcp
 
     test "should receive auth info in call method" do
       tool_class = Class.new(ActiveMcp::Tool) do
-        property :param, :string, required: true
+        argument :param, :string, required: true
 
         def call(param:, auth_info: nil, **args)
           auth_type = auth_info&.dig(:type)

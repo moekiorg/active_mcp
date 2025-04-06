@@ -10,8 +10,8 @@ module ActiveMcp
       @test_tool_class = Class.new(ActiveMcp::Tool) do
         description "Mock test tool for testing"
 
-        property :name, :string, required: true, description: "Name parameter"
-        property :value, :integer, required: false, description: "Value parameter"
+        argument :name, :string, required: true, description: "Name parameter"
+        argument :value, :integer, required: false, description: "Value parameter"
 
         def call(name:, value: nil)
           "MockTestTool executed with name: #{name}, value: #{value}"
