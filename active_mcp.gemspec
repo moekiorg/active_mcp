@@ -3,8 +3,8 @@ require_relative "lib/active_mcp/version"
 Gem::Specification.new do |spec|
   spec.name = "active_mcp"
   spec.version = ActiveMcp::VERSION
-  spec.authors = ["Your Name"]
-  spec.email = ["your.email@example.com"]
+  spec.authors = ["Moeki Kawakami"]
+  spec.email = ["hi@moeki.org"]
   spec.homepage = "https://github.com/moekiorg/active_mcp"
   spec.summary = "Rails engine for the Model Context Protocol (MCP)"
   spec.description = "A Rails engine that provides MCP capabilities to your Rails application"
