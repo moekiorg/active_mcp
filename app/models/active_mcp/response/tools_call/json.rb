@@ -7,8 +7,9 @@ module ActiveMcp
 
           unless tool_name
             return {
-              body: {error: "Invalid params: missing tool name"},
-              status: 400
+              body: {result: "Invalid params: missing tool name"},
+              status: 200,
+              isError: true
             }
           end
 
@@ -18,21 +19,21 @@ module ActiveMcp
 
           unless tool_class
             return {
-              body: {error: "Tool not found: #{tool_name}"},
-              status: 404
+              body: {result: "Tool not found: #{tool_name}"},
+              status: 200,
+              isError: true
             }
           end
 
           unless tool_class.authorized?(auth_info)
             return {
-              body: {error: "Unauthorized: Access to tool '#{tool_name}' denied"},
-              status: 401
+              body: {result: "Unauthorized: Access to tool '#{tool_name}' denied"},
+              status: 401,
+              isError: true
             }
           end
 
           arguments = params[:arguments].permit!.to_hash.symbolize_keys.transform_values { _1.match(/^\d+$/) ? _1.to_i : _1 }
-
-          p arguments
 
           tool = tool_class.new
           validation_result = tool.validate_arguments(arguments)
@@ -40,7 +41,8 @@ module ActiveMcp
           if validation_result.is_a?(Hash) && validation_result[:error]
             return {
               body: {result: validation_result[:error]},
-              status: 400
+              status: 200,
+              isError: true
             }
           end
 
@@ -55,8 +57,9 @@ module ActiveMcp
             }
           rescue => e
             return {
-              body: {error: "Error: #{e.message}"},
-              status: 500
+              body: {result: "Error: #{e.message}"},
+              status: 200,
+              isError: true
             }
           end
         end

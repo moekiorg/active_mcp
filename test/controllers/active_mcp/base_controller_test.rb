@@ -93,11 +93,10 @@ module ActiveMcp
 
     test "should handle missing tool name" do
       post "index", params: {method: "tools/call", arguments: {}}
-      assert_response :bad_request
+      assert_response :ok
 
       json = JSON.parse(response.body)
-      assert_not_nil json["error"]
-      assert_equal "Invalid params: missing tool name", json["error"]
+      assert_equal "Invalid params: missing tool name", json["result"]
     end
 
     test "should handle tool not found" do
@@ -107,11 +106,10 @@ module ActiveMcp
         arguments: "{}"
       }
 
-      assert_response :not_found
+      assert_response :ok
 
       json = JSON.parse(response.body)
-      assert_not_nil json["error"]
-      assert_equal "Tool not found: nonexistent_tool", json["error"]
+      assert_equal "Tool not found: nonexistent_tool", json["result"]
     end
 
     test "should validate arguments" do
@@ -121,7 +119,7 @@ module ActiveMcp
         arguments: {value: 123}
       }
 
-      assert_response :bad_request
+      assert_response :ok
 
       json = JSON.parse(response.body)
       assert json["result"].include?("name")
@@ -138,7 +136,6 @@ module ActiveMcp
       }
 
       json = JSON.parse(response.body)
-      p response.body
       assert json["result"].include?("Authenticated tool result")
     end
 
