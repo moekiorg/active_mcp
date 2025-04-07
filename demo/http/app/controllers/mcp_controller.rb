@@ -9,4 +9,10 @@ class McpController < ActiveMcp::BaseController
       ImageResource.new
     ]
   end
+
+  def resource_templates_list
+    [
+      PostResourceTemplate.new
+    ]
+  end
 end

@@ -3,13 +3,12 @@ require "English"
 require_relative "server/method"
 require_relative "server/error_codes"
 require_relative "server/stdio_connection"
-require_relative "server/resource_manager"
-require_relative "server/tool_manager"
+require_relative "server/fetcher"
 require_relative "server/protocol_handler"
 
 module ActiveMcp
   class Server
-    attr_reader :name, :version, :uri, :tool_manager, :protocol_handler, :resource_manager
+    attr_reader :name, :version, :uri, :protocol_handler, :fetcher
 
     def initialize(
       version: ActiveMcp::VERSION,
@@ -20,11 +19,23 @@ module ActiveMcp
       @name = name
       @version = version
       @uri = uri
-      @resource_manager = ResourceManager.new(uri:, auth:)
-      @tool_manager = ToolManager.new(uri: uri, auth:)
+      @fetcher = Fetcher.new(base_uri: uri, auth:)
       @protocol_handler = ProtocolHandler.new(self)
-      @tool_manager.load_registered_tools
-      @resource_manager.load_registered_resources
+    end
+
+    def self.log_error(message, error)
+      error_details = "#{message}: #{error.message}\n"
+      error_details += error.backtrace.join("\n") if error.backtrace
+      
+      if defined?(Rails)
+        Rails.logger.error(error_details)
+      else
+        $stderr.puts(error_details)
+      end
+    end
+
+    def fetch(params:)
+      @fetcher.call(params:)
     end
 
     def start
