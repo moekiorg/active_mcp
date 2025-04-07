@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  mount ActiveMcp::Engine, at: '/mcp'
+  post "/mcp", to: "mcp#index"
 
   post "/secure", to: "custom#index"
 end
