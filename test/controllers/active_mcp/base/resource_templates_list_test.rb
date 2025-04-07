@@ -4,7 +4,7 @@ module ActiveMcp
   class ResourceTemplatesListTest < ActionController::TestCase
     setup do
       @routes = ActiveMcp::Engine.routes
-      @controller = ActiveMcp::BaseController.new
+      @controller = ActiveMcp::Controller::Base.new
 
       @test_resource_template_class = Class.new do
         def name
@@ -23,10 +23,16 @@ module ActiveMcp
           "Test resource for controller testing"
         end
       end
+
+      Object.const_set(:TestResourceTemplate, @test_resource_template_class)
+
+      @schema_class = Class.new(ActiveMcp::Schema::Base) do
+        resource_template TestResourceTemplate.new
+      end
     end
 
     test "should return resource templates list" do
-      @controller.stub(:resource_templates_list, [@test_resource_template_class.new]) do
+      @controller.stub(:schema, @schema_class.new) do
         post "index", params: {method: Method::RESOURCES_TEMPLATES_LIST}
 
         assert_response :success
@@ -44,7 +50,7 @@ module ActiveMcp
     end
 
     test "should return resource templates list when jsonrpc" do
-      @controller.stub(:resource_templates_list, [@test_resource_template_class.new]) do
+      @controller.stub(:schema, @schema_class.new) do
         post "index", params: {jsonrpc: "2.0", method: Method::RESOURCES_TEMPLATES_LIST}
 
         assert_response :success

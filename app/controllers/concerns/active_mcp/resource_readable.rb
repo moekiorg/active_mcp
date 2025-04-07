@@ -4,15 +4,7 @@ module ActiveMcp
 
     private
 
-    def resource_templates_list
-      []
-    end
-
-    def resources_list
-      []
-    end
-
-    def read_resource(params:, auth_info:)
+    def read_resource(params:, context:)
       if params[:jsonrpc].present?
         uri = params[:params][:uri]
       else
@@ -26,7 +18,7 @@ module ActiveMcp
         }
       end
 
-      resource = resources_list.find do |r|
+      resource = schema.resources.find do |r|
         r.uri == uri
       end
 
@@ -37,7 +29,7 @@ module ActiveMcp
         }
       end
 
-      if resource.respond_to?(:visible?) && !resource.visible?
+      if resource.respond_to?(:visible?) && !resource.visible?(context:)
         return {
           isError: true,
           contents: []

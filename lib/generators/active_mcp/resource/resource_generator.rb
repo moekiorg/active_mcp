@@ -4,7 +4,7 @@ module ActiveMcp
       source_root File.expand_path("templates", __dir__)
 
       def create_resource_file
-        template "resource.rb.erb", File.join("app/resources", "#{file_name}_resource.rb")
+        template "resource.rb.erb", File.join("app/mcp/resources", "#{file_name}_resource.rb")
       end
 
       private

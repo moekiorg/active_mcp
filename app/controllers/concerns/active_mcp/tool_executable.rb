@@ -4,7 +4,7 @@ module ActiveMcp
 
     private
 
-    def execute_tool(params:, auth_info:)
+    def execute_tool(params:, context: {})
       if params[:jsonrpc].present?
         tool_name = params[:params][:name]
         tool_params = params[:params][:arguments]
@@ -25,11 +25,11 @@ module ActiveMcp
         }
       end
 
-      tool_class = Tool.registered_tools.find do |tc|
-        tc.tool_name == tool_name
+      tool = schema.tools.find do |tc|
+        tc.name == tool_name
       end
       
-      unless tool_class
+      unless tool
         return {
           isError: true,
           content: [
@@ -41,7 +41,7 @@ module ActiveMcp
         }
       end
       
-      unless tool_class.visible?(auth_info)
+      unless tool.visible?(context:)
         return {
           isError: true,
           content: [
@@ -69,7 +69,6 @@ module ActiveMcp
         end
       end
 
-      tool = tool_class.new
       validation_result = tool.validate_arguments(arguments)
 
       if validation_result.is_a?(Hash) && validation_result[:error]
@@ -86,13 +85,11 @@ module ActiveMcp
       
       # Execute the tool
       begin
-        arguments[:auth_info] = auth_info if auth_info.present?
-        
         return {
           content: [
             {
               type: "text",
-              text: formatted(tool.call(**arguments.symbolize_keys))
+              text: formatted(tool.call(**arguments, context:))
             }
           ]
         }
