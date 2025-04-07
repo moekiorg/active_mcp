@@ -314,21 +314,35 @@ MCP Resources allow you to share data and files with AI assistants. Resources ha
 Resources are Ruby classes that inherit from `ActiveMcp::Resource`:
 
 ```ruby
-class UserResource < ActiveMcp::Resource
-  uri "data://localhost/user"
-  mime_type "application/json"
-  description "User profile data"
+class UserResource
+  def initialize(id:, auth_info: nil)
+    @user = User.find(id)
+    @auth_info = auth_info
+  end
 
-  def text(auth_info: nil)
-    # Authenticate if needed
-    user = User.find_by(id: 1)
+  def name
+    @user.name
+  end
 
+  def uri
+    "data://localhost/users/#{@user.id}"
+  end
+
+  def mime_type
+    "application/json"
+  end
+
+  def description
+    @user.profile
+  end
+
+  def text
     # Return JSON data
     {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      created_at: user.created_at
+      id: @user.id,
+      name: @user.name,
+      email: @user.email,
+      created_at: @user.created_at
     }
   end
 end
@@ -341,7 +355,7 @@ Resources can return two types of content:
 1. **Text Content** - Use the `text` method to return structured data:
 
 ```ruby
-def text(auth_info: nil)
+def text
   # Return strings, arrays, hashes, or any JSON-serializable object
   { items: Product.all.map(&:attributes) }
 end
@@ -350,12 +364,24 @@ end
 2. **Binary Content** - Use the `blob` method to return binary files:
 
 ```ruby
-class ImageResource < ActiveMcp::Resource
-  uri "data://localhost/image"
-  mime_type "image/png"
-  description "Profile image"
+class ImageResource
+  def name
+    "image"
+  end
 
-  def blob(auth_info: nil)
+  def uri
+    "data://localhost/image"
+  end
+
+  def mime_type
+    "image/png"
+  end
+
+  def description
+    "Profile image"
+  end
+
+  def blob
     # Return binary file content
     File.read(Rails.root.join("public", "profile.png"))
   end
@@ -365,7 +391,7 @@ end
 Resources can be protected using the same authorization mechanism as tools:
 
 ```ruby
-def self.visible?(auth_info)
+def visible?
   return false unless auth_info
   return false unless auth_info[:type] == :bearer
 

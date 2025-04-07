@@ -7,6 +7,7 @@ require_relative "../test/dummy/config/environment"
 require "rails/test_help"
 require "minitest/reporters"
 require "mocha/minitest"
+require "minitest/mock"
 
 Minitest::Reporters.use! [Minitest::Reporters::DefaultReporter.new(color: true)]
 

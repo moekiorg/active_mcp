@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ActiveMcp
-  module RequestHandler
+  module RequestHandlable
     extend ActiveSupport::Concern
 
     included do
@@ -36,11 +36,11 @@ module ActiveMcp
       when Method::CANCELLED
         render 'active_mcp/cancelled', formats: :json
       when Method::RESOURCES_LIST
-        @resources = ActiveMcp::Resource.authorized_resources(auth_info)
+        @resources = resources_list
         @format = :jsonrpc
         render 'active_mcp/resources_list', formats: :json
       when Method::RESOURCES_READ
-        @resource = ActiveMcp::ResourceReader.read(params:, auth_info:)
+        @resource = read_resource(params:, auth_info:)
         @format = :jsonrpc
         render 'active_mcp/resources_read', formats: :json
       when Method::TOOLS_LIST
@@ -62,11 +62,11 @@ module ActiveMcp
       
       case params[:method]
       when Method::RESOURCES_LIST
-        @resources = ActiveMcp::Resource.authorized_resources(auth_info)
+        @resources = resources_list
         @format = :json
         render 'active_mcp/resources_list', formats: :json
       when Method::RESOURCES_READ
-        @resource = ActiveMcp::ResourceReader.read(params:, auth_info:)
+        @resource = read_resource(params:, auth_info:)
         @format = :json
         render 'active_mcp/resources_read', formats: :json
       when Method::TOOLS_LIST

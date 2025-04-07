@@ -1,12 +1,20 @@
 module ActiveMcp
-  class ResourceReader
-    def self.read(params:, auth_info:)
+  module ResourceReadable
+    extend ActiveSupport::Concern
+
+    private
+
+    def resources_list
+      []
+    end
+
+    def read_resource(params:, auth_info:)
       if params[:jsonrpc].present?
         uri = params[:params][:uri]
       else
         uri = params[:uri]
       end
-      
+
       unless uri
         return {
           isError: true,
@@ -14,43 +22,41 @@ module ActiveMcp
         }
       end
 
-      resource_class = Resource.registered_resources.find do |r|
-        r._uri == uri
+      resource = resources_list.find do |r|
+        r.uri == uri
       end
-      
-      unless resource_class
-        return {
-          isError: true,
-          contents: []
-        }
-      end
-      
-      unless resource_class.visible?(auth_info)
+
+      unless resource
         return {
           isError: true,
           contents: []
         }
       end
 
-      resource = resource_class.new
+      if resource.respond_to?(:visible?) && !resource.visible?
+        return {
+          isError: true,
+          contents: []
+        }
+      end
 
       begin
-        if content = resource.text(auth_info:)
+        if content = resource.text
           return {
             contents: [
               {
                 uri:,
-                mimeType: resource_class._mime_type,
+                mimeType: resource.mime_type,
                 text: formatted(content)
               }
             ]
           }
-        elsif content = resource.blob(auth_info:)
+        elsif content = resource.blob
           return {
             contents: [
               {
                 uri:,
-                mimeType: resource_class._mime_type,
+                mimeType: resource.mime_type,
                 blob: Base64.strict_encode64(content)
               }
             ]
@@ -64,7 +70,7 @@ module ActiveMcp
       end
     end
     
-    def self.formatted(object)
+    def formatted(object)
       case object
       when String
         object
