@@ -2,6 +2,7 @@
 
 module ActiveMcp
   class BaseController < ActionController::Base
-    include RequestHandler
+    include RequestHandlable
+    include ResourceReadable
   end
 end

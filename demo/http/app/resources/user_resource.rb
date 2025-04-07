@@ -1,13 +1,26 @@
-class UserResource < ActiveMcp::Resource
-  uri "data://localhost/user"
-  mime_type "application/json"
-  description "User"
-
-  def text(auth_info: nil)
-    { foo: "bar" }
+class UserResource
+  def initialize(name:)
+    @name = name
+    @auth_info = auth_info
   end
 
-  # def blob(auth_info: nil)
-  #   File.read("/path/to/file")
-  # end
+  def name
+    @name
+  end
+
+  def uri
+    "data://localhost/user/#{@name}"
+  end
+
+  def mime_type
+    "application/json"
+  end
+
+  def description
+    "ほげほげ"
+  end
+
+  def text
+    { name: @name }
+  end
 end

@@ -3,8 +3,22 @@ json.id @id if @format == :jsonrpc && @id.present?
 
 if @format == :jsonrpc
   json.result do
-    json.resources @resources
+    json.resources do
+      json.array!(@resources) do |resource|
+        json.name resource.name
+        json.uri resource.uri
+        json.mimeType resource.mime_type
+        json.description resource.description
+      end
+    end
   end
 else
-  json.result @resources
+  json.result do
+    json.array!(@resources) do |resource|
+      json.name resource.name
+      json.uri resource.uri
+      json.mimeType resource.mime_type
+      json.description resource.description
+    end
+  end
 end
