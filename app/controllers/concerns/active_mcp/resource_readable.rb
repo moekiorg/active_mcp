@@ -41,7 +41,7 @@ module ActiveMcp
       end
 
       begin
-        if content = resource.text
+        if resource.respond_to?(:text) && content = resource.text
           return {
             contents: [
               {

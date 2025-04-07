@@ -1,7 +1,6 @@
 class UserResource
   def initialize(name:)
     @name = name
-    @auth_info = auth_info
   end
 
   def name
