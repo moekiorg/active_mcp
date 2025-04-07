@@ -4,7 +4,7 @@ module ActiveMcp
       source_root File.expand_path("templates", __dir__)
 
       def create_tool_file
-        template "tool.rb.erb", File.join("app/tools", "#{file_name}_tool.rb")
+        template "tool.rb.erb", File.join("app/mcp/tools", "#{file_name}_tool.rb")
       end
 
       private

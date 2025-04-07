@@ -17,8 +17,6 @@ A Ruby on Rails engine for the [Model Context Protocol (MCP)](https://modelconte
   - [✨ Features](#-features)
   - [📦 Installation](#-installation)
   - [🚀 Setup](#-setup)
-    - [Using the Install Generator (Recommended)](#using-the-install-generator-recommended)
-    - [Manual Setup](#manual-setup)
   - [🔌 MCP Connection Methods](#-mcp-connection-methods)
     - [1. Direct HTTP Connection](#1-direct-http-connection)
     - [2. Standalone MCP Server](#2-standalone-mcp-server)
@@ -38,8 +36,6 @@ A Ruby on Rails engine for the [Model Context Protocol (MCP)](https://modelconte
     - [Resource Types](#resource-types)
   - [📦 MCP Resource Templates](#-mcp-resource-templates)
     - [Creating Resource Templates](#creating-resource-templates)
-  - [⚙️ Advanced Configuration](#️-advanced-configuration)
-    - [Custom Controller](#custom-controller)
   - [💡 Best Practices](#-best-practices)
     - [1. Create Specific Tool Classes](#1-create-specific-tool-classes)
     - [2. Validate and Sanitize Inputs](#2-validate-and-sanitize-inputs)
@@ -78,7 +74,7 @@ $ gem install active_mcp
 
 ## 🚀 Setup
 
-### Using the Install Generator (Recommended)
+1. Initialize
 
 The easiest way to set up Active MCP in your Rails application is to use the install generator:
 
@@ -86,43 +82,58 @@ The easiest way to set up Active MCP in your Rails application is to use the ins
 $ rails generate active_mcp:install
 ```
 
-This generator will:
+This generator will create a configuration initializer at `config/initializers/active_mcp.rb`
 
-1. Create a configuration initializer at `config/initializers/active_mcp.rb`
-2. Mount the ActiveMcp engine in your routes
-3. Create an MCP server script at `script/mcp_server.rb`
-4. Show instructions for next steps
+2. Create a tool by inheriting from `ActiveMcp::Tool::Base`:
 
-After running the generator, follow the displayed instructions to create and configure your MCP tools.
-
-### Manual Setup
-
-If you prefer to set up manually:
-
-1. Mount the ActiveMcp engine in your `config/routes.rb`:
-
-```ruby
-Rails.application.routes.draw do
-  mount ActiveMcp::Engine, at: "/mcp"
-
-  # Your other routes
-end
+```bash
+$ rails generate active_mcp:tool create_note
 ```
 
-2. Create a tool by inheriting from `ActiveMcp::Tool`:
-
 ```ruby
-class CreateNoteTool < ActiveMcp::Tool
-  description "Create Note"
+class CreateNoteTool < ActiveMcp::Tool::Base
+  def name
+    "Create Note"
+  end
+
+  def description
+    "Create Note"
+  end
 
   argument :title, :string, required: true
   argument :content, :string, required: true
 
-  def call(title:, content:)
+  def call(title:, content:, context:)
     note = Note.create(title: title, content: content)
 
     "Created note with ID: #{note.id}"
   end
+end
+```
+
+3. Create schema for your application:
+
+```ruby
+class MySchema < ActiveMcp::Schema::Base
+  tool CreateNoteTool.new
+end
+```
+
+4. Create controller ans set up routing:
+
+```ruby
+class MyMcpController < ActiveMcp::Controller::Base
+  def schema
+    MySchema.new(context:)
+  end
+end
+```
+
+```ruby
+Rails.application.routes.draw do
+  post "/mcp", to: "my_mcp#index"
+
+  # Your other routes
 end
 ```
 
@@ -184,7 +195,7 @@ Create new MCP tools quickly:
 $ rails generate active_mcp:tool search_users
 ```
 
-This creates a new tool file at `app/tools/search_users_tool.rb` with ready-to-customize starter code.
+This creates a new tool file at `app/mcp/tools/search_users_tool.rb` with ready-to-customize starter code.
 
 ### Resource Generator
 
@@ -194,21 +205,27 @@ Generate new MCP resources to share data with AI:
 $ rails generate active_mcp:resource profile_image
 ```
 
-This creates a new resource file at `app/resources/profile_image_resource.rb` that you can customize to provide various types of content to AI assistants.
+This creates a new resource file at `app/mcp/resources/profile_image_resource.rb` that you can customize to provide various types of content to AI assistants.
 
 ## 🧰 Creating MCP Tools
 
-MCP tools are Ruby classes that inherit from `ActiveMcp::Tool` and define an interface for AI to interact with your application:
+MCP tools are Ruby classes that inherit from `ActiveMcp::Tool::Base` and define an interface for AI to interact with your application:
 
 ```ruby
-class SearchUsersTool < ActiveMcp::Tool
-  description 'Search users by criteria'
+class SearchUsersTool < ActiveMcp::Tool::Base
+  def name
+    "Search Users"
+  end
+
+  def description
+    'Search users by criteria'
+  end
 
   argument :email, :string, required: false, description: 'Email to search for'
   argument :name, :string, required: false, description: 'Name to search for'
   argument :limit, :integer, required: false, description: 'Maximum number of records to return'
 
-  def call(email: nil, name: nil, limit: 10)
+  def call(email: nil, name: nil, limit: 10, context: {})
     criteria = {}
     criteria[:email] = email if email.present?
     criteria[:name] = name if name.present?
@@ -250,21 +267,27 @@ Supported types:
 Control access to tools by overriding the `visible?` class method:
 
 ```ruby
-class AdminOnlyTool < ActiveMcp::Tool
-  description "Admin-only tool"
+class AdminOnlyTool < ActiveMcp::Tool::Base
+  def name
+    "Admin-only tool"
+  end
+
+  def description
+    "Admin-only tool"
+  end
 
   argument :command, :string, required: true, description: "Admin command"
 
   # Only allow admins to access this tool
-  def self.visible?(auth_info)
-    return false unless auth_info
-    return false unless auth_info[:type] == :bearer
+  def visible?(context:)
+    return false unless context
+    return false unless context[:auth_info][:type] == :bearer
 
     # Check if the token belongs to an admin
-    auth_info[:token] == "admin-token" || User.find_by_token(auth_info[:token])&.admin?
+    context[:auth_info] == "admin-token" || User.find_by_token(context[:auth_info])&.admin?
   end
 
-  def call(command:, auth_info: nil)
+  def call(command:, context: {})
     # Tool implementation
   end
 end
@@ -289,14 +312,14 @@ server.start
 #### 2. Token Verification in Tools
 
 ```ruby
-def call(resource_id:, auth_info: nil, **args)
+def call(resource_id:, context: {})
   # Check if authentication is provided
-  unless auth_info.present?
+  unless context[:auth_info].present?
     raise "Authentication required"
   end
 
   # Verify the token
-  user = User.authenticate_with_token(auth_info[:token])
+  user = User.authenticate_with_token(context[:auth_info][:token])
 
   unless user
     raise "Invalid authentication token"
@@ -317,7 +340,7 @@ Resources are Ruby classes `**Resource`:
 
 ```ruby
 class UserResource
-  def initialize(id:, auth_info: nil)
+  def initialize(id:)
     @user = User.find(id)
     @auth_info = auth_info
   end
@@ -338,6 +361,10 @@ class UserResource
     @user.profile
   end
 
+  def visible?(context:)
+    # Your logic...
+  end
+
   def text
     # Return JSON data
     {
@@ -351,13 +378,9 @@ end
 ```
 
 ```ruby
-class McpController < ActiveMcp::BaseController
-  private
-
-  def resource_list
-    User.all.map do |user|
-      UserResource.new(id: user.id)
-    end
+class MySchema < ActiveMcp::Schema::Base
+  User.all.each do |user|
+    resource UserResource.new(id: user.id)
   end
 end
 ```
@@ -380,7 +403,7 @@ end
 ```ruby
 class ImageResource
   def name
-    "image"
+    "Profile Image"
   end
 
   def uri
@@ -405,12 +428,12 @@ end
 Resources can be protected using the same authorization mechanism as tools:
 
 ```ruby
-def visible?
-  return false unless auth_info
-  return false unless auth_info[:type] == :bearer
+def visible?(context: {})
+  return false unless context
+  return false unless context[:auth_info][:type] == :bearer
 
   # Check if the token belongs to an admin
-  User.find_by_token(auth_info[:token])&.admin?
+  User.find_by_token(context[:auth_info][:token])&.admin?
 end
 ```
 
@@ -439,38 +462,16 @@ class UserResourceTemplate
   def description
     "This is a test."
   end
-end
-```
 
-```ruby
-class McpController < ActiveMcp::BaseController
-  private
-
-  def resource_templates_list
-    [
-      UserResourceTemplate.new
-    ]
+  def visible?(context:)
+    # Your logic...
   end
 end
 ```
 
-## ⚙️ Advanced Configuration
-
-### Custom Controller
-
-Create a custom controller for advanced needs:
-
 ```ruby
-class CustomMcpController < ActiveMcp::BaseController
-  # Custom MCP handling logic
-end
-```
-
-Update routes:
-
-```ruby
-Rails.application.routes.draw do
-  post "/mcp", to: "custom_mcp#index"
+class MySchema < ActiveMcp::Schema::Base
+  resource_template UserResourceTemplate.new
 end
 ```
 
@@ -482,12 +483,12 @@ Create dedicated tool classes for each model or operation instead of generic too
 
 ```ruby
 # ✅ GOOD: Specific tool for a single purpose
-class SearchUsersTool < ActiveMcp::Tool
+class SearchUsersTool < ActiveMcp::Tool::Base
   # ...specific implementation
 end
 
 # ❌ BAD: Generic tool that dynamically loads models
-class GenericSearchTool < ActiveMcp::Tool
+class GenericSearchTool < ActiveMcp::Tool::Base
   # Avoid this pattern - security and maintainability issues
 end
 ```
@@ -497,7 +498,7 @@ end
 Always validate and sanitize inputs in your tool implementations:
 
 ```ruby
-def call(user_id:, **args)
+def call(user_id:, **args, context: {})
   # Validate input
   unless user_id.is_a?(Integer) || user_id.to_s.match?(/^\d+$/)
     raise "Invalid user ID format"
@@ -514,7 +515,7 @@ end
 Return structured responses that are easy for AI to parse:
 
 ```ruby
-def call(query:, **args)
+def call(query:, context: {})
   results = User.search(query)
 
   {

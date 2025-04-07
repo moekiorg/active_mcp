@@ -3,11 +3,13 @@
 require "jbuilder"
 require_relative "active_mcp/version"
 require_relative "active_mcp/configuration"
-require_relative "active_mcp/tool"
+require_relative "active_mcp/schema/base"
+require_relative "active_mcp/tool/base"
 require_relative "active_mcp/server"
 
 if defined? ::Rails
   require_relative "active_mcp/engine"
+  require_relative "active_mcp/controller/base"
 end
 
 module ActiveMcp

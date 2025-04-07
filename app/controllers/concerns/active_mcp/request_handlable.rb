@@ -4,20 +4,6 @@ module ActiveMcp
   module RequestHandlable
     extend ActiveSupport::Concern
 
-    included do
-      protect_from_forgery with: :null_session
-      skip_before_action :verify_authenticity_token
-      before_action :authenticate, only: [:index]
-    end
-
-    def index
-      if json_rpc_request?
-        handle_mcp_client_request
-      else
-        handle_mcp_server_request
-      end
-    end
-
     private
 
     def json_rpc_request?
@@ -26,7 +12,6 @@ module ActiveMcp
 
     def handle_mcp_client_request
       @id = params[:id]
-      @auth_info = auth_info
       
       case params[:method]
       when Method::INITIALIZE
@@ -36,23 +21,23 @@ module ActiveMcp
       when Method::CANCELLED
         render 'active_mcp/cancelled', formats: :json
       when Method::RESOURCES_LIST
-        @resources = resources_list
+        @resources = schema.resources
         @format = :jsonrpc
         render 'active_mcp/resources_list', formats: :json
       when Method::RESOURCES_TEMPLATES_LIST
-        @resource_templates = resource_templates_list
+        @resource_templates = schema.resource_templates
         @format = :jsonrpc
         render 'active_mcp/resource_templates_list', formats: :json
       when Method::RESOURCES_READ
-        @resource = read_resource(params:, auth_info:)
+        @resource = read_resource(params:, context:)
         @format = :jsonrpc
         render 'active_mcp/resources_read', formats: :json
       when Method::TOOLS_LIST
-        @tools = ActiveMcp::Tool.authorized_tools(auth_info)
+        @tools = schema.tools
         @format = :jsonrpc
         render 'active_mcp/tools_list', formats: :json
       when Method::TOOLS_CALL
-        @tool_result = execute_tool(params: params, auth_info: auth_info)
+        @tool_result = execute_tool(params:, context:)
         @format = :jsonrpc
         render 'active_mcp/tools_call', formats: :json
       else
@@ -62,27 +47,25 @@ module ActiveMcp
     end
 
     def handle_mcp_server_request
-      @auth_info = auth_info
-      
       case params[:method]
       when Method::RESOURCES_LIST
-        @resources = resources_list
+        @resources = schema.resources
         @format = :json
         render 'active_mcp/resources_list', formats: :json
       when Method::RESOURCES_READ
-        @resource = read_resource(params:, auth_info:)
+        @resource = read_resource(params:, context:)
         @format = :json
         render 'active_mcp/resources_read', formats: :json
       when Method::RESOURCES_TEMPLATES_LIST
-        @resource_templates = resource_templates_list
+        @resource_templates = schema.resource_templates
         @format = :json
         render 'active_mcp/resource_templates_list', formats: :json
       when Method::TOOLS_LIST
-        @tools = ActiveMcp::Tool.authorized_tools(auth_info)
+        @tools = schema.tools
         @format = :json
         render 'active_mcp/tools_list', formats: :json
       when Method::TOOLS_CALL
-        @tool_result = execute_tool(params: params, auth_info: auth_info)
+        @tool_result = execute_tool(params:, context:)
         @format = :json
         render 'active_mcp/tools_call', formats: :json
       else
@@ -91,25 +74,8 @@ module ActiveMcp
       end
     end
 
-    def authenticate
-      auth_header = request.headers["Authorization"]
-      if auth_header.present?
-        @auth_info = {
-          header: auth_header,
-          type: if auth_header.start_with?("Bearer ")
-                  :bearer
-                elsif auth_header.start_with?("Basic ")
-                  :basic
-                else
-                  :unknown
-                end,
-          token: auth_header.split(" ").last
-        }
-      end
-    end
-
-    def auth_info
-      @auth_info
+    def context
+      @context ||= {}
     end
   end
 end

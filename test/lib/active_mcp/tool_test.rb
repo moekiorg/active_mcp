@@ -3,15 +3,17 @@ require "test_helper"
 module ActiveMcp
   class ToolTest < ActiveSupport::TestCase
     test "should register tool with name and description" do
-      tool_class = Class.new(ActiveMcp::Tool) do
-        description "Test tool description"
+      tool_class = Class.new(ActiveMcp::Tool::Base) do
+        def description
+          "Test tool description"
+        end
       end
 
-      assert_equal "Test tool description", tool_class.desc
+      assert_equal "Test tool description", tool_class.new.description
     end
 
     test "should define schema with properties" do
-      tool_class = Class.new(ActiveMcp::Tool) do
+      tool_class = Class.new(ActiveMcp::Tool::Base) do
         argument :name, :string, required: true, description: "Name description"
         argument :age, :integer, required: false
       end
@@ -26,8 +28,10 @@ module ActiveMcp
     end
 
     test "should validate arguments against schema" do
-      tool_class = Class.new(ActiveMcp::Tool) do
-        description "validation_tool"
+      tool_class = Class.new(ActiveMcp::Tool::Base) do
+        def description
+          "validation_tool"
+        end
 
         argument :name, :string, required: true
         argument :age, :integer, required: false
@@ -44,17 +48,9 @@ module ActiveMcp
       assert_match(/name/, result[:error])
     end
 
-    test "should add inherited tool classes to registered tools" do
-      initial_count = ActiveMcp::Tool.registered_tools.count
-
-      tool_class = Class.new(ActiveMcp::Tool)
-
-      assert_equal initial_count + 1, ActiveMcp::Tool.registered_tools.count
-      assert_includes ActiveMcp::Tool.registered_tools, tool_class
-    end
-
     test "should raise NotImplementedError when call is not implemented" do
-      tool_class = Class.new(ActiveMcp::Tool)
+      tool_class = Class.new(ActiveMcp::Tool::Base) do
+      end
 
       tool = tool_class.new
       assert_raises NotImplementedError do
@@ -63,7 +59,7 @@ module ActiveMcp
     end
 
     test "should receive auth info in call method" do
-      tool_class = Class.new(ActiveMcp::Tool) do
+      tool_class = Class.new(ActiveMcp::Tool::Base) do
         argument :param, :string, required: true
 
         def call(param:, auth_info: nil, **args)

@@ -1,17 +1,22 @@
-class WeatherTool < ActiveMcp::Tool
-  description "指定した都市の天気情報を取得します"
+class WeatherTool < ActiveMcp::Tool::Base
+  argument :city, :string, required: true, description: "City name to get weather information"
+  argument :country, :string, required: false, description: "Country name (optional)"
 
-  argument :city, :string, required: true, description: "天気を取得する都市名"
-  argument :country, :string, required: false, description: "国名（オプション）"
+  def name
+    "Weather"
+  end
+
+  def description
+    "Get weather information for the specified city"
+  end
 
   def call(city:, country: nil, auth_info: nil, **args)
-
     weather_data = get_mock_weather_data(city, country)
 
     if weather_data
       weather_data
     else
-      "指定された都市の天気情報が見つかりませんでした: #{city}"
+      "Weather information not found for the specified city: #{city}"
     end
   end
 
@@ -21,25 +26,25 @@ class WeatherTool < ActiveMcp::Tool
     mock_data = {
       "tokyo" => {
         temperature: 23,
-        condition: "晴れ",
+        condition: "sunny",
         humidity: 45,
         wind: "5m/s"
       },
       "osaka" => {
         temperature: 25,
-        condition: "曇り",
+        condition: "cloudy",
         humidity: 60,
         wind: "3m/s"
       },
       "sapporo" => {
         temperature: 18,
-        condition: "雨",
+        condition: "rain",
         humidity: 80,
         wind: "7m/s"
       },
       "fukuoka" => {
         temperature: 27,
-        condition: "晴れ",
+        condition: "sunny",
         humidity: 50,
         wind: "4m/s"
       }
