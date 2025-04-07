@@ -48,7 +48,7 @@ module ActiveMcp
         @format = :jsonrpc
         render 'active_mcp/tools_list', formats: :json
       when Method::TOOLS_CALL
-        @tool_result = ActiveMcp::ToolExecutor.execute(params: params, auth_info: auth_info)
+        @tool_result = execute_tool(params: params, auth_info: auth_info)
         @format = :jsonrpc
         render 'active_mcp/tools_call', formats: :json
       else
@@ -74,7 +74,7 @@ module ActiveMcp
         @format = :json
         render 'active_mcp/tools_list', formats: :json
       when Method::TOOLS_CALL
-        @tool_result = ActiveMcp::ToolExecutor.execute(params: params, auth_info: auth_info)
+        @tool_result = execute_tool(params: params, auth_info: auth_info)
         @format = :json
         render 'active_mcp/tools_call', formats: :json
       else

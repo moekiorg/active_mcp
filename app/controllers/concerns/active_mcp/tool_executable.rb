@@ -1,6 +1,10 @@
 module ActiveMcp
-  class ToolExecutor
-    def self.execute(params:, auth_info:)
+  module ToolExecutable
+    extend ActiveSupport::Concern
+
+    private
+
+    def execute_tool(params:, auth_info:)
       if params[:jsonrpc].present?
         tool_name = params[:params][:name]
         tool_params = params[:params][:arguments]
@@ -105,7 +109,7 @@ module ActiveMcp
       end
     end
     
-    def self.formatted(object)
+    def formatted(object)
       case object
       when String
         object
