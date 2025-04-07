@@ -4,6 +4,10 @@ module ActiveMcp
 
     private
 
+    def resource_templates_list
+      []
+    end
+
     def resources_list
       []
     end

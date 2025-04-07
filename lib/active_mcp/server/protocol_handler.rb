@@ -17,10 +17,10 @@ module ActiveMcp
           request = JSON.parse(message, symbolize_names: true)
           handle_request(request)
         rescue JSON::ParserError => e
-          log_error("JSON parse error", e)
+          Server.log_error("JSON parse error", e)
           error_response(nil, ErrorCode::PARSE_ERROR, "Invalid JSON format")
         rescue => e
-          log_error("Internal error during message processing", e)
+          Server.log_error("Internal error during message processing", e)
           error_response(nil, ErrorCode::INTERNAL_ERROR, "An internal error occurred")
         end
 
@@ -50,10 +50,12 @@ module ActiveMcp
           handle_ping(request)
         when Method::RESOURCES_LIST
           handle_list_resources(request)
+        when Method::RESOURCES_TEMPLATES_LIST
+          handle_list_resource_templates(request)
         when Method::TOOLS_LIST
           handle_list_tools(request)
         when Method::TOOLS_CALL
-          handle_use_tool(request)
+          handle_call_tool(request)
         when Method::RESOURCES_READ
           handle_read_resource(request)
         else
@@ -113,23 +115,63 @@ module ActiveMcp
       end
 
       def handle_list_resources(request)
-        success_response(request[:id], {resources: @server.resource_manager.resources})
+        success_response(
+          request[:id],
+          {
+            resources: @server.fetch(
+              params: {
+                method: Method::RESOURCES_LIST,
+                arguments: {}
+              }
+            )[:result]
+          }
+        )
+      end
+
+      def handle_list_resource_templates(request)
+        success_response(
+          request[:id],
+          {
+            resourceTemplates: @server.fetch(
+              params: {
+                method: Method::RESOURCES_TEMPLATES_LIST,
+                arguments: {}
+              }
+            )[:result]
+          }
+        )
       end
 
       def handle_list_tools(request)
-        success_response(request[:id], {tools: @server.tool_manager.tools})
+        success_response(
+          request[:id],
+          {
+            tools: @server.fetch(
+              params: {
+                method: Method::TOOLS_LIST,
+                arguments: {}
+              }
+            )[:result]
+          }
+        )
       end
 
-      def handle_use_tool(request)
+      def handle_call_tool(request)
         name = request.dig(:params, :name)
         arguments = request.dig(:params, :arguments) || {}
 
         begin
-          result = @server.tool_manager.call_tool(name, arguments)
+          result = @server.fetch(
+            params: {
+              method: Method::TOOLS_CALL,
+              name:,
+              arguments:,
+            }
+          )
 
           success_response(request[:id], result)
         rescue => e
-          log_error("Error calling tool #{name}", e)
+          Server.log_error("Error calling tool #{name}", e)
           error_response(request[:id], ErrorCode::INTERNAL_ERROR, "An error occurred while calling the tool")
         end
       end
@@ -137,11 +179,17 @@ module ActiveMcp
       def handle_read_resource(request)
         uri = request.dig(:params, :uri)
         begin
-          result = @server.resource_manager.read_resource(uri)
+          result = @server.fetch(
+            params: {
+              method: Method::RESOURCES_READ,
+              uri:,
+              arguments: {},
+            }
+          )
 
           success_response(request[:id], result)
         rescue => e
-          log_error("Error reading resource #{uri}", e)
+          Server.("Error reading resource #{uri}", e)
           error_response(request[:id], ErrorCode::INTERNAL_ERROR, "An error occurred while reading the resource")
         end
       end
@@ -165,18 +213,6 @@ module ActiveMcp
         }
         response[:error][:data] = data if data
         response
-      end
-      
-      def log_error(message, error)
-        error_details = "#{message}: #{error.message}\n"
-        error_details += error.backtrace.join("\n") if error.backtrace
-        
-        if defined?(Rails)
-          Rails.logger.error(error_details)
-        else
-          # Fresallback to standard error output if Rails is not available
-          $stderr.puts(error_details)
-        end
       end
     end
   end

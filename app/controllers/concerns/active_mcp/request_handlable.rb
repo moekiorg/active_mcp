@@ -39,6 +39,10 @@ module ActiveMcp
         @resources = resources_list
         @format = :jsonrpc
         render 'active_mcp/resources_list', formats: :json
+      when Method::RESOURCES_TEMPLATES_LIST
+        @resource_templates = resource_templates_list
+        @format = :jsonrpc
+        render 'active_mcp/resource_templates_list', formats: :json
       when Method::RESOURCES_READ
         @resource = read_resource(params:, auth_info:)
         @format = :jsonrpc
@@ -69,6 +73,10 @@ module ActiveMcp
         @resource = read_resource(params:, auth_info:)
         @format = :json
         render 'active_mcp/resources_read', formats: :json
+      when Method::RESOURCES_TEMPLATES_LIST
+        @resource_templates = resource_templates_list
+        @format = :json
+        render 'active_mcp/resource_templates_list', formats: :json
       when Method::TOOLS_LIST
         @tools = ActiveMcp::Tool.authorized_tools(auth_info)
         @format = :json

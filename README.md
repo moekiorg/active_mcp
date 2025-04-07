@@ -36,6 +36,8 @@ A Ruby on Rails engine for the [Model Context Protocol (MCP)](https://modelconte
   - [📦 MCP Resources](#-mcp-resources)
     - [Creating Resources](#creating-resources)
     - [Resource Types](#resource-types)
+  - [📦 MCP Resource Templates](#-mcp-resource-templates)
+    - [Creating Resource Templates](#creating-resource-templates)
   - [⚙️ Advanced Configuration](#️-advanced-configuration)
     - [Custom Controller](#custom-controller)
   - [💡 Best Practices](#-best-practices)
@@ -311,7 +313,7 @@ MCP Resources allow you to share data and files with AI assistants. Resources ha
 
 ### Creating Resources
 
-Resources are Ruby classes that inherit from `ActiveMcp::Resource`:
+Resources are Ruby classes `**Resource`:
 
 ```ruby
 class UserResource
@@ -344,6 +346,18 @@ class UserResource
       email: @user.email,
       created_at: @user.created_at
     }
+  end
+end
+```
+
+```ruby
+class McpController < ActiveMcp::BaseController
+  private
+
+  def resource_list
+    User.all.map do |user|
+      UserResource.new(id: user.id)
+    end
   end
 end
 ```
@@ -397,6 +411,46 @@ def visible?
 
   # Check if the token belongs to an admin
   User.find_by_token(auth_info[:token])&.admin?
+end
+```
+
+## 📦 MCP Resource Templates
+
+MCP Resource Teamplates allow you to define template of resources.
+
+### Creating Resource Templates
+
+Resources are Ruby classes `**ResourceTemplates`:
+
+```ruby
+class UserResourceTemplate
+  def name
+    "Users"
+  end
+
+  def uri_template
+    "data://localhost/users/{id}"
+  end
+
+  def mime_type
+    "application/json"
+  end
+
+  def description
+    "This is a test."
+  end
+end
+```
+
+```ruby
+class McpController < ActiveMcp::BaseController
+  private
+
+  def resource_templates_list
+    [
+      UserResourceTemplate.new
+    ]
+  end
 end
 ```
 
