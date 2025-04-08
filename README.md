@@ -95,7 +95,7 @@ $ rails generate active_mcp:tool create_note
 ```ruby
 class CreateNoteTool < ActiveMcp::Tool::Base
   def tool_name
-    "Create Note"
+    "create_note"
   end
 
   def description
@@ -125,6 +125,9 @@ end
 
 ```ruby
 class MyMcpController < ActiveMcp::BaseController
+
+  private
+
   def schema
     MySchema.new(context:)
   end
@@ -271,7 +274,7 @@ Control access to tools by overriding the `visible?` class method:
 ```ruby
 class AdminOnlyTool < ActiveMcp::Tool::Base
   def tool_name
-    "Admin-only tool"
+    "admin_only_tool"
   end
 
   def description
@@ -624,7 +627,7 @@ end
 
 ## 🧪 Development
 
-After checking out the repo, run `bundle install` to install dependencies. Then, run `bundle exec rake` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bundle install` to install dependencies. Then, run `bundle exec rake` to run the tests.
 
 ## 👥 Contributing
 
