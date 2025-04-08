@@ -1,4 +1,4 @@
-class CustomController < ActiveMcp::Controller::Base
+class CustomController < ActiveMcp::BaseController
   before_action :authenticate_user, only: [:index]
 
   private
