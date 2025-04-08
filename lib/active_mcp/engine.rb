@@ -7,6 +7,7 @@ module ActiveMcp
         Rails.root.join("app", "mcp", "tools"),
         Rails.root.join("app", "mcp", "resources"),
         Rails.root.join("app", "mcp", "resource_templates"),
+        Rails.root.join("app", "mcp", "prompts"),
         Rails.root.join("app", "mcp", "schemas")
       ].each do |tools_path|
         if Dir.exist?(tools_path)

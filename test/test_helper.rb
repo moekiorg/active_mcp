@@ -4,6 +4,8 @@ ENV["RAILS_ENV"] = "test"
 ENV["DATABASE_URL"] = "sqlite3::memory:"
 
 require_relative "../test/dummy/config/environment"
+require_relative "./fixtures/dummy_prompt"
+require_relative "./fixtures/dummy_resource"
 require "rails/test_help"
 require "minitest/reporters"
 require "mocha/minitest"

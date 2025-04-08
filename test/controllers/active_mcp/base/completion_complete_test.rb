@@ -5,35 +5,8 @@ module ActiveMcp
     setup do
       @routes = ActiveMcp::Engine.routes
       @controller = ActiveMcp::Controller::Base.new
-
-      @test_resource_class = Class.new(ActiveMcp::Resource::Base) do
-        class << self
-          def name
-            "users"
-          end
-
-          def uri_template
-            "data://app/users/{name}.json"
-          end
-          
-          def mime_type
-            "application/json"
-          end
-          
-          def description
-            "Test resource for controller testing"
-          end
-        end
-
-        argument :name, ->(value) do
-          ["Foo", "Bar"].filter { _1.match(value) }
-        end
-      end
-
-      Object.const_set(:TestResource, @test_resource_class)
-
       @schema_class = Class.new(ActiveMcp::Schema::Base) do
-        resource TestResource.new
+        resource DummyResource.new(name: "UserA")
       end
     end
 
@@ -44,11 +17,11 @@ module ActiveMcp
           params: {
             ref: {
               type: "ref/resource",
-              uri: "data://app/users/{name}.json"
+              uri: "data://app/users/{name}"
             },
             argument: {
               name: "name",
-              value: "F"
+              value: "A"
             },
           }
         }
@@ -57,7 +30,7 @@ module ActiveMcp
 
         json = JSON.parse(response.body)
         assert_equal json["result"], {
-          "values" => ["Foo"],
+          "values" => ["UserA"],
           "total" => 1
         }
       end
@@ -71,11 +44,11 @@ module ActiveMcp
           params: {
             ref: {
               type: "ref/resource",
-              uri: "data://app/users/{name}.json"
+              uri: "data://app/users/{name}"
             },
             argument: {
               name: "name",
-              value: "F"
+              value: "A"
             },
           }
         }
@@ -84,7 +57,7 @@ module ActiveMcp
 
         json = JSON.parse(response.body)
         assert_equal json["result"]["completion"], {
-          "values" => ["Foo"],
+          "values" => ["UserA"],
           "total" => 1
         }
       end

@@ -7,4 +7,6 @@ class DemoSchema < ActiveMcp::Schema::Base
 
   tool NewsTool.new
   tool WeatherTool.new
+
+  prompt HelloPrompt
 end

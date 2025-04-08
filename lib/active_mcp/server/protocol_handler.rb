@@ -31,16 +31,6 @@ module ActiveMcp
       private
 
       def handle_request(request)
-        allowed_methods = [
-          Method::INITIALIZE,
-          Method::INITIALIZED,
-          Method::PING
-        ]
-
-        if !@initialized && !allowed_methods.include?(request[:method])
-          return error_response(request[:id], ErrorCode::NOT_INITIALIZED, "Server not initialized")
-        end
-
         case request[:method]
         when Method::INITIALIZE
           handle_initialize(request)
@@ -60,6 +50,10 @@ module ActiveMcp
           handle_read_resource(request)
         when Method::COMPLETION_COMPLETE
           handle_complete(request)
+        when Method::PROMPTS_LIST
+          handle_list_prompts(request)
+        when Method::PROMPTS_GET
+          handle_get_prompt(request)
         else
           error_response(request[:id], ErrorCode::METHOD_NOT_FOUND, "Unknown method: #{request[:method]}")
         end
@@ -88,13 +82,9 @@ module ActiveMcp
           result: {
             protocolVersion: PROTOCOL_VERSION,
             capabilities: {
-              resources: {
-                subscribe: false,
-                listChanged: false
-              },
-              tools: {
-                listChanged: false
-              }
+              resources: {},
+              tools: {},
+              prompts: {},
             },
             serverInfo: {
               name: @server.name,
@@ -191,7 +181,7 @@ module ActiveMcp
 
           success_response(request[:id], result)
         rescue => e
-          Server.("Error reading resource #{uri}", e)
+          Server.log_error("Error reading resource #{uri}", e)
           error_response(request[:id], ErrorCode::INTERNAL_ERROR, "An error occurred while reading the resource")
         end
       end
@@ -206,7 +196,38 @@ module ActiveMcp
           )
           success_response(request[:id], { completion: result[:result] })
         rescue => e
-          Server.("Error reading resource #{uri}", e)
+          Server.log_error("Error reading resource #{uri}", e)
+          error_response(request[:id], ErrorCode::INTERNAL_ERROR, "An error occurred while reading the resource")
+        end
+      end
+
+      def handle_list_prompts(request)
+        begin
+          result = @server.fetch(params: { method: Method::PROMPTS_LIST })
+          success_response(request[:id], { prompts: result[:result] })
+        rescue => e
+          Server.log_error("Error reading resource #{uri}", e)
+          error_response(request[:id], ErrorCode::INTERNAL_ERROR, "An error occurred while reading the resource")
+        end
+      end
+
+      def handle_get_prompt(request)
+        name = request.dig(:params, :name)
+        arguments = request.dig(:params, :arguments)
+        begin
+          result = @server.fetch(
+            params: {
+              method: Method::PROMPTS_GET,
+              params: {
+                name:,
+                arguments:,
+              }
+            }
+          )
+
+          success_response(request[:id], result)
+        rescue => e
+          Server.log_error("Error reading resource #{uri}", e)
           error_response(request[:id], ErrorCode::INTERNAL_ERROR, "An error occurred while reading the resource")
         end
       end

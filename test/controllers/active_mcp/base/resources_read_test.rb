@@ -6,40 +6,14 @@ module ActiveMcp
       @routes = ActiveMcp::Engine.routes
       @controller = ActiveMcp::Controller::Base.new
 
-      @test_resource_class = Class.new do
-        class << self
-          def mime_type
-            "application/json"
-          end
-        end
-
-        def name
-          "test"
-        end
-
-        def uri
-          "data://app/data.json"
-        end
-        
-        def description
-          "Test resource for controller testing"
-        end
-
-        def text
-          "Test resource"
-        end
-      end
-
-      Object.const_set(:TestResource, @test_resource_class)
-
       @schema_class = Class.new(ActiveMcp::Schema::Base) do
-        resource TestResource.new
+        resource DummyResource.new(name: "UserA")
       end
     end
 
     test "should get resources" do
       @controller.stub(:schema, @schema_class.new) do
-        post "index", params: {method: "resources/read", uri: "data://app/data.json"}
+        post "index", params: {method: "resources/read", uri: "data://app/users/UserA"}
 
         assert_response :success
 

@@ -1,0 +1,39 @@
+class DummyResource < ActiveMcp::Resource::Base
+  class << self
+    def resource_name
+      "dummy"
+    end
+
+    def uri_template
+      "data://app/users/{name}"
+    end
+
+    def mime_type
+      "application/json"
+    end
+  end
+
+  argument :name, ->(value) do
+    ["UserA", "UserB"].filter { _1.match(value) }
+  end
+
+  def initialize(name:)
+    @name = name
+  end
+
+  def name
+    @name
+  end
+
+  def uri
+    "data://app/users/#{@name}"
+  end
+  
+  def description
+    "This is a dummy"
+  end
+
+  def text
+    "Hello! #{@name}"
+  end
+end

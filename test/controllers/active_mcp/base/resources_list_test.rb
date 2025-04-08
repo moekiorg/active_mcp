@@ -6,34 +6,8 @@ module ActiveMcp
       @routes = ActiveMcp::Engine.routes
       @controller = ActiveMcp::Controller::Base.new
 
-      @test_resource_class = Class.new do
-        class << self 
-          def mime_type
-            "application/json"
-          end
-        end
-
-        def name
-          "test"
-        end
-
-        def uri
-          "data://app/data.json"
-        end
-        
-        def description
-          "Test resource for controller testing"
-        end
-
-        def text
-          "Test resource"
-        end
-      end
-
-      Object.const_set(:TestResource, @test_resource_class)
-
       @schema_class = Class.new(ActiveMcp::Schema::Base) do
-        resource TestResource.new
+        resource DummyResource.new(name: "UserA")
       end
     end
 
@@ -47,9 +21,9 @@ module ActiveMcp
         assert_not_nil json["result"]
 
         resources = json["result"]
-        test_resource = resources.find { |t| t["name"] == "test" }
+        test_resource = resources.find { |t| t["name"] == "UserA" }
         assert_not_nil test_resource
-        assert_equal "Test resource for controller testing", test_resource["description"]
+        assert_equal "This is a dummy", test_resource["description"]
         assert_not_nil test_resource["uri"]
         assert_not_nil test_resource["mimeType"]
       end
@@ -65,9 +39,9 @@ module ActiveMcp
         assert_not_nil json["result"]
 
         resources = json["result"]["resources"]
-        test_resource = resources.find { |t| t["name"] == "test" }
+        test_resource = resources.find { |t| t["name"] == "UserA" }
         assert_not_nil test_resource
-        assert_equal "Test resource for controller testing", test_resource["description"]
+        assert_equal "This is a dummy", test_resource["description"]
         assert_not_nil test_resource["uri"]
         assert_not_nil test_resource["mimeType"]
       end
