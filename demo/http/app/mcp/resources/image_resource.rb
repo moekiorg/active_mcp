@@ -5,7 +5,7 @@ class ImageResource < ActiveMcp::Resource::Base
     end
   end
 
-  def name
+  def resource_name
     "image"
   end
 

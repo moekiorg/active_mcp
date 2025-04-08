@@ -1,6 +1,6 @@
 class DummyResource < ActiveMcp::Resource::Base
   class << self
-    def resource_name
+    def resource_template_name
       "dummy"
     end
 
@@ -21,7 +21,7 @@ class DummyResource < ActiveMcp::Resource::Base
     @name = name
   end
 
-  def name
+  def resource_name
     @name
   end
 

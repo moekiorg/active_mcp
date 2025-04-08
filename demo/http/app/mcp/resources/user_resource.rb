@@ -1,6 +1,6 @@
 class UserResource < ActiveMcp::Resource::Base
   class << self
-    def name
+    def resource_template_name
       "User"
     end
 
@@ -25,7 +25,7 @@ class UserResource < ActiveMcp::Resource::Base
     @name = name
   end
 
-  def name
+  def resource_name
     @name
   end
 

@@ -26,7 +26,7 @@ module ActiveMcp
       end
 
       tool = schema.tools.find do |tc|
-        tc.name == tool_name
+        tc.tool_name == tool_name
       end
       
       unless tool

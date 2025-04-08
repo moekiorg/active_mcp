@@ -2,7 +2,7 @@ class WeatherTool < ActiveMcp::Tool::Base
   argument :city, :string, required: true, description: "City name to get weather information"
   argument :country, :string, required: false, description: "Country name (optional)"
 
-  def name
+  def tool_name
     "Weather"
   end
 

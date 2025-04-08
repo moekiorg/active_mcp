@@ -1,5 +1,5 @@
 class NoArgumentTool < ActiveMcp::Tool::Base
-  def name
+  def tool_name
     "no_argument"
   end
 

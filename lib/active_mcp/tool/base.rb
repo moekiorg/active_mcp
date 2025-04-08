@@ -26,7 +26,7 @@ module ActiveMcp
       def initialize
       end
 
-      def name
+      def tool_name
       end
 
       def description

@@ -5,7 +5,7 @@ if @format == :jsonrpc
   json.result do
     json.tools do
       json.array!(@tools) do |tool|
-        json.name tool.name
+        json.name tool.tool_name
         json.description tool.description
         json.inputSchema tool.class.schema
       end
@@ -14,7 +14,7 @@ if @format == :jsonrpc
 else
   json.result do
     json.array!(@tools) do |tool|
-      json.name tool.name
+      json.name tool.tool_name
       json.description tool.description
       json.inputSchema tool.class.schema
     end
