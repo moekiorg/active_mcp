@@ -5,7 +5,9 @@ require_relative "active_mcp/version"
 require_relative "active_mcp/configuration"
 require_relative "active_mcp/schema/base"
 require_relative "active_mcp/tool/base"
+require_relative "active_mcp/resource/base"
 require_relative "active_mcp/server"
+require_relative "active_mcp/completion"
 
 if defined? ::Rails
   require_relative "active_mcp/engine"

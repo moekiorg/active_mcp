@@ -58,6 +58,8 @@ module ActiveMcp
           handle_call_tool(request)
         when Method::RESOURCES_READ
           handle_read_resource(request)
+        when Method::COMPLETION_COMPLETE
+          handle_complete(request)
         else
           error_response(request[:id], ErrorCode::METHOD_NOT_FOUND, "Unknown method: #{request[:method]}")
         end
@@ -188,6 +190,21 @@ module ActiveMcp
           )
 
           success_response(request[:id], result)
+        rescue => e
+          Server.("Error reading resource #{uri}", e)
+          error_response(request[:id], ErrorCode::INTERNAL_ERROR, "An error occurred while reading the resource")
+        end
+      end
+
+      def handle_complete(request)
+        begin
+          result = @server.fetch(
+            params: {
+              method: Method::COMPLETION_COMPLETE,
+              params: request[:params],
+            }
+          )
+          success_response(request[:id], { completion: result[:result] })
         rescue => e
           Server.("Error reading resource #{uri}", e)
           error_response(request[:id], ErrorCode::INTERNAL_ERROR, "An error occurred while reading the resource")

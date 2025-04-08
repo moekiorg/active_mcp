@@ -7,7 +7,7 @@ if @format == :jsonrpc
       json.array!(@resources) do |resource|
         json.name resource.name
         json.uri resource.uri
-        json.mimeType resource.mime_type
+        json.mimeType resource.class.mime_type
         json.description resource.description
       end
     end
@@ -17,7 +17,7 @@ else
     json.array!(@resources) do |resource|
       json.name resource.name
       json.uri resource.uri
-      json.mimeType resource.mime_type
+      json.mimeType resource.class.mime_type
       json.description resource.description
     end
   end

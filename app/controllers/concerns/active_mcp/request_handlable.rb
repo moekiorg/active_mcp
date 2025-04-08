@@ -40,6 +40,11 @@ module ActiveMcp
         @tool_result = execute_tool(params:, context:)
         @format = :jsonrpc
         render 'active_mcp/tools_call', formats: :json
+      when Method::COMPLETION_COMPLETE
+        type = params.dig(:params, :ref, :type)
+        @completion = ActiveMcp::Completion.new.complete(params: params[:params], context:, refs: type === "ref/resource" ? schema.resource_templates : [])
+        @format = :jsonrpc
+        render "active_mcp/completion_complete", formats: :json
       else
         @format = :jsonrpc
         render 'active_mcp/no_method', formats: :json
@@ -68,6 +73,11 @@ module ActiveMcp
         @tool_result = execute_tool(params:, context:)
         @format = :json
         render 'active_mcp/tools_call', formats: :json
+      when Method::COMPLETION_COMPLETE
+        type = params.dig(:params, :ref, :type)
+        @completion = ActiveMcp::Completion.new.complete(params: params[:params], context:, refs: type == "ref/resource" ? schema.resource_templates : [])
+        @format = :json
+        render "active_mcp/completion_complete", formats: :json
       else
         @format = :json
         render 'active_mcp/no_method', formats: :json

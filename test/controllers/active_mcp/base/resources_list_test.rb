@@ -7,16 +7,18 @@ module ActiveMcp
       @controller = ActiveMcp::Controller::Base.new
 
       @test_resource_class = Class.new do
+        class << self 
+          def mime_type
+            "application/json"
+          end
+        end
+
         def name
           "test"
         end
 
         def uri
           "data://app/data.json"
-        end
-        
-        def mime_type
-          "application/json"
         end
         
         def description

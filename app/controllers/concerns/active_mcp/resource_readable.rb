@@ -42,7 +42,7 @@ module ActiveMcp
             contents: [
               {
                 uri:,
-                mimeType: resource.mime_type,
+                mimeType: resource.class.mime_type,
                 text: formatted(content)
               }
             ]
@@ -52,7 +52,7 @@ module ActiveMcp
             contents: [
               {
                 uri:,
-                mimeType: resource.mime_type,
+                mimeType: resource.class.mime_type,
                 blob: Base64.strict_encode64(content)
               }
             ]

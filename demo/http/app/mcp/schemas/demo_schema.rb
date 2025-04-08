@@ -5,8 +5,6 @@ class DemoSchema < ActiveMcp::Schema::Base
 
   resource ImageResource.new
 
-  resource_template PostResourceTemplate.new
-
   tool NewsTool.new
   tool WeatherTool.new
 end

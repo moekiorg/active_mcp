@@ -1,14 +1,16 @@
 class ImageResource
+  class << self
+    def mime_type
+      "image/png"
+    end
+  end
+
   def name
     "image"
   end
 
   def uri
     "data://localhost/image"
-  end
-  
-  def mime_type
-    "image/png"
   end
 
   def description

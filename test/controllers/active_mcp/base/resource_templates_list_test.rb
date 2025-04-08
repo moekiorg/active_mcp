@@ -6,28 +6,30 @@ module ActiveMcp
       @routes = ActiveMcp::Engine.routes
       @controller = ActiveMcp::Controller::Base.new
 
-      @test_resource_template_class = Class.new do
-        def name
-          "test"
-        end
+      @test_resource_class = Class.new do
+        class << self
+          def name
+            "test"
+          end
 
-        def uri_template
-          "data://app/{name}.json"
-        end
-        
-        def mime_type
-          "application/json"
-        end
-        
-        def description
-          "Test resource for controller testing"
+          def uri_template
+            "data://app/{name}.json"
+          end
+          
+          def mime_type
+            "application/json"
+          end
+          
+          def description
+            "Test resource for controller testing"
+          end
         end
       end
 
-      Object.const_set(:TestResourceTemplate, @test_resource_template_class)
+      Object.const_set(:TestResource, @test_resource_class)
 
       @schema_class = Class.new(ActiveMcp::Schema::Base) do
-        resource_template TestResourceTemplate.new
+        resource TestResource.new
       end
     end
 
