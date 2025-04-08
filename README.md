@@ -344,7 +344,6 @@ Resources are Ruby classes `**Resource`:
 class UserResource < ActiveMcp::Resource::Base
   def initialize(id:)
     @user = User.find(id)
-    @auth_info = auth_info
   end
 
   def resource_name
@@ -411,7 +410,7 @@ class ImageResource < ActiveMcp::Resource::Base
   end
 
   def resource_name
-    "Profile Image"
+    "profile_image"
   end
 
   def uri
@@ -453,7 +452,7 @@ Resources are Ruby classes `**ResourceTemplates`:
 class UserResource < ActiveMcp::Resource::Base
   class << self
     def resource_template_name
-      "Users"
+      "users"
     end
 
     def uri_template
@@ -593,7 +592,7 @@ end
 Always validate and sanitize inputs in your tool implementations:
 
 ```ruby
-def call(user_id:, **args, context: {})
+def call(user_id:, context: {})
   # Validate input
   unless user_id.is_a?(Integer) || user_id.to_s.match?(/^\d+$/)
     raise "Invalid user ID format"

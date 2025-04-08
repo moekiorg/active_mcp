@@ -10,7 +10,7 @@ class WeatherTool < ActiveMcp::Tool::Base
     "Get weather information for the specified city"
   end
 
-  def call(city:, country: nil, auth_info: nil, **args)
+  def call(city:, country: nil, context: {})
     weather_data = get_mock_weather_data(city, country)
 
     if weather_data
