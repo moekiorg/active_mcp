@@ -3,6 +3,9 @@ ENV["RAILS_ENV"] = "test"
 
 ENV["DATABASE_URL"] = "sqlite3::memory:"
 
+require 'simplecov'
+SimpleCov.start
+
 require_relative "../test/dummy/config/environment"
 require_relative "./fixtures/dummy_prompt"
 require_relative "./fixtures/dummy_resource"

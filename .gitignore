@@ -50,3 +50,5 @@
 *.gem
 
 node_modules
+
+coverage
