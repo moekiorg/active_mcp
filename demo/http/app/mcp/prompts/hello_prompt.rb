@@ -1,7 +1,7 @@
 class HelloPrompt < ActiveMcp::Prompt::Base
   class << self
     def prompt_name
-      "Test"
+      "hello"
     end
 
     def description

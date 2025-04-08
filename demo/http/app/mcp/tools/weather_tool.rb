@@ -3,7 +3,7 @@ class WeatherTool < ActiveMcp::Tool::Base
   argument :country, :string, required: false, description: "Country name (optional)"
 
   def tool_name
-    "Weather"
+    "weather"
   end
 
   def description

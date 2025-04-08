@@ -1,6 +1,6 @@
 class NewsTool < ActiveMcp::Tool::Base
   def tool_name
-    "News"
+    "news"
   end
 
   def description
