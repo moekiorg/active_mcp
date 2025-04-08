@@ -251,7 +251,9 @@ module ActiveMcp
 
       test "should handle get prompt request" do
         @server.stubs(:fetch).returns(
-          messages: [{role: "user", content: "Test message"}]
+          result: {
+            messages: [{role: "user", content: "Test message"}]
+          }
         )
 
         result = @handler.process_message({
