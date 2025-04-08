@@ -1,4 +1,4 @@
-class ExampleController < ActiveMcp::Controller::Base
+class ExampleController < ActiveMcp::BaseController
   def schema
     ExampleSchema.new(context:)
   end

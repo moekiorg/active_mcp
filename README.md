@@ -124,7 +124,7 @@ end
 4. Create controller ans set up routing:
 
 ```ruby
-class MyMcpController < ActiveMcp::Controller::Base
+class MyMcpController < ActiveMcp::BaseController
   def schema
     MySchema.new(context:)
   end

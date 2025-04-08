@@ -4,7 +4,7 @@ module ActiveMcp
   class BaseControllerText < ActionController::TestCase
     setup do
       @routes = ActiveMcp::Engine.routes
-      @controller = ActiveMcp::Controller::Base.new
+      @controller = ActiveMcp::BaseController.new
 
       @test_tool_class = Class.new(ActiveMcp::Tool::Base) do
         argument :name, :string, required: true, description: "Name parameter"

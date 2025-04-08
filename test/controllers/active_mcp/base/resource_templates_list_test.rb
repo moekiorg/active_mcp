@@ -4,7 +4,7 @@ module ActiveMcp
   class ResourceTemplatesListTest < ActionController::TestCase
     setup do
       @routes = ActiveMcp::Engine.routes
-      @controller = ActiveMcp::Controller::Base.new
+      @controller = ActiveMcp::BaseController.new
 
       @schema_class = Class.new(ActiveMcp::Schema::Base) do
         resource DummyResource.new(name: "UserA")

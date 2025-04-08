@@ -16,7 +16,6 @@ require_relative "active_mcp/completion"
 
 if defined? ::Rails
   require_relative "active_mcp/engine"
-  require_relative "active_mcp/controller/base"
 end
 
 module ActiveMcp
