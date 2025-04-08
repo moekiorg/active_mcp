@@ -12,5 +12,7 @@ module ActiveMcp
     RESOURCES_READ = "resources/read"
     RESOURCES_TEMPLATES_LIST = "resources/templates/list"
     COMPLETION_COMPLETE = "completion/complete"
+    PROMPTS_LIST = "prompts/list"
+    PROMPTS_GET = "prompts/get"
   end
 end

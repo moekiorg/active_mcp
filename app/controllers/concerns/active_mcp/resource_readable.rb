@@ -37,13 +37,13 @@ module ActiveMcp
       end
 
       begin
-        if resource.respond_to?(:text) && content = resource.text
+        if resource.respond_to?(:text) && content = resource.content
           return {
             contents: [
               {
                 uri:,
                 mimeType: resource.class.mime_type,
-                text: formatted(content)
+                text: content
               }
             ]
           }
@@ -63,17 +63,6 @@ module ActiveMcp
           isError: true,
           contents: []
         }
-      end
-    end
-    
-    def formatted(object)
-      case object
-      when String
-        object
-      when Hash
-        object.to_json
-      else
-        object.to_s
       end
     end
   end

@@ -2,7 +2,7 @@ module ActiveMcp
   module Schema
     class Base
       class << self
-        attr_reader :resources, :resource_templates, :tools
+        attr_reader :resources, :resource_templates, :tools, :prompts
 
         def resource(klass)
           @resources ||= []
@@ -18,6 +18,11 @@ module ActiveMcp
           @tools ||= []
           @tools << klass
         end
+
+        def prompt(klass)
+          @prompts ||= []
+          @prompts << klass
+        end
       end
 
       def initialize(context: {})
@@ -25,20 +30,26 @@ module ActiveMcp
       end
 
       def resources
-        self.class.resources.filter do |resource|
+        self.class.resources&.filter do |resource|
           !resource.respond_to?(:visible?) || resource.visible?(context: @context)
         end
       end
 
       def resource_templates
-        self.class.resource_templates.filter do |template|
+        self.class.resource_templates&.filter do |template|
           !template.respond_to?(:visible?) || template.visible?(context: @context)
         end
       end
 
       def tools
-        self.class.tools.filter do |tool|
+        self.class.tools&.filter do |tool|
           !tool.respond_to?(:visible?) || tool.visible?(context: @context)
+        end
+      end
+
+      def prompts
+        self.class.prompts&.filter do |resource|
+          !resource.respond_to?(:visible?) || resource.visible?(context: @context)
         end
       end
     end

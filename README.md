@@ -36,6 +36,8 @@ A Ruby on Rails engine for the [Model Context Protocol (MCP)](https://modelconte
     - [Resource Types](#resource-types)
   - [📦 MCP Resource Templates](#-mcp-resource-templates)
     - [Creating Resource Templates](#creating-resource-templates)
+  - [💬 MCP Prompts](#-mcp-prompts)
+    - [Creating Prompt](#creating-prompt)
   - [💡 Best Practices](#-best-practices)
     - [1. Create Specific Tool Classes](#1-create-specific-tool-classes)
     - [2. Validate and Sanitize Inputs](#2-validate-and-sanitize-inputs)
@@ -502,6 +504,69 @@ class MySchema < ActiveMcp::Schema::Base
   User.all.each do |user|
     resource UserResource.new(id: user.id)
   end
+end
+```
+
+## 💬 MCP Prompts
+
+MCP Prompts allow you to define prompt set.
+
+### Creating Prompt
+
+Resources are Ruby classes `**Prompt`:
+
+```ruby
+class HelloPrompt < ActiveMcp::Prompt::Base
+  class << self
+    def name
+      "hello"
+    end
+
+    def description
+      "This is a test."
+    end
+
+    def visible?(context:)
+      # Your logic...
+    end
+  end
+
+  argument :name, ->(value) do
+    User.all.pluck(:name).filter { _1.match(value) }
+  end
+
+  def initialize(name:)
+    @name = name
+  end
+
+  def messages
+    [
+      ActiveMcp::Message::Text.new(
+        role: "user",
+        text: "Hello! #{@name}"
+      ),
+      ActiveMcp::Message::Image.new(
+        role: "assistant",
+        data: File.read(file),
+        mime_type: "image/png"
+      ),
+      ActiveMcp::Message::Audio.new(
+        role: "user",
+        data: File.read(file),
+        mime_type: "audio/mpeg"
+      ),
+      ActiveMcp::Message::Resource.new(
+        role: "assistant",
+        resource: UserResource.new(name: @name)
+      )
+    ]
+  end
+end
+```
+
+```ruby
+class MySchema < ActiveMcp::Schema::Base
+  prompt HelloPrompt
 end
 ```
 

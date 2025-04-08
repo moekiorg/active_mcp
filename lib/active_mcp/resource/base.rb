@@ -6,6 +6,15 @@ module ActiveMcp
       class << self
         attr_reader :schema, :arguments
 
+        def name
+        end
+  
+        def description
+        end
+
+        def mime_type
+        end
+
         def argument(name, complete)
           @arguments = {}
           @arguments[name] = complete
@@ -23,6 +32,17 @@ module ActiveMcp
 
       def visible?(context: {})
         true
+      end
+
+      def content
+        case text
+        when String
+          text
+        when Hash
+          text.to_json
+        else
+          text.to_s
+        end
       end
     end
   end

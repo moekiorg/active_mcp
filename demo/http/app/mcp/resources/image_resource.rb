@@ -1,4 +1,4 @@
-class ImageResource
+class ImageResource < ActiveMcp::Resource::Base
   class << self
     def mime_type
       "image/png"

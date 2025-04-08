@@ -42,9 +42,17 @@ module ActiveMcp
         render 'active_mcp/tools_call', formats: :json
       when Method::COMPLETION_COMPLETE
         type = params.dig(:params, :ref, :type)
-        @completion = ActiveMcp::Completion.new.complete(params: params[:params], context:, refs: type === "ref/resource" ? schema.resource_templates : [])
+        @completion = ActiveMcp::Completion.new.complete(params: params[:params], context:, refs: type === "ref/resource" ? schema.resource_templates : schema.prompts)
         @format = :jsonrpc
         render "active_mcp/completion_complete", formats: :json
+      when Method::PROMPTS_LIST
+        @prompts = schema.prompts
+        @format = :jsonrpc
+        render 'active_mcp/prompts_list', formats: :json
+      when Method::PROMPTS_GET
+        @prompt = schema.prompts.find { _1.prompt_name == params[:params][:name] }.new(**params[:params][:arguments].permit!.to_h.symbolize_keys)
+        @format = :jsonrpc
+        render 'active_mcp/prompts_get', formats: :json
       else
         @format = :jsonrpc
         render 'active_mcp/no_method', formats: :json
@@ -75,9 +83,17 @@ module ActiveMcp
         render 'active_mcp/tools_call', formats: :json
       when Method::COMPLETION_COMPLETE
         type = params.dig(:params, :ref, :type)
-        @completion = ActiveMcp::Completion.new.complete(params: params[:params], context:, refs: type == "ref/resource" ? schema.resource_templates : [])
+        @completion = ActiveMcp::Completion.new.complete(params: params[:params], context:, refs: type == "ref/resource" ? schema.resource_templates : schema.prompts)
         @format = :json
         render "active_mcp/completion_complete", formats: :json
+      when Method::PROMPTS_LIST
+        @prompts = schema.prompts
+        @format = :json
+        render 'active_mcp/prompts_list', formats: :json
+      when Method::PROMPTS_GET
+        @prompt = schema.prompts&.find { _1.prompt_name == params[:params][:name] }.new(**params[:params][:arguments].permit!.to_h.symbolize_keys)
+        @format = :json
+        render 'active_mcp/prompts_get', formats: :json
       else
         @format = :json
         render 'active_mcp/no_method', formats: :json
