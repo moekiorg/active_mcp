@@ -1,4 +1,4 @@
 class ExampleSchema < ActiveMcp::Schema::Base
-  tool TestTool.new
+  tool DummyTool.new
   tool NoArgumentTool.new
 end
