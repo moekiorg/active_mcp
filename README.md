@@ -94,7 +94,7 @@ $ rails generate active_mcp:tool create_note
 
 ```ruby
 class CreateNoteTool < ActiveMcp::Tool::Base
-  def name
+  def tool_name
     "Create Note"
   end
 
@@ -215,7 +215,7 @@ MCP tools are Ruby classes that inherit from `ActiveMcp::Tool::Base` and define 
 
 ```ruby
 class SearchUsersTool < ActiveMcp::Tool::Base
-  def name
+  def tool_name
     "Search Users"
   end
 
@@ -270,7 +270,7 @@ Control access to tools by overriding the `visible?` class method:
 
 ```ruby
 class AdminOnlyTool < ActiveMcp::Tool::Base
-  def name
+  def tool_name
     "Admin-only tool"
   end
 
@@ -347,7 +347,7 @@ class UserResource < ActiveMcp::Resource::Base
     @auth_info = auth_info
   end
 
-  def name
+  def resource_name
     @user.name
   end
 
@@ -410,7 +410,7 @@ class ImageResource < ActiveMcp::Resource::Base
     end
   end
 
-  def name
+  def resource_name
     "Profile Image"
   end
 
@@ -452,7 +452,7 @@ Resources are Ruby classes `**ResourceTemplates`:
 ```ruby
 class UserResource < ActiveMcp::Resource::Base
   class << self
-    def name
+    def resource_template_name
       "Users"
     end
 
@@ -481,7 +481,7 @@ class UserResource < ActiveMcp::Resource::Base
     @user = User.find(id)
   end
 
-  def name
+  def resource_name
     @user.name
   end
 
@@ -518,7 +518,7 @@ Resources are Ruby classes `**Prompt`:
 ```ruby
 class HelloPrompt < ActiveMcp::Prompt::Base
   class << self
-    def name
+    def prompt_name
       "hello"
     end
 

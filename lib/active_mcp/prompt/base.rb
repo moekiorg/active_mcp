@@ -19,7 +19,7 @@ module ActiveMcp
       def initialize(*args, context: {})
       end
 
-      def name
+      def prompt_name
       end
 
       def description
@@ -30,7 +30,7 @@ module ActiveMcp
       end
 
       def messages
-        raise NotImplementedError, "#{self.class.name}#call must be implemented"
+        raise NotImplementedError, "#{self.class.name}#messages must be implemented"
       end
     end
   end

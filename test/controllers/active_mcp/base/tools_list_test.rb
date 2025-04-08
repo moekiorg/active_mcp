@@ -10,7 +10,7 @@ module ActiveMcp
         argument :name, :string, required: true, description: "Name parameter"
         argument :value, :integer, required: false, description: "Value parameter"
 
-        def name
+        def tool_name
           "test"
         end
 
@@ -29,7 +29,7 @@ module ActiveMcp
       end
 
       @no_argument_tool = Class.new(ActiveMcp::Tool::Base) do
-        def name
+        def tool_name
           "no_argument"
         end
 

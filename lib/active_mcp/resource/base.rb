@@ -6,7 +6,7 @@ module ActiveMcp
       class << self
         attr_reader :schema, :arguments
 
-        def name
+        def resource_template_name
         end
   
         def description
@@ -24,7 +24,7 @@ module ActiveMcp
       def initialize
       end
 
-      def name
+      def resource_name
       end
 
       def description

@@ -2,7 +2,7 @@ class ExampleTool < ActiveMcp::Tool::Base
   argument :name, :string, required: true, description: "Name parameter"
   argument :value, :integer, required: false, description: "Value parameter"
 
-  def name
+  def tool_name
     "test"
   end
 
