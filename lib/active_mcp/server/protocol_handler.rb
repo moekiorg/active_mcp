@@ -174,7 +174,7 @@ module ActiveMcp
         arguments = request.dig(:params, :arguments)
         result = @server.fetch(params: {method: Method::PROMPTS_GET, params: {name:, arguments:}})
 
-        success_response(request[:id], result)
+        success_response(request[:id], result[:result])
       end
 
       def success_response(id, result)

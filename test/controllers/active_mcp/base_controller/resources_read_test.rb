@@ -19,9 +19,9 @@ module ActiveMcp
           assert_response :success
 
           json = JSON.parse(response.body)
-          assert json["contents"][0]["text"], "Test resource"
-          assert json["contents"][0]["mimeType"], "application/json"
-          assert_nil json["contents"][0]["blob"]
+          assert json["result"]["contents"][0]["text"], "Test resource"
+          assert json["result"]["contents"][0]["mimeType"], "application/json[:result]"
+          assert_nil json["result"]["contents"][0]["blob"]
         end
       end
 
@@ -32,9 +32,9 @@ module ActiveMcp
           assert_response :success
 
           json = JSON.parse(response.body)
-          assert json["contents"][0]["text"], "Test resource"
-          assert json["contents"][0]["mimeType"], "application/json"
-          assert_nil json["contents"][0]["blob"]
+          assert json["result"]["contents"][0]["text"], "Test resource"
+          assert json["result"]["contents"][0]["mimeType"], "application/json"
+          assert_nil json["result"]["contents"][0]["blob"]
         end
       end
     end
