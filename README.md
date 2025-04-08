@@ -339,7 +339,7 @@ MCP Resources allow you to share data and files with AI assistants. Resources ha
 Resources are Ruby classes `**Resource`:
 
 ```ruby
-class UserResource
+class UserResource < ActiveMcp::Resource::Base
   def initialize(id:)
     @user = User.find(id)
     @auth_info = auth_info
@@ -401,17 +401,19 @@ end
 2. **Binary Content** - Use the `blob` method to return binary files:
 
 ```ruby
-class ImageResource
+class ImageResource < ActiveMcp::Resource::Base
+  class << self
+    def mime_type
+      "image/png"
+    end
+  end
+
   def name
     "Profile Image"
   end
 
   def uri
     "data://localhost/image"
-  end
-
-  def mime_type
-    "image/png"
   end
 
   def description
@@ -446,32 +448,60 @@ MCP Resource Teamplates allow you to define template of resources.
 Resources are Ruby classes `**ResourceTemplates`:
 
 ```ruby
-class UserResourceTemplate
+class UserResource < ActiveMcp::Resource::Base
+  class << self
+    def name
+      "Users"
+    end
+
+    def uri_template
+      "data://localhost/users/{id}"
+    end
+
+    def mime_type
+      "application/json"
+    end
+
+    def description
+      "This is a test."
+    end
+
+    def visible?(context:)
+      # Your logic...
+    end
+  end
+
+  argument :id, ->(value) do
+    User.all.pluck(:id).filter { _1.match(value) }
+  end
+
+  def initialize(id:)
+    @user = User.find(id)
+  end
+
   def name
-    "Users"
-  end
-
-  def uri_template
-    "data://localhost/users/{id}"
-  end
-
-  def mime_type
-    "application/json"
+    @user.name
   end
 
   def description
-    "This is a test."
+    @user.profile
   end
 
-  def visible?(context:)
-    # Your logic...
+  def uri
+    "data://localhost/users/#{@user.name}"
+  end
+
+  def text
+    { name: @user.name }
   end
 end
 ```
 
 ```ruby
 class MySchema < ActiveMcp::Schema::Base
-  resource_template UserResourceTemplate.new
+  User.all.each do |user|
+    resource UserResource.new(id: user.id)
+  end
 end
 ```
 

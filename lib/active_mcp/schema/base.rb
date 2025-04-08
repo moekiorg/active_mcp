@@ -7,11 +7,11 @@ module ActiveMcp
         def resource(klass)
           @resources ||= []
           @resources << klass
-        end
 
-        def resource_template(klass)
-          @resource_templates ||= []
-          @resource_templates << klass
+          if klass.class.respond_to?(:uri_template)
+            @resource_templates ||= []
+            @resource_templates << klass.class unless klass.class.in?(@resource_templates)
+          end
         end
 
         def tool(klass)
@@ -31,8 +31,8 @@ module ActiveMcp
       end
 
       def resource_templates
-        self.class.resource_templates.filter do |tool_resource|
-          !tool_resource.respond_to?(:visible?) || tool_resource.visible?(context: @context)
+        self.class.resource_templates.filter do |template|
+          !template.respond_to?(:visible?) || template.visible?(context: @context)
         end
       end
 
