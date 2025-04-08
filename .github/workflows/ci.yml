@@ -1,27 +1,90 @@
-name: CI
+name: CI/CD
 
 on:
   push:
-    branches:
-      - main
-
+    branches: [main]
+    tags:
+      - "v*"
   pull_request:
+    branches: [main]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
-    name: Ruby ${{ matrix.ruby }}
-    strategy:
-      matrix:
-        ruby:
-          - "3.1.4"
 
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@354a1ad156761f5ee2b7b13fa8e09943a5e8d252
         with:
-          ruby-version: ${{ matrix.ruby }}
+          ruby-version: "3.2"
           bundler-cache: true
-      - name: Run test
-        run: bundle exec rake
+
+      - name: Set up Node.js
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: |
+          cd demo/http
+          bundle install
+          cd ../..
+          npm install
+
+      - name: Start Rails server
+        run: |
+          cd demo/http
+          bundle exec rails server -d -p 3000
+          while ! nc -z localhost 3000; do
+            echo "Waiting for Rails server..."
+            sleep 1
+          done
+          cd ../..
+
+      - name: Run tests
+        run: npm test
+
+  release:
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@354a1ad156761f5ee2b7b13fa8e09943a5e8d252
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
+
+      - name: Set credentials
+        run: |
+          mkdir -p $HOME/.gem
+          cat > $HOME/.gem/credentials << EOF
+          ---
+          :rubygems_api_key: ${RUBYGEMS_API_KEY}
+          EOF
+          chmod 0600 $HOME/.gem/credentials
+        env:
+          RUBYGEMS_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
+
+      - name: Build and publish gem
+        run: |
+          gem build *.gemspec
+          gem push *.gem
+
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          gh release create ${TAG_NAME} \
+            --title "${TAG_NAME}" \
+            --notes "$(cat CHANGELOG.md | sed -n "/^## \\[${TAG_NAME#v}\\]/,/^## /p" | sed '$ d')" \
+            *.gem
