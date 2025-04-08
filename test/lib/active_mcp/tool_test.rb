@@ -29,10 +29,6 @@ module ActiveMcp
 
     test "should validate arguments against schema" do
       tool_class = Class.new(ActiveMcp::Tool::Base) do
-        def description
-          "validation_tool"
-        end
-
         argument :name, :string, required: true
         argument :age, :integer, required: false
       end

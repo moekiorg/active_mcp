@@ -14,7 +14,7 @@ module ActiveMcp
             resource: {
               uri: @resource.uri,
               mimeType: @resource.class.mime_type,
-              text: @resource.content,
+              text: @resource.content
             }
           }
         }

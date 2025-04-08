@@ -3,14 +3,14 @@ ENV["RAILS_ENV"] = "test"
 
 ENV["DATABASE_URL"] = "sqlite3::memory:"
 
-require 'simplecov'
+require "simplecov"
 SimpleCov.start
 
 require_relative "../test/dummy/config/environment"
-require_relative "./fixtures/dummy_prompt"
-require_relative "./fixtures/dummy_resource"
-require_relative "./fixtures/dummy_tool"
-require_relative "./fixtures/no_argument_tool"
+require_relative "fixtures/dummy_prompt"
+require_relative "fixtures/dummy_resource"
+require_relative "fixtures/dummy_tool"
+require_relative "fixtures/no_argument_tool"
 require "rails/test_help"
 require "minitest/reporters"
 require "mocha/minitest"

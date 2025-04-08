@@ -13,11 +13,7 @@ class WeatherTool < ActiveMcp::Tool::Base
   def call(city:, country: nil, context: {})
     weather_data = get_mock_weather_data(city, country)
 
-    if weather_data
-      weather_data
-    else
-      "Weather information not found for the specified city: #{city}"
-    end
+    weather_data || "Weather information not found for the specified city: #{city}"
   end
 
   private

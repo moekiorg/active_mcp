@@ -12,50 +12,50 @@ module ActiveMcp
 
     def handle_mcp_client_request
       @id = params[:id]
-      
+
       case params[:method]
       when Method::INITIALIZE
-        render 'active_mcp/initialize', formats: :json
+        render "active_mcp/initialize", formats: :json
       when Method::INITIALIZED
-        render 'active_mcp/initialized', formats: :json
+        render "active_mcp/initialized", formats: :json
       when Method::CANCELLED
-        render 'active_mcp/cancelled', formats: :json
+        render "active_mcp/cancelled", formats: :json
       when Method::RESOURCES_LIST
         @resources = schema.resources
         @format = :jsonrpc
-        render 'active_mcp/resources_list', formats: :json
+        render "active_mcp/resources_list", formats: :json
       when Method::RESOURCES_TEMPLATES_LIST
         @resource_templates = schema.resource_templates
         @format = :jsonrpc
-        render 'active_mcp/resource_templates_list', formats: :json
+        render "active_mcp/resource_templates_list", formats: :json
       when Method::RESOURCES_READ
         @resource = read_resource(params:, context:)
         @format = :jsonrpc
-        render 'active_mcp/resources_read', formats: :json
+        render "active_mcp/resources_read", formats: :json
       when Method::TOOLS_LIST
         @tools = schema.tools
         @format = :jsonrpc
-        render 'active_mcp/tools_list', formats: :json
+        render "active_mcp/tools_list", formats: :json
       when Method::TOOLS_CALL
         @tool_result = execute_tool(params:, context:)
         @format = :jsonrpc
-        render 'active_mcp/tools_call', formats: :json
+        render "active_mcp/tools_call", formats: :json
       when Method::COMPLETION_COMPLETE
         type = params.dig(:params, :ref, :type)
-        @completion = ActiveMcp::Completion.new.complete(params: params[:params], context:, refs: type === "ref/resource" ? schema.resource_templates : schema.prompts)
+        @completion = ActiveMcp::Completion.new.complete(params: params[:params], context:, refs: (type === "ref/resource") ? schema.resource_templates : schema.prompts)
         @format = :jsonrpc
         render "active_mcp/completion_complete", formats: :json
       when Method::PROMPTS_LIST
         @prompts = schema.prompts
         @format = :jsonrpc
-        render 'active_mcp/prompts_list', formats: :json
+        render "active_mcp/prompts_list", formats: :json
       when Method::PROMPTS_GET
         @prompt = schema.prompts.find { _1.prompt_name == params[:params][:name] }.new(**params[:params][:arguments].permit!.to_h.symbolize_keys)
         @format = :jsonrpc
-        render 'active_mcp/prompts_get', formats: :json
+        render "active_mcp/prompts_get", formats: :json
       else
         @format = :jsonrpc
-        render 'active_mcp/no_method', formats: :json
+        render "active_mcp/no_method", formats: :json
       end
     end
 
@@ -64,39 +64,39 @@ module ActiveMcp
       when Method::RESOURCES_LIST
         @resources = schema.resources
         @format = :json
-        render 'active_mcp/resources_list', formats: :json
+        render "active_mcp/resources_list", formats: :json
       when Method::RESOURCES_READ
         @resource = read_resource(params:, context:)
         @format = :json
-        render 'active_mcp/resources_read', formats: :json
+        render "active_mcp/resources_read", formats: :json
       when Method::RESOURCES_TEMPLATES_LIST
         @resource_templates = schema.resource_templates
         @format = :json
-        render 'active_mcp/resource_templates_list', formats: :json
+        render "active_mcp/resource_templates_list", formats: :json
       when Method::TOOLS_LIST
         @tools = schema.tools
         @format = :json
-        render 'active_mcp/tools_list', formats: :json
+        render "active_mcp/tools_list", formats: :json
       when Method::TOOLS_CALL
         @tool_result = execute_tool(params:, context:)
         @format = :json
-        render 'active_mcp/tools_call', formats: :json
+        render "active_mcp/tools_call", formats: :json
       when Method::COMPLETION_COMPLETE
         type = params.dig(:params, :ref, :type)
-        @completion = ActiveMcp::Completion.new.complete(params: params[:params], context:, refs: type == "ref/resource" ? schema.resource_templates : schema.prompts)
+        @completion = ActiveMcp::Completion.new.complete(params: params[:params], context:, refs: (type == "ref/resource") ? schema.resource_templates : schema.prompts)
         @format = :json
         render "active_mcp/completion_complete", formats: :json
       when Method::PROMPTS_LIST
         @prompts = schema.prompts
         @format = :json
-        render 'active_mcp/prompts_list', formats: :json
+        render "active_mcp/prompts_list", formats: :json
       when Method::PROMPTS_GET
-        @prompt = schema.prompts&.find { _1.prompt_name == params[:params][:name] }.new(**params[:params][:arguments].permit!.to_h.symbolize_keys)
+        @prompt = schema.prompts&.find { _1.prompt_name == params[:params][:name] }&.new(**params[:params][:arguments].permit!.to_h.symbolize_keys)
         @format = :json
-        render 'active_mcp/prompts_get', formats: :json
+        render "active_mcp/prompts_get", formats: :json
       else
         @format = :json
-        render 'active_mcp/no_method', formats: :json
+        render "active_mcp/no_method", formats: :json
       end
     end
 

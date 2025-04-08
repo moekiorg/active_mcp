@@ -21,7 +21,7 @@ module ActiveMcp
           json = JSON.parse(response.body)
           assert_not_nil json["result"]
 
-          resources = json["result"]
+          resources = json["result"]["resources"]
           test_resource = resources.find { |t| t["name"] == "UserA" }
           assert_not_nil test_resource
           assert_equal "This is a dummy", test_resource["description"]

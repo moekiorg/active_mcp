@@ -12,14 +12,14 @@ module ActiveMcp
         tool_name = params[:name]
         tool_params = params[:arguments]
       end
-      
+
       unless tool_name
         return {
           isError: true,
           content: [
             {
               type: "text",
-              text: "Invalid params: missing tool name",
+              text: "Invalid params: missing tool name"
             }
           ]
         }
@@ -28,44 +28,44 @@ module ActiveMcp
       tool = schema.tools.find do |tc|
         tc.tool_name == tool_name
       end
-      
+
       unless tool
         return {
           isError: true,
           content: [
             {
               type: "text",
-              text: "Tool not found: #{tool_name}",
+              text: "Tool not found: #{tool_name}"
             }
           ]
         }
       end
-      
+
       unless tool.visible?(context:)
         return {
           isError: true,
           content: [
             {
               type: "text",
-              text: "Unauthorized: Access to tool '#{tool_name}' denied",
+              text: "Unauthorized: Access to tool '#{tool_name}' denied"
             }
           ]
         }
       end
 
-      if tool_params.is_a?(String)
-        arguments = JSON.parse(tool_params).symbolize_keys
+      arguments = if tool_params.is_a?(String)
+        JSON.parse(tool_params).symbolize_keys
       elsif tool_params
-        arguments = tool_params.permit!.to_hash.symbolize_keys
+        tool_params.permit!.to_hash.symbolize_keys
       else
-        arguments = {}
+        {}
       end
 
       arguments = arguments.transform_values do |value|
         if !value.is_a?(String)
           value
         else
-          value.match(/^\d+$/) ? value.to_i : value
+          /^\d+$/.match?(value) ? value.to_i : value
         end
       end
 
@@ -77,15 +77,15 @@ module ActiveMcp
           content: [
             {
               type: "text",
-              text: validation_result[:error],
+              text: validation_result[:error]
             }
           ]
         }
       end
-      
+
       # Execute the tool
       begin
-        return {
+        {
           content: [
             {
               type: "text",
@@ -94,18 +94,18 @@ module ActiveMcp
           ]
         }
       rescue => e
-        return {
+        {
           isError: true,
           content: [
             {
               type: "text",
-              text: "Error: #{e.message}",
+              text: "Error: #{e.message}"
             }
           ]
         }
       end
     end
-    
+
     def formatted(object)
       case object
       when String

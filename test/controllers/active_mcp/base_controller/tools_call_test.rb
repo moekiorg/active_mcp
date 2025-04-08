@@ -25,7 +25,7 @@ module ActiveMcp
           assert_response :success
 
           json = JSON.parse(response.body)
-          assert json["content"][0]["text"].include?("Test tool result with name: test-name, value: 42")
+          assert json["result"]["content"][0]["text"].include?("Test tool result with name: test-name, value: 42")
         end
       end
 
@@ -55,7 +55,7 @@ module ActiveMcp
           assert_response :ok
 
           json = JSON.parse(response.body)
-          assert_equal "Invalid params: missing tool name", json["content"][0]["text"]
+          assert_equal "Invalid params: missing tool name", json["result"]["content"][0]["text"]
         end
       end
 
@@ -70,7 +70,7 @@ module ActiveMcp
           assert_response :ok
 
           json = JSON.parse(response.body)
-          assert_equal "Tool not found: nonexistent_tool", json["content"][0]["text"]
+          assert_equal "Tool not found: nonexistent_tool", json["result"]["content"][0]["text"]
         end
       end
 
@@ -85,7 +85,7 @@ module ActiveMcp
           assert_response :ok
 
           json = JSON.parse(response.body)
-          assert json["content"][0]["text"].include?("name")
+          assert json["result"]["content"][0]["text"].include?("name")
         end
       end
 
@@ -101,7 +101,7 @@ module ActiveMcp
           }
 
           json = JSON.parse(response.body)
-          assert json["content"][0]["text"].include?("Authenticated tool result")
+          assert json["result"]["content"][0]["text"].include?("Authenticated tool result")
         end
       end
 

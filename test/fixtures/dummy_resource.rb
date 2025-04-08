@@ -28,7 +28,7 @@ class DummyResource < ActiveMcp::Resource::Base
   def uri
     "data://app/users/#{@name}"
   end
-  
+
   def description
     "This is a dummy"
   end

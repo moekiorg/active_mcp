@@ -8,7 +8,7 @@ module ActiveMcp
 
         def resource_template_name
         end
-  
+
         def description
         end
 

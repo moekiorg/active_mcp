@@ -1,13 +1,40 @@
 require "json"
 require "English"
 require_relative "server/method"
-require_relative "server/error_codes"
+require_relative "server/error_code"
 require_relative "server/stdio_connection"
 require_relative "server/fetcher"
 require_relative "server/protocol_handler"
 
 module ActiveMcp
   class Server
+    class Logger
+      attr_reader :messages
+
+      def initialize
+        @messages = []
+      end
+
+      def log(message, error = nil)
+        @messages << {message: message, error: error}
+        if defined?(Rails)
+          Rails.logger.error("#{message}: #{error&.message}")
+        else
+          warn("#{message}: #{error&.message}")
+        end
+      end
+    end
+
+    class << self
+      def logger
+        @logger ||= Logger.new
+      end
+
+      def log_error(message, error)
+        logger.log(message, error)
+      end
+    end
+
     attr_reader :name, :version, :uri, :protocol_handler, :fetcher
 
     def initialize(
@@ -21,17 +48,6 @@ module ActiveMcp
       @uri = uri
       @fetcher = Fetcher.new(base_uri: uri, auth:)
       @protocol_handler = ProtocolHandler.new(self)
-    end
-
-    def self.log_error(message, error)
-      error_details = "#{message}: #{error.message}\n"
-      error_details += error.backtrace.join("\n") if error.backtrace
-      
-      if defined?(Rails)
-        Rails.logger.error(error_details)
-      else
-        $stderr.puts(error_details)
-      end
     end
 
     def fetch(params:)

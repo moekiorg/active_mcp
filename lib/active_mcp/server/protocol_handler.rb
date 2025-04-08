@@ -15,7 +15,11 @@ module ActiveMcp
         message = message.to_s.force_encoding("UTF-8")
         result = begin
           request = JSON.parse(message, symbolize_names: true)
-          handle_request(request)
+          if !request[:jsonrpc] || !request[:method]
+            error_response(nil, ErrorCode::INVALID_REQUEST, "Invalid JSON-RPC format")
+          else
+            handle_request(request)
+          end
         rescue JSON::ParserError => e
           Server.log_error("JSON parse error", e)
           error_response(nil, ErrorCode::PARSE_ERROR, "Invalid JSON format")
@@ -57,6 +61,9 @@ module ActiveMcp
         else
           error_response(request[:id], ErrorCode::METHOD_NOT_FOUND, "Unknown method: #{request[:method]}")
         end
+      rescue => e
+        Server.log_error("Error #{name}", e)
+        error_response(request[:id], ErrorCode::INTERNAL_ERROR, "An error occurred")
       end
 
       def handle_initialize(request)
@@ -84,7 +91,7 @@ module ActiveMcp
             capabilities: {
               resources: {},
               tools: {},
-              prompts: {},
+              prompts: {}
             },
             serverInfo: {
               name: @server.name,
@@ -109,134 +116,72 @@ module ActiveMcp
       def handle_list_resources(request)
         success_response(
           request[:id],
-          {
-            resources: @server.fetch(
-              params: {
-                method: Method::RESOURCES_LIST,
-                arguments: {}
-              }
-            )[:result]
-          }
+          @server.fetch(
+            params: {
+              method: Method::RESOURCES_LIST,
+              arguments: {}
+            }
+          )[:result]
         )
       end
 
       def handle_list_resource_templates(request)
         success_response(
           request[:id],
-          {
-            resourceTemplates: @server.fetch(
-              params: {
-                method: Method::RESOURCES_TEMPLATES_LIST,
-                arguments: {}
-              }
-            )[:result]
-          }
+          @server.fetch(
+            params: {
+              method: Method::RESOURCES_TEMPLATES_LIST,
+              arguments: {}
+            }
+          )[:result]
         )
       end
 
       def handle_list_tools(request)
         success_response(
           request[:id],
-          {
-            tools: @server.fetch(
-              params: {
-                method: Method::TOOLS_LIST,
-                arguments: {}
-              }
-            )[:result]
-          }
+          @server.fetch(params: {method: Method::TOOLS_LIST, arguments: {}})[:result]
         )
       end
 
       def handle_call_tool(request)
         name = request.dig(:params, :name)
         arguments = request.dig(:params, :arguments) || {}
+        result = @server.fetch(params: {method: Method::TOOLS_CALL, name:, arguments:})
 
-        begin
-          result = @server.fetch(
-            params: {
-              method: Method::TOOLS_CALL,
-              name:,
-              arguments:,
-            }
-          )
-
-          success_response(request[:id], result)
-        rescue => e
-          Server.log_error("Error calling tool #{name}", e)
-          error_response(request[:id], ErrorCode::INTERNAL_ERROR, "An error occurred while calling the tool")
-        end
+        success_response(request[:id], result[:result])
       end
 
       def handle_read_resource(request)
         uri = request.dig(:params, :uri)
-        begin
-          result = @server.fetch(
-            params: {
-              method: Method::RESOURCES_READ,
-              uri:,
-              arguments: {},
-            }
-          )
+        result = @server.fetch(params: {method: Method::RESOURCES_READ, uri:, arguments: {}})
 
-          success_response(request[:id], result)
-        rescue => e
-          Server.log_error("Error reading resource #{uri}", e)
-          error_response(request[:id], ErrorCode::INTERNAL_ERROR, "An error occurred while reading the resource")
-        end
+        success_response(request[:id], result[:result])
       end
 
       def handle_complete(request)
-        begin
-          result = @server.fetch(
-            params: {
-              method: Method::COMPLETION_COMPLETE,
-              params: request[:params],
-            }
-          )
-          success_response(request[:id], { completion: result[:result] })
-        rescue => e
-          Server.log_error("Error reading resource #{uri}", e)
-          error_response(request[:id], ErrorCode::INTERNAL_ERROR, "An error occurred while reading the resource")
-        end
+        result = @server.fetch(params: {method: Method::COMPLETION_COMPLETE, params: request[:params]})
+        success_response(request[:id], result[:result])
       end
 
       def handle_list_prompts(request)
-        begin
-          result = @server.fetch(params: { method: Method::PROMPTS_LIST })
-          success_response(request[:id], { prompts: result[:result] })
-        rescue => e
-          Server.log_error("Error reading resource #{uri}", e)
-          error_response(request[:id], ErrorCode::INTERNAL_ERROR, "An error occurred while reading the resource")
-        end
+        result = @server.fetch(params: {method: Method::PROMPTS_LIST})
+        success_response(request[:id], result[:result])
       end
 
       def handle_get_prompt(request)
         name = request.dig(:params, :name)
         arguments = request.dig(:params, :arguments)
-        begin
-          result = @server.fetch(
-            params: {
-              method: Method::PROMPTS_GET,
-              params: {
-                name:,
-                arguments:,
-              }
-            }
-          )
+        result = @server.fetch(params: {method: Method::PROMPTS_GET, params: {name:, arguments:}})
 
-          success_response(request[:id], result)
-        rescue => e
-          Server.log_error("Error reading resource #{uri}", e)
-          error_response(request[:id], ErrorCode::INTERNAL_ERROR, "An error occurred while reading the resource")
-        end
+        success_response(request[:id], result)
       end
 
       def success_response(id, result)
         {
           jsonrpc: JSON_RPC_VERSION,
           id: id,
-          result: result
+          result:
         }
       end
 
@@ -245,8 +190,8 @@ module ActiveMcp
           jsonrpc: JSON_RPC_VERSION,
           id: id || 0,
           error: {
-            code: code,
-            message: message
+            code:,
+            message:
           }
         }
         response[:error][:data] = data if data

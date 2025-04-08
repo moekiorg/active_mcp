@@ -9,11 +9,11 @@ module ActiveMcp
       if uri_template
         resource_class = refs.find { _1.uri_template == uri_template }
         values = resource_class.arguments[arg_name.to_sym].call(value)
-        { values:, total: values.length }
+        {values:, total: values.length}
       elsif ref_name
         prompt_class = refs.find { _1.prompt_name == ref_name }
         values = prompt_class.arguments.find { _1[:name] == arg_name.to_sym }[:complete].call(value)
-        { values:, total: values.length }
+        {values:, total: values.length}
       end
     end
   end

@@ -3,7 +3,7 @@ json.id @id
 json.result do
   json.protocolVersion ActiveMcp::PROTOCOL_VERSION
   json.capabilities do
-    json.logging Hash.new
+    json.logging({})
     json.capabilities do
       json.resources do
         json.subscribe false

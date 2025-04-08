@@ -16,7 +16,7 @@ module ActiveMcp
           role: "user",
           content: {
             type: "image",
-            data: Base64.strict_encode64(File.read(Rails.root.join("test",  "fixtures", "lena.png"))),
+            data: Base64.strict_encode64(File.read(Rails.root.join("test", "fixtures", "lena.png"))),
             mimeType: "image/png"
           }
         },
@@ -24,7 +24,7 @@ module ActiveMcp
           role: "user",
           content: {
             type: "audio",
-            data: Base64.strict_encode64(File.read(Rails.root.join("test",  "fixtures", "sample.mp3"))),
+            data: Base64.strict_encode64(File.read(Rails.root.join("test", "fixtures", "sample.mp3"))),
             mimeType: "audio/mpeg"
           }
         },
@@ -40,6 +40,18 @@ module ActiveMcp
           }
         }
       ]
+    end
+
+    test "should return visible state" do
+      prompt = DummyPrompt.new(name: "UserA")
+      assert_equal prompt.visible?, true
+    end
+
+    test "should raise error when #message is not defined" do
+      prompt_class = Class.new(ActiveMcp::Prompt::Base) {}
+      assert_raises NotImplementedError do
+        prompt_class.new.messages
+      end
     end
   end
 end

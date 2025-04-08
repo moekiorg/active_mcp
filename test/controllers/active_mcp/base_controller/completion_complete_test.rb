@@ -23,14 +23,14 @@ module ActiveMcp
               argument: {
                 name: "name",
                 value: "A"
-              },
+              }
             }
           }
 
           assert_response :success
 
           json = JSON.parse(response.body)
-          assert_equal json["result"], {
+          assert_equal json["result"]["completion"], {
             "values" => ["UserA"],
             "total" => 1
           }
@@ -50,7 +50,7 @@ module ActiveMcp
               argument: {
                 name: "name",
                 value: "A"
-              },
+              }
             }
           }
 
