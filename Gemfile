@@ -9,8 +9,9 @@ end
 
 group :test do
   gem "sqlite3"
-  gem 'simplecov', require: false, group: :test
+  gem "simplecov", require: false
   gem "minitest"
   gem "minitest-reporters"
   gem "mocha", require: false
+  gem "webmock"
 end

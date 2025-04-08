@@ -21,7 +21,7 @@ module ActiveMcp
           json = JSON.parse(response.body)
           assert_not_nil json["result"]
 
-          tools = json["result"]
+          tools = json["result"]["tools"]
           test_tool = tools.find { |t| t["name"] == "test" }
           assert_not_nil test_tool
           assert_equal "Test tool for controller testing", test_tool["description"]

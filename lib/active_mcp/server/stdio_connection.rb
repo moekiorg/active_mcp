@@ -8,11 +8,11 @@ module ActiveMcp
 
     def read_next_message
       message = $stdin.gets&.chomp
-      message.to_s.force_encoding("UTF-8")
+      message.to_s.dup.force_encoding("UTF-8")
     end
 
     def send_message(message)
-      message = message.to_s.force_encoding("UTF-8")
+      message = message.to_s.dup.force_encoding("UTF-8")
       $stdout.binmode
       $stdout.write(message + "\n")
       $stdout.flush

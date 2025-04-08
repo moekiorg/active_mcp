@@ -5,10 +5,10 @@ module ActiveMcp
     private
 
     def read_resource(params:, context:)
-      if params[:jsonrpc].present?
-        uri = params[:params][:uri]
+      uri = if params[:jsonrpc].present?
+        params[:params][:uri]
       else
-        uri = params[:uri]
+        params[:uri]
       end
 
       unless uri
@@ -37,8 +37,8 @@ module ActiveMcp
       end
 
       begin
-        if resource.respond_to?(:text) && content = resource.content
-          return {
+        if resource.respond_to?(:text) && (content = resource.content)
+          {
             contents: [
               {
                 uri:,
@@ -47,8 +47,8 @@ module ActiveMcp
               }
             ]
           }
-        elsif content = resource.blob
-          return {
+        elsif (content = resource.blob)
+          {
             contents: [
               {
                 uri:,
@@ -59,7 +59,7 @@ module ActiveMcp
           }
         end
       rescue
-        return {
+        {
           isError: true,
           contents: []
         }

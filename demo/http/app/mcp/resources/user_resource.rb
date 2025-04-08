@@ -38,6 +38,6 @@ class UserResource < ActiveMcp::Resource::Base
   end
 
   def text
-    { name: @name }
+    {name: @name}
   end
 end

@@ -11,7 +11,7 @@ class CustomController < ActiveMcp::BaseController
       user = authenticate_with_token(token)
 
       unless user
-        render json: {error:"Invalid or expired token"}, status: 403
+        render json: {error: "Invalid or expired token"}, status: 403
         return false
       end
 
@@ -58,4 +58,3 @@ class CustomController < ActiveMcp::BaseController
     end
   end
 end
-

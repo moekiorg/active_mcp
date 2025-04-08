@@ -20,19 +20,21 @@ module ActiveMcp
 
           json = JSON.parse(response.body, symbolize_names: true)
           assert_equal json, {
-            result: [
-              {
-                name: "dummy",
-                description: "This is a dummy",
-                arguments: [
-                  {
-                    name: "name",
-                    description: "Name",
-                    required: true
-                  }
-                ]
-              }
-            ]
+            result: {
+              prompts: [
+                {
+                  name: "dummy",
+                  description: "This is a dummy",
+                  arguments: [
+                    {
+                      name: "name",
+                      description: "Name",
+                      required: true
+                    }
+                  ]
+                }
+              ]
+            }
           }
         end
       end

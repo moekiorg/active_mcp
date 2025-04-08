@@ -24,6 +24,19 @@ module ActiveMcp
           assert_nil json["contents"][0]["blob"]
         end
       end
+
+      test "should get resources when jsonrpc" do
+        @controller.stub(:schema, @schema_class.new) do
+          post "index", params: {method: "resources/read", jsonrpc: "2.0", params: {uri: "data://app/users/UserA"}}
+
+          assert_response :success
+
+          json = JSON.parse(response.body)
+          assert json["contents"][0]["text"], "Test resource"
+          assert json["contents"][0]["mimeType"], "application/json"
+          assert_nil json["contents"][0]["blob"]
+        end
+      end
     end
   end
 end
