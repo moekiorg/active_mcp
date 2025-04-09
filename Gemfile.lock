@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    active_mcp (0.10.2)
+    active_mcp (0.10.3)
       jbuilder (>= 2.7)
       json-schema
       rails (>= 6.0.0, < 8.0.0)
