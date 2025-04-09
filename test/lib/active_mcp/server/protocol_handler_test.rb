@@ -162,7 +162,7 @@ module ActiveMcp
         json = JSON.parse(result)
 
         assert_equal ErrorCode::INTERNAL_ERROR, json["error"]["code"]
-        assert_equal "An internal error occurred", json["error"]["message"]
+        assert_equal "An error occurred", json["error"]["message"]
       end
 
       # Resource related tests
@@ -229,7 +229,7 @@ module ActiveMcp
         json = JSON.parse(result)
 
         assert_equal ErrorCode::INTERNAL_ERROR, json["error"]["code"]
-        assert_equal "An internal error occurred", json["error"]["message"]
+        assert_equal "An error occurred", json["error"]["message"]
       end
 
       # Prompts related tests
@@ -286,7 +286,7 @@ module ActiveMcp
         json = JSON.parse(result)
 
         assert_equal ErrorCode::INTERNAL_ERROR, json["error"]["code"]
-        assert_equal "An internal error occurred", json["error"]["message"]
+        assert_equal "An error occurred", json["error"]["message"]
       end
 
       test "should handle completion request" do
@@ -326,7 +326,7 @@ module ActiveMcp
         json = JSON.parse(result)
 
         assert_equal ErrorCode::INTERNAL_ERROR, json["error"]["code"]
-        assert_equal "An internal error occurred", json["error"]["message"]
+        assert_equal "An error occurred", json["error"]["message"]
       end
 
       test "should handle initialized notification" do
@@ -350,7 +350,7 @@ module ActiveMcp
         json = JSON.parse(result)
 
         assert_equal ErrorCode::INTERNAL_ERROR, json["error"]["code"]
-        assert_equal "An internal error occurred", json["error"]["message"]
+        assert_equal "An error occurred", json["error"]["message"]
       end
 
       test "should handle prompts list error" do
@@ -364,7 +364,7 @@ module ActiveMcp
         json = JSON.parse(result)
 
         assert_equal ErrorCode::INTERNAL_ERROR, json["error"]["code"]
-        assert_equal "An internal error occurred", json["error"]["message"]
+        assert_equal "An error occurred", json["error"]["message"]
       end
 
       test "should handle resource templates list error" do
@@ -378,7 +378,7 @@ module ActiveMcp
         json = JSON.parse(result)
 
         assert_equal ErrorCode::INTERNAL_ERROR, json["error"]["code"]
-        assert_equal "An internal error occurred", json["error"]["message"]
+        assert_equal "An error occurred", json["error"]["message"]
       end
 
       test "should respond with error for invalid JSON-RPC format" do

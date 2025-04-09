@@ -33,11 +33,9 @@ module ActiveMcp
 
     test "should initialize with base uri when the primitive is prompt" do
       completion = ActiveMcp::Completion.new
-      template = Class.new(ActiveMcp::Prompt::Base) do
-        class << self
-          def prompt_name
-            "hello"
-          end
+      prompt_class = Class.new(ActiveMcp::Prompt::Base) do
+        def prompt_name
+          "hello"
         end
 
         argument :name, required: true, description: "Name", complete: ->(value) do
@@ -55,7 +53,7 @@ module ActiveMcp
             value: "F"
           }
         },
-        refs: [template]
+        refs: [prompt_class.new]
       ), {values: ["Foo"], total: 1}
     end
   end
