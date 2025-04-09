@@ -6,7 +6,7 @@ json.result do
     json.array!(@prompts) do |prompt|
       json.name prompt.prompt_name
       json.description prompt.description
-      json.arguments prompt.class.arguments.map { _1.except(:complete) }
+      json.arguments prompt.class.arguments ? prompt.class.arguments.map { _1.except(:complete) } : []
     end
   end
 end

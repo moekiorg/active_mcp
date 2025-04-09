@@ -8,6 +8,7 @@ SimpleCov.start
 
 require_relative "../test/dummy/config/environment"
 require_relative "fixtures/dummy_prompt"
+require_relative "fixtures/no_argument_prompt"
 require_relative "fixtures/dummy_resource"
 require_relative "fixtures/dummy_tool"
 require_relative "fixtures/no_argument_tool"

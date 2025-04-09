@@ -16,7 +16,7 @@ module ActiveMcp
         end
       end
 
-      test "should return resources list" do
+      test "should return prompts list" do
         @controller.stub(:schema, @schema_class.new) do
           post "index", params: {method: Method::PROMPTS_LIST}
 
@@ -43,7 +43,7 @@ module ActiveMcp
         end
       end
 
-      test "should return resources list when jsonrpc" do
+      test "should return prompts list when jsonrpc" do
         @controller.stub(:schema, @schema_class.new) do
           post "index", params: {method: Method::PROMPTS_LIST, jsonrpc: "2.0"}
 
@@ -64,6 +64,34 @@ module ActiveMcp
                       required: true
                     }
                   ]
+                }
+              ]
+            }
+          }
+        end
+      end
+
+      test "should return prompts list when arguments do not exist" do
+        @schema_class = Class.new(ActiveMcp::Schema::Base) do
+          def prompts
+            [
+              NoArgumentPrompt.new(greeting: "Hello!")
+            ]
+          end
+        end
+        @controller.stub(:schema, @schema_class.new) do
+          post "index", params: {method: Method::PROMPTS_LIST}
+
+          assert_response :success
+
+          json = JSON.parse(response.body, symbolize_names: true)
+          assert_equal json, {
+            result: {
+              prompts: [
+                {
+                  name: "dummy",
+                  description: "This is a dummy",
+                  arguments: []
                 }
               ]
             }
