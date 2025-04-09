@@ -38,7 +38,7 @@ A Ruby on Rails engine for the [Model Context Protocol (MCP)](https://modelconte
     - [Creating Resource Templates](#creating-resource-templates)
   - [💬 MCP Prompts](#-mcp-prompts)
     - [Creating Prompt](#creating-prompt)
-  - [📥 Using context in the schema](#-using-context-in-the-schema)
+  - [📥 Using Context in the Schema](#-using-context-in-the-schema)
   - [💡 Best Practices](#-best-practices)
     - [1. Create Specific Tool Classes](#1-create-specific-tool-classes)
     - [2. Validate and Sanitize Inputs](#2-validate-and-sanitize-inputs)
@@ -583,7 +583,7 @@ class MySchema < ActiveMcp::Schema::Base
 end
 ```
 
-## 📥 Using context in the schema
+## 📥 Using Context in the Schema
 
 ```ruby
 class MySchema < ActiveMcp::Schema::Base
