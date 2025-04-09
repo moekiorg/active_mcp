@@ -456,7 +456,7 @@ MCP Resource Teamplates allow you to define template of resources.
 
 ### Creating Resource Templates
 
-Resources are Ruby classes `**ResourceTemplates`:
+Resource teamplates are Ruby classes `**Resource`:
 
 ```ruby
 class UserResource < ActiveMcp::Resource::Base
