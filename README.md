@@ -482,7 +482,7 @@ class UserResource < ActiveMcp::Resource::Base
     end
   end
 
-  argument :id, complete: ->(value) do
+  argument :id, complete: ->(value, context) do
     User.all.pluck(:id).filter { _1.match(value) }
   end
 
@@ -528,7 +528,7 @@ Resources are Ruby classes `**Prompt`:
 
 ```ruby
 class HelloPrompt < ActiveMcp::Prompt::Base
-  argument :name, required: true, description: "User name", complete: ->(value) do
+  argument :name, required: true, description: "User name", complete: ->(value, context) do
     User.all.pluck(:name).filter { _1.match(value) }
   end
 

@@ -12,7 +12,7 @@ module ActiveMcp
           end
         end
 
-        argument :name, complete: ->(value) do
+        argument :name, complete: ->(value, _) do
           ["Foo", "Bar"].filter { _1.match(value) }
         end
       end
@@ -38,7 +38,7 @@ module ActiveMcp
           "hello"
         end
 
-        argument :name, required: true, description: "Name", complete: ->(value) do
+        argument :name, required: true, description: "Name", complete: ->(value, _) do
           ["Foo", "Bar"].filter { _1.match?(value) }
         end
       end

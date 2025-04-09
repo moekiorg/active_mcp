@@ -13,7 +13,7 @@ class DummyResource < ActiveMcp::Resource::Base
     end
   end
 
-  argument :name, complete: ->(value) do
+  argument :name, complete: ->(value, _) do
     ["UserA", "UserB"].filter { _1.match(value) }
   end
 
