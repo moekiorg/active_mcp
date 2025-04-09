@@ -62,7 +62,7 @@ module ActiveMcp
           error_response(request[:id], ErrorCode::METHOD_NOT_FOUND, "Unknown method: #{request[:method]}")
         end
       rescue => e
-        Server.log_error("Error #{name}", e)
+        Server.log_error("Error #{request[:method]}", e)
         error_response(request[:id], ErrorCode::INTERNAL_ERROR, "An error occurred")
       end
 
