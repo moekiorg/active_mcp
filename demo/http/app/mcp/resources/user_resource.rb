@@ -17,7 +17,7 @@ class UserResource < ActiveMcp::Resource::Base
     end
   end
 
-  argument :name, ->(value) do
+  argument :name, complete: ->(value) do
     ["UserA", "UserB"].filter { _1.match(value) }
   end
 

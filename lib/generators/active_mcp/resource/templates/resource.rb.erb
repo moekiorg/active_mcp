@@ -1,14 +1,16 @@
-class <%= class_name %>
+class <%= class_name %> < ActiveMcp::Resource::Base
+  class << self
+    def mime_type
+      "application/json"
+    end
+  end
+
   def resource_name
     "<%= file_name %>"
   end
 
   def uri
     "data://localhost/<%= file_name %>"
-  end
-
-  def mime_type
-    "application/json"
   end
   
   def description

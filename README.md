@@ -482,7 +482,7 @@ class UserResource < ActiveMcp::Resource::Base
     end
   end
 
-  argument :id, ->(value) do
+  argument :id, complete: ->(value) do
     User.all.pluck(:id).filter { _1.match(value) }
   end
 

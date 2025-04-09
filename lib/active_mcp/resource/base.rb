@@ -6,16 +6,10 @@ module ActiveMcp
       class << self
         attr_reader :schema, :arguments
 
-        def resource_template_name
-        end
-
-        def description
-        end
-
         def mime_type
         end
 
-        def argument(name, complete)
+        def argument(name, complete:)
           @arguments = {}
           @arguments[name] = complete
         end
