@@ -7,8 +7,12 @@ module ActiveMcp
         @routes = ActiveMcp::Engine.routes
         @controller = ActiveMcp::BaseController.new
         @schema_class = Class.new(ActiveMcp::Schema::Base) do
-          tool DummyTool.new
-          tool NoArgumentTool.new
+          def tools
+            [
+              DummyTool.new,
+              NoArgumentTool.new
+            ]
+          end
         end
       end
 

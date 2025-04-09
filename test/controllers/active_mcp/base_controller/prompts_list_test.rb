@@ -8,7 +8,11 @@ module ActiveMcp
         @controller = ActiveMcp::BaseController.new
 
         @schema_class = Class.new(ActiveMcp::Schema::Base) do
-          prompt DummyPrompt
+          def prompts
+            [
+              DummyPrompt.new(greeting: "Hello!")
+            ]
+          end
         end
       end
 

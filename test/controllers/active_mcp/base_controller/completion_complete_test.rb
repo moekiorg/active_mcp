@@ -7,7 +7,11 @@ module ActiveMcp
         @routes = ActiveMcp::Engine.routes
         @controller = ActiveMcp::BaseController.new
         @schema_class = Class.new(ActiveMcp::Schema::Base) do
-          resource DummyResource.new(name: "UserA")
+          def resources
+            [
+              DummyResource.new(name: "UserA")
+            ]
+          end
         end
       end
 

@@ -1,12 +1,22 @@
 class DemoSchema < ActiveMcp::Schema::Base
-  ["UserA", "UserB"].each do |username|
-    resource UserResource.new(name: username)
+  def resources
+    user_resources = ["UserA", "UserB"].map do |username|
+      UserResource.new(name: username)
+    end
+
+    [*user_resources, ImageResource.new]
   end
 
-  resource ImageResource.new
+  def tools
+    [
+      NewsTool.new,
+      WeatherTool.new
+    ]
+  end
 
-  tool NewsTool.new
-  tool WeatherTool.new
-
-  prompt HelloPrompt
+  def prompts
+    [
+      HelloPrompt.new(greeting: "Hello!")
+    ]
+  end
 end

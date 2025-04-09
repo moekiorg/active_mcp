@@ -25,7 +25,7 @@ module ActiveMcp
         }
       end
 
-      tool = schema.tools.find do |tc|
+      tool = schema.visible_tools.find do |tc|
         tc.tool_name == tool_name
       end
 

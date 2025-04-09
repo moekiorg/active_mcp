@@ -117,7 +117,11 @@ end
 
 ```ruby
 class MySchema < ActiveMcp::Schema::Base
-  tool CreateNoteTool.new
+  def tools
+    [
+      CreateNoteTool.new
+    ]
+  end
 end
 ```
 
@@ -383,8 +387,10 @@ end
 
 ```ruby
 class MySchema < ActiveMcp::Schema::Base
-  User.all.each do |user|
-    resource UserResource.new(id: user.id)
+  def resources
+    User.all.each do |user|
+      UserResource.new(id: user.id)
+    end
   end
 end
 ```
@@ -503,8 +509,10 @@ end
 
 ```ruby
 class MySchema < ActiveMcp::Schema::Base
-  User.all.each do |user|
-    resource UserResource.new(id: user.id)
+  def resources
+    User.all.each do |user|
+      UserResource.new(id: user.id)
+    end
   end
 end
 ```
@@ -519,33 +527,31 @@ Resources are Ruby classes `**Prompt`:
 
 ```ruby
 class HelloPrompt < ActiveMcp::Prompt::Base
-  class << self
-    def prompt_name
-      "hello"
-    end
-
-    def description
-      "This is a test."
-    end
-
-    def visible?(context:)
-      # Your logic...
-    end
-  end
-
   argument :name, ->(value) do
     User.all.pluck(:name).filter { _1.match(value) }
   end
 
-  def initialize(name:)
-    @name = name
+  def initialize(greeting:)
+    @greeting = greeting
   end
 
-  def messages
+  def prompt_name
+    "hello"
+  end
+
+  def description
+    "This is a test."
+  end
+
+  def visible?(context:)
+    # Your logic...
+  end
+
+  def messages(name:)
     [
       ActiveMcp::Message::Text.new(
         role: "user",
-        text: "Hello! #{@name}"
+        text: "#{@greeting} #{name}"
       ),
       ActiveMcp::Message::Image.new(
         role: "assistant",
@@ -568,7 +574,11 @@ end
 
 ```ruby
 class MySchema < ActiveMcp::Schema::Base
-  prompt HelloPrompt
+  def prompts
+    [
+      HelloPrompt.new(greeting: "Hello!")
+    ]
+  end
 end
 ```
 
