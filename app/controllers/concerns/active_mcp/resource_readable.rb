@@ -18,7 +18,7 @@ module ActiveMcp
         }
       end
 
-      resource = schema.resources.find do |r|
+      resource = schema.visible_resources.find do |r|
         r.uri == uri
       end
 

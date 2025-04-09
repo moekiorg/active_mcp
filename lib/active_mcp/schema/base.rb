@@ -1,54 +1,34 @@
 module ActiveMcp
   module Schema
     class Base
-      class << self
-        attr_reader :resources, :resource_templates, :tools, :prompts
-
-        def resource(klass)
-          @resources ||= []
-          @resources << klass
-
-          if klass.class.respond_to?(:uri_template)
-            @resource_templates ||= []
-            @resource_templates << klass.class unless klass.class.in?(@resource_templates)
-          end
-        end
-
-        def tool(klass)
-          @tools ||= []
-          @tools << klass
-        end
-
-        def prompt(klass)
-          @prompts ||= []
-          @prompts << klass
-        end
-      end
+      attr_reader :context
 
       def initialize(context: {})
         @context = context
       end
 
-      def resources
-        self.class.resources&.filter do |resource|
-          !resource.respond_to?(:visible?) || resource.visible?(context: @context)
+      def visible_resources
+        resources&.filter do |resource|
+          !resource.class.respond_to?(:uri_template) && !resource.respond_to?(:visible?) || resource.visible?(context: @context)
         end
       end
 
-      def resource_templates
-        self.class.resource_templates&.filter do |template|
-          !template.respond_to?(:visible?) || template.visible?(context: @context)
+      def visible_resource_templates
+        resource_instances = resources&.filter do |resource|
+          resource.class.respond_to?(:uri_template) && (!resource.respond_to?(:visible?) || resource.visible?(context: @context))
         end
+
+        resource_instances.map(&:class)
       end
 
-      def tools
-        self.class.tools&.filter do |tool|
+      def visible_tools
+        tools&.filter do |tool|
           !tool.respond_to?(:visible?) || tool.visible?(context: @context)
         end
       end
 
-      def prompts
-        self.class.prompts&.filter do |resource|
+      def visible_prompts
+        prompts&.filter do |resource|
           !resource.respond_to?(:visible?) || resource.visible?(context: @context)
         end
       end

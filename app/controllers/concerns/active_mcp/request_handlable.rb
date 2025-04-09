@@ -21,11 +21,11 @@ module ActiveMcp
       when Method::CANCELLED
         render "active_mcp/cancelled", formats: :json
       when Method::RESOURCES_LIST
-        @resources = schema.resources
+        @resources = schema.visible_resources
         @format = :jsonrpc
         render "active_mcp/resources_list", formats: :json
       when Method::RESOURCES_TEMPLATES_LIST
-        @resource_templates = schema.resource_templates
+        @resource_templates = schema.visible_resource_templates
         @format = :jsonrpc
         render "active_mcp/resource_templates_list", formats: :json
       when Method::RESOURCES_READ
@@ -33,7 +33,7 @@ module ActiveMcp
         @format = :jsonrpc
         render "active_mcp/resources_read", formats: :json
       when Method::TOOLS_LIST
-        @tools = schema.tools
+        @tools = schema.visible_tools
         @format = :jsonrpc
         render "active_mcp/tools_list", formats: :json
       when Method::TOOLS_CALL
@@ -42,15 +42,15 @@ module ActiveMcp
         render "active_mcp/tools_call", formats: :json
       when Method::COMPLETION_COMPLETE
         type = params.dig(:params, :ref, :type)
-        @completion = ActiveMcp::Completion.new.complete(params: params[:params], context:, refs: (type === "ref/resource") ? schema.resource_templates : schema.prompts)
+        @completion = ActiveMcp::Completion.new.complete(params: params[:params], context:, refs: (type === "ref/resource") ? schema.visible_resource_templates : schema.visible_prompts)
         @format = :jsonrpc
         render "active_mcp/completion_complete", formats: :json
       when Method::PROMPTS_LIST
-        @prompts = schema.prompts
+        @prompts = schema.visible_prompts
         @format = :jsonrpc
         render "active_mcp/prompts_list", formats: :json
       when Method::PROMPTS_GET
-        @prompt = schema.prompts.find { _1.prompt_name == params[:params][:name] }.new(**params[:params][:arguments].permit!.to_h.symbolize_keys)
+        @prompt = schema.visible_prompts.find { _1.prompt_name == params[:params][:name] }
         @format = :jsonrpc
         render "active_mcp/prompts_get", formats: :json
       else
@@ -62,7 +62,7 @@ module ActiveMcp
     def handle_mcp_server_request
       case params[:method]
       when Method::RESOURCES_LIST
-        @resources = schema.resources
+        @resources = schema.visible_resources
         @format = :json
         render "active_mcp/resources_list", formats: :json
       when Method::RESOURCES_READ
@@ -70,11 +70,11 @@ module ActiveMcp
         @format = :json
         render "active_mcp/resources_read", formats: :json
       when Method::RESOURCES_TEMPLATES_LIST
-        @resource_templates = schema.resource_templates
+        @resource_templates = schema.visible_resource_templates
         @format = :json
         render "active_mcp/resource_templates_list", formats: :json
       when Method::TOOLS_LIST
-        @tools = schema.tools
+        @tools = schema.visible_tools
         @format = :json
         render "active_mcp/tools_list", formats: :json
       when Method::TOOLS_CALL
@@ -83,15 +83,15 @@ module ActiveMcp
         render "active_mcp/tools_call", formats: :json
       when Method::COMPLETION_COMPLETE
         type = params.dig(:params, :ref, :type)
-        @completion = ActiveMcp::Completion.new.complete(params: params[:params], context:, refs: (type == "ref/resource") ? schema.resource_templates : schema.prompts)
+        @completion = ActiveMcp::Completion.new.complete(params: params[:params], context:, refs: (type == "ref/resource") ? schema.visible_resource_templates : schema.visible_prompts)
         @format = :json
         render "active_mcp/completion_complete", formats: :json
       when Method::PROMPTS_LIST
-        @prompts = schema.prompts
+        @prompts = schema.visible_prompts
         @format = :json
         render "active_mcp/prompts_list", formats: :json
       when Method::PROMPTS_GET
-        @prompt = schema.prompts&.find { _1.prompt_name == params[:params][:name] }&.new(**params[:params][:arguments].permit!.to_h.symbolize_keys)
+        @prompt = schema.visible_prompts&.find { _1.prompt_name == params[:params][:name] }
         @format = :json
         render "active_mcp/prompts_get", formats: :json
       else
