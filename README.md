@@ -38,6 +38,7 @@ A Ruby on Rails engine for the [Model Context Protocol (MCP)](https://modelconte
     - [Creating Resource Templates](#creating-resource-templates)
   - [💬 MCP Prompts](#-mcp-prompts)
     - [Creating Prompt](#creating-prompt)
+    - [Using context in the schema](#using-context-in-the-schema)
   - [💡 Best Practices](#-best-practices)
     - [1. Create Specific Tool Classes](#1-create-specific-tool-classes)
     - [2. Validate and Sanitize Inputs](#2-validate-and-sanitize-inputs)
@@ -578,6 +579,36 @@ class MySchema < ActiveMcp::Schema::Base
     [
       HelloPrompt.new(greeting: "Hello!")
     ]
+  end
+end
+```
+
+### Using context in the schema
+
+```ruby
+class MySchema < ActiveMcp::Schema::Base
+  def prompts
+    user = User.find_by_token(context[:auth_info][:token])
+
+    user.greetings.map do |greeting|
+      GreetingPrompt.new(greeting: greeting)
+    end
+  end
+end
+```
+
+```ruby
+class GreetingPrompt < ActiveMcp::Prompt::Base
+  def initialize(greeting:)
+    @greeting = greeting
+  end
+
+  def prompt_name
+    "greeting_#{@greeting.text}"
+  end
+
+  def messages
+    # ...
   end
 end
 ```
