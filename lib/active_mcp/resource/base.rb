@@ -6,6 +6,9 @@ module ActiveMcp
       class << self
         attr_reader :schema, :arguments
 
+        def description
+        end
+
         def mime_type
         end
 

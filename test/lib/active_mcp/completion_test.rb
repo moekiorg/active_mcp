@@ -12,7 +12,7 @@ module ActiveMcp
           end
         end
 
-        argument :name, ->(value) do
+        argument :name, complete: ->(value) do
           ["Foo", "Bar"].filter { _1.match(value) }
         end
       end
