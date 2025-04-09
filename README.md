@@ -350,6 +350,12 @@ Resources are Ruby classes `**Resource`:
 
 ```ruby
 class UserResource < ActiveMcp::Resource::Base
+  class << self
+    def mime_type
+      "application/json"
+    end
+  end
+
   def initialize(id:)
     @user = User.find(id)
   end
@@ -360,10 +366,6 @@ class UserResource < ActiveMcp::Resource::Base
 
   def uri
     "data://localhost/users/#{@user.id}"
-  end
-
-  def mime_type
-    "application/json"
   end
 
   def description
