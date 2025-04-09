@@ -528,7 +528,7 @@ Resources are Ruby classes `**Prompt`:
 
 ```ruby
 class HelloPrompt < ActiveMcp::Prompt::Base
-  argument :name, ->(value) do
+  argument :name, required: true, description: "User name", complete: ->(value) do
     User.all.pluck(:name).filter { _1.match(value) }
   end
 

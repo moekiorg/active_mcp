@@ -6,7 +6,7 @@ module ActiveMcp
       class << self
         attr_reader :schema
 
-        def argument(name, type, required: false, description: nil)
+        def argument(name, type, required: false, description: "")
           @schema ||= default_schema
 
           @schema["properties"][name.to_s] = {"type" => type.to_s}

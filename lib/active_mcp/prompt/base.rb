@@ -4,7 +4,7 @@ module ActiveMcp
       class << self
         attr_reader :arguments
 
-        def argument(name, required: false, description: nil, complete: -> {})
+        def argument(name, required: false, description: "", complete: -> {})
           @arguments ||= []
 
           @arguments << {
