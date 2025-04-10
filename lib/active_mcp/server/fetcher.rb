@@ -39,6 +39,7 @@ module ActiveMcp
         request = Net::HTTP::Post.new(uri)
         request.body = JSON.generate(params)
         request["Content-Type"] = "application/json"
+        request["Accept"] = "application/json"
         request["Authorization"] = @auth_header
 
         begin
