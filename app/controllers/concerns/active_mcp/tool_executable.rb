@@ -83,12 +83,7 @@ module ActiveMcp
       # Execute the tool
       begin
         {
-          content: [
-            {
-              type: "text",
-              text: formatted(tool.call(**arguments, context:))
-            }
-          ]
+          content: tool.call(**arguments, context:)
         }
       rescue => e
         {
@@ -100,17 +95,6 @@ module ActiveMcp
             }
           ]
         }
-      end
-    end
-
-    def formatted(object)
-      case object
-      when String
-        object
-      when Hash
-        object.to_json
-      else
-        object.to_s
       end
     end
   end

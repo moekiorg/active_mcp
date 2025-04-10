@@ -10,9 +10,15 @@ class DummyTool < ActiveMcp::Tool::Base
   def call(name:, value: nil, context: {})
     context ||= {}
     if context[:auth_info] && context[:auth_info][:type] == :bearer
-      "Authenticated tool result with name: #{name}, value: #{value}"
+      [{
+        type: "text",
+        text: "Authenticated tool result with name: #{name}, value: #{value}"
+      }]
     else
-      "Test tool result with name: #{name}, value: #{value}"
+      [{
+        type: "text",
+        text: "Test tool result with name: #{name}, value: #{value}"
+      }]
     end
   end
 end

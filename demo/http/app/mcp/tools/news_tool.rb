@@ -19,7 +19,10 @@ class NewsTool < ActiveMcp::Tool::Base
       return "No news found for the specified category: #{category}"
     end
 
-    format_news_response(category, news_items, user_info)
+    [{
+      type: "text",
+      text: format_news_response(category, news_items, user_info)
+    }]
   end
 
   private

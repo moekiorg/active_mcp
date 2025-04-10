@@ -4,5 +4,6 @@ class NoArgumentTool < ActiveMcp::Tool::Base
   end
 
   def call(context: {})
+    []
   end
 end
