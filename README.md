@@ -38,7 +38,7 @@ A Ruby on Rails engine for the [Model Context Protocol (MCP)](https://modelconte
     - [Creating Resource Templates](#creating-resource-templates)
   - [💬 MCP Prompts](#-mcp-prompts)
     - [Creating Prompt](#creating-prompt)
-  - [� Best Practices](#-best-practices)
+  - [💡 Best Practices](#-best-practices)
     - [1. Create Specific Tool Classes](#1-create-specific-tool-classes)
     - [2. Validate and Sanitize Inputs](#2-validate-and-sanitize-inputs)
     - [3. Return Structured Responses](#3-return-structured-responses)
@@ -272,7 +272,7 @@ class AdminOnlyTool < ActiveMcp::Tool::Base
   argument :command, :string, required: true, description: "Admin command"
 
   # Only allow admins to access this tool
-  def visible?(context:)
+  def self.visible?(context:)
     return false unless context
     return false unless context[:auth_info][:type] == :bearer
 
@@ -351,7 +351,7 @@ class UserResource < ActiveMcp::Resource::Base
     @user.profile
   end
 
-  def visible?(context:)
+  def self.visible?(context:)
     # Your logic...
   end
 
