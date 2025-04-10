@@ -104,7 +104,7 @@ class CreateNoteTool < ActiveMcp::Tool::Base
   def call(title:, content:, context:)
     note = Note.create(title: title, content: content)
 
-    "Created note with ID: #{note.id}"
+    [{ type: "text", text: "Created note with ID: #{note.id}" }]
   end
 end
 ```
@@ -229,7 +229,7 @@ class SearchUsersTool < ActiveMcp::Tool::Base
 
     users = User.where(criteria).limit(limit)
 
-    users.attributes
+    [{ type: "text", text: users.attributes.to_json }]
   end
 end
 ```
@@ -577,13 +577,16 @@ Return structured responses that are easy for AI to parse:
 def call(query:, context: {})
   results = User.search(query)
 
-  {
-    content: results.to_json(only: [:id, :name, :email]),
-    metadata: {
-      count: results.size,
-      query: query
+  [{
+    type: "text",
+    text: {
+      content: results.to_json(only: [:id, :name, :email]),
+      metadata: {
+        count: results.size,
+        query: query
+      }.to_json
     }
-  }
+  }]
 end
 ```
 
