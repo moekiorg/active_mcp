@@ -5,6 +5,10 @@ All notable changes to Active MCP will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.9] - 2025-04-10
+
+- Fix default server version
+
 ## [0.10.8] - 2025-04-10
 
 - Improve parameter between mcp server and rails
