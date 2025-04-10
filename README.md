@@ -584,8 +584,8 @@ def call(query:, context: {})
       metadata: {
         count: results.size,
         query: query
-      }.to_json
-    }
+      }
+    }.to_json
   }]
 end
 ```
