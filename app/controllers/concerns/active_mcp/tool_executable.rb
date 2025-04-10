@@ -5,13 +5,8 @@ module ActiveMcp
     private
 
     def execute_tool(params:, context: {})
-      if params[:jsonrpc].present?
-        tool_name = params[:params][:name]
-        tool_params = params[:params][:arguments]
-      else
-        tool_name = params[:name]
-        tool_params = params[:arguments]
-      end
+      tool_name = params[:params][:name]
+      tool_params = params[:params][:arguments]
 
       unless tool_name
         return {

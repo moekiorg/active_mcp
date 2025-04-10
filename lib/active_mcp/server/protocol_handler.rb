@@ -119,7 +119,7 @@ module ActiveMcp
           @server.fetch(
             params: {
               method: Method::RESOURCES_LIST,
-              arguments: {}
+              params: request[:params]
             }
           )[:result]
         )
@@ -131,7 +131,7 @@ module ActiveMcp
           @server.fetch(
             params: {
               method: Method::RESOURCES_TEMPLATES_LIST,
-              arguments: {}
+              params: request[:params]
             }
           )[:result]
         )
@@ -147,14 +147,14 @@ module ActiveMcp
       def handle_call_tool(request)
         name = request.dig(:params, :name)
         arguments = request.dig(:params, :arguments) || {}
-        result = @server.fetch(params: {method: Method::TOOLS_CALL, name:, arguments:})
+        result = @server.fetch(params: {method: Method::TOOLS_CALL, params: {name:, arguments:}})
 
         success_response(request[:id], result[:result])
       end
 
       def handle_read_resource(request)
         uri = request.dig(:params, :uri)
-        result = @server.fetch(params: {method: Method::RESOURCES_READ, uri:, arguments: {}})
+        result = @server.fetch(params: {method: Method::RESOURCES_READ, params: {uri:, arguments: {}}})
 
         success_response(request[:id], result[:result])
       end
@@ -170,9 +170,7 @@ module ActiveMcp
       end
 
       def handle_get_prompt(request)
-        name = request.dig(:params, :name)
-        arguments = request.dig(:params, :arguments)
-        result = @server.fetch(params: {method: Method::PROMPTS_GET, params: {name:, arguments:}})
+        result = @server.fetch(params: {method: Method::PROMPTS_GET, params: request[:params]})
 
         success_response(request[:id], result[:result])
       end

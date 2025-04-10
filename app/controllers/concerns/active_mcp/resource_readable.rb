@@ -5,11 +5,7 @@ module ActiveMcp
     private
 
     def read_resource(params:, context:)
-      uri = if params[:jsonrpc].present?
-        params[:params][:uri]
-      else
-        params[:uri]
-      end
+      uri = params[:params][:uri]
 
       unless uri
         return {

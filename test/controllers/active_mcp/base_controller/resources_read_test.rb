@@ -18,7 +18,7 @@ module ActiveMcp
 
       test "should get resources" do
         @controller.stub(:schema, @schema_class.new) do
-          post "index", params: {method: "resources/read", uri: "data://app/users/UserA"}
+          post "index", params: {method: "resources/read", params: {uri: "data://app/users/UserA"}}
 
           assert_response :success
 

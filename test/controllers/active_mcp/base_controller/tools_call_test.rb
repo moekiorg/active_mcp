@@ -22,8 +22,10 @@ module ActiveMcp
 
           post "index", params: {
             method: "tools/call",
-            name: "test",
-            arguments:
+            params: {
+              name: "test",
+              arguments:
+            }
           }
 
           assert_response :success
@@ -55,7 +57,7 @@ module ActiveMcp
 
       test "should handle missing tool name" do
         @controller.stub(:schema, @schema_class.new) do
-          post "index", params: {method: "tools/call", arguments: {}}
+          post "index", params: {method: "tools/call", params: {arguments: {foo: "bar"}}}
           assert_response :ok
 
           json = JSON.parse(response.body)
@@ -67,8 +69,10 @@ module ActiveMcp
         @controller.stub(:schema, @schema_class.new) do
           post "index", params: {
             method: "tools/call",
-            name: "nonexistent_tool",
-            arguments: "{}"
+            params: {
+              name: "nonexistent_tool",
+              arguments: "{}"
+            }
           }
 
           assert_response :ok
@@ -82,8 +86,10 @@ module ActiveMcp
         @controller.stub(:schema, @schema_class.new) do
           post "index", params: {
             method: "tools/call",
-            name: "test",
-            arguments: {value: 123}
+            params: {
+              name: "test",
+              arguments: {value: 123}
+            }
           }
 
           assert_response :ok
@@ -100,8 +106,10 @@ module ActiveMcp
           @request.headers["Authorization"] = "Bearer test-token"
           post "index", params: {
             method: "tools/call",
-            name: "test",
-            arguments: arguments
+            params: {
+              name: "test",
+              arguments: arguments
+            }
           }
 
           json = JSON.parse(response.body)
