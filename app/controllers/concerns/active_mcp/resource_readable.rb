@@ -25,7 +25,7 @@ module ActiveMcp
         }
       end
 
-      if resource.respond_to?(:visible?) && !resource.visible?(context:)
+      if resource.class.respond_to?(:visible?) && !resource.class.visible?(context:)
         return {
           isError: true,
           contents: []
@@ -38,7 +38,7 @@ module ActiveMcp
             contents: [
               {
                 uri:,
-                mimeType: resource.class.mime_type,
+                mimeType: resource.class.mime_type_value,
                 text: content
               }
             ]
@@ -48,7 +48,7 @@ module ActiveMcp
             contents: [
               {
                 uri:,
-                mimeType: resource.class.mime_type,
+                mimeType: resource.class.mime_type_value,
                 blob: Base64.strict_encode64(content)
               }
             ]

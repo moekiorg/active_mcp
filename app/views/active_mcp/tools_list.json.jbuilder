@@ -4,9 +4,9 @@ json.id @id if @format == :jsonrpc && @id.present?
 json.result do
   json.tools do
     json.array!(@tools) do |tool|
-      json.name tool.tool_name
-      json.description tool.description
-      json.inputSchema tool.class.schema
+      json.name tool.tool_name_value
+      json.description tool.description_value
+      json.inputSchema tool.schema
     end
   end
 end

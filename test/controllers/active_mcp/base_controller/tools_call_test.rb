@@ -7,12 +7,8 @@ module ActiveMcp
         @routes = ActiveMcp::Engine.routes
         @controller = ActiveMcp::BaseController.new
         @schema_class = Class.new(ActiveMcp::Schema::Base) do
-          def tools
-            [
-              DummyTool.new,
-              NoArgumentTool.new
-            ]
-          end
+          tool DummyTool
+          tool NoArgumentTool
         end
       end
 
@@ -23,7 +19,7 @@ module ActiveMcp
           post "index", params: {
             method: "tools/call",
             params: {
-              name: "test",
+              name: "dummy",
               arguments:
             }
           }
@@ -43,7 +39,7 @@ module ActiveMcp
             jsonrpc: "2.0",
             method: "tools/call",
             params: {
-              name: "test",
+              name: "dummy",
               arguments:
             }
           }
@@ -87,7 +83,7 @@ module ActiveMcp
           post "index", params: {
             method: "tools/call",
             params: {
-              name: "test",
+              name: "dummy",
               arguments: {value: 123}
             }
           }
@@ -107,7 +103,7 @@ module ActiveMcp
           post "index", params: {
             method: "tools/call",
             params: {
-              name: "test",
+              name: "dummy",
               arguments: arguments
             }
           }

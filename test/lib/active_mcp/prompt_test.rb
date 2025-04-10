@@ -3,8 +3,8 @@ require "test_helper"
 module ActiveMcp
   class PromptTest < ActiveSupport::TestCase
     test "should return messages" do
-      prompt = DummyPrompt.new(greeting: "Hello!")
-      assert_equal prompt.messages(name: "UserA").map(&:to_h), [
+      prompt = DummyPrompt.new
+      assert_equal prompt.messages(greeting: "Hello!", name: "UserA").map(&:to_h), [
         {
           role: "user",
           content: {
@@ -43,7 +43,7 @@ module ActiveMcp
     end
 
     test "should return visible state" do
-      prompt = DummyPrompt.new(greeting: "Hello!")
+      prompt = DummyPrompt.new
       assert_equal prompt.visible?, true
     end
 

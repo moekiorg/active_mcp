@@ -7,12 +7,8 @@ module ActiveMcp
         @routes = ActiveMcp::Engine.routes
         @controller = ActiveMcp::BaseController.new
         @schema_class = Class.new(ActiveMcp::Schema::Base) do
-          def tools
-            [
-              DummyTool.new,
-              NoArgumentTool.new
-            ]
-          end
+          tool DummyTool
+          tool NoArgumentTool
         end
       end
 
@@ -26,7 +22,7 @@ module ActiveMcp
           assert_not_nil json["result"]
 
           tools = json["result"]["tools"]
-          test_tool = tools.find { |t| t["name"] == "test" }
+          test_tool = tools.find { |t| t["name"] == "dummy" }
           assert_not_nil test_tool
           assert_equal "Test tool for controller testing", test_tool["description"]
           assert_not_nil test_tool["inputSchema"]
@@ -43,7 +39,7 @@ module ActiveMcp
           assert_not_nil json["result"]
 
           tools = json["result"]["tools"]
-          test_tool = tools.find { |t| t["name"] == "test" }
+          test_tool = tools.find { |t| t["name"] == "dummy" }
           assert_not_nil test_tool
           assert_equal "Test tool for controller testing", test_tool["description"]
           assert_not_nil test_tool["inputSchema"]

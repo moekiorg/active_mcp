@@ -1,15 +1,7 @@
 class NoArgumentPrompt < ActiveMcp::Prompt::Base
-  def initialize(greeting:)
-    @greeting = greeting
-  end
+  prompt_name "dummy"
 
-  def prompt_name
-    "dummy"
-  end
-
-  def description
-    "This is a dummy"
-  end
+  description "This is a dummy"
 
   def messages
     [

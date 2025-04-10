@@ -1,17 +1,9 @@
 class DummyResource < ActiveMcp::Resource::Base
-  class << self
-    def resource_template_name
-      "dummy"
-    end
+  resource_template_name "dummy"
 
-    def uri_template
-      "data://app/users/{name}"
-    end
+  uri_template "data://app/users/{name}"
 
-    def mime_type
-      "application/json"
-    end
-  end
+  mime_type "application/json"
 
   argument :name, complete: ->(value, _) do
     ["UserA", "UserB"].filter { _1.match(value) }

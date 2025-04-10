@@ -1,18 +1,14 @@
 class HelloPrompt < ActiveMcp::Prompt::Base
+  prompt_name "hello"
+
+  description "This is a test"
+
   argument :name, required: true, description: "Name", complete: ->(value) do
     ["UserA", "UserB"].filter { _1.match(value) }
   end
 
   def initialize(greeting:)
     @greeting = greeting
-  end
-
-  def prompt_name
-    "hello"
-  end
-
-  def description
-    "This is a test"
   end
 
   def messages(name:)

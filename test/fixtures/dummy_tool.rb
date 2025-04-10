@@ -1,14 +1,11 @@
 class DummyTool < ActiveMcp::Tool::Base
+  tool_name "dummy"
+
+  description "Test tool for controller testing"
+
   argument :name, :string, required: true, description: "Name parameter"
+
   argument :value, :integer, required: false, description: "Value parameter"
-
-  def tool_name
-    "test"
-  end
-
-  def description
-    "Test tool for controller testing"
-  end
 
   def call(name:, value: nil, context: {})
     context ||= {}

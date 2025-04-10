@@ -8,11 +8,7 @@ module ActiveMcp
         @controller = ActiveMcp::BaseController.new
 
         @schema_class = Class.new(ActiveMcp::Schema::Base) do
-          def prompts
-            [
-              DummyPrompt.new(greeting: "Hello!")
-            ]
-          end
+          prompt DummyPrompt
         end
       end
 
@@ -30,6 +26,11 @@ module ActiveMcp
                   name: "dummy",
                   description: "This is a dummy",
                   arguments: [
+                    {
+                      name: "greeting",
+                      description: "Greeting",
+                      required: true
+                    },
                     {
                       name: "name",
                       description: "Name",
@@ -59,6 +60,11 @@ module ActiveMcp
                   description: "This is a dummy",
                   arguments: [
                     {
+                      name: "greeting",
+                      description: "Greeting",
+                      required: true
+                    },
+                    {
                       name: "name",
                       description: "Name",
                       required: true
@@ -73,11 +79,7 @@ module ActiveMcp
 
       test "should return prompts list when arguments do not exist" do
         @schema_class = Class.new(ActiveMcp::Schema::Base) do
-          def prompts
-            [
-              NoArgumentPrompt.new(greeting: "Hello!")
-            ]
-          end
+          prompt NoArgumentPrompt
         end
         @controller.stub(:schema, @schema_class.new) do
           post "index", params: {method: Method::PROMPTS_LIST}
