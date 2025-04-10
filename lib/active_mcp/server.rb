@@ -38,7 +38,7 @@ module ActiveMcp
     attr_reader :name, :version, :uri, :protocol_handler, :fetcher
 
     def initialize(
-      version: ActiveMcp::VERSION,
+      version: "1.0.0",
       name: "ActiveMcp",
       uri: nil,
       auth: nil
