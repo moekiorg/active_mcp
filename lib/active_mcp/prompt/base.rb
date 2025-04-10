@@ -2,7 +2,15 @@ module ActiveMcp
   module Prompt
     class Base
       class << self
-        attr_reader :arguments
+        attr_reader :prompt_name_value, :description_value, :arguments
+
+        def prompt_name(value)
+          @prompt_name_value = value
+        end
+
+        def description(value)
+          @description_value = value
+        end
 
         def argument(name, required: false, description: "", complete: -> {})
           @arguments ||= []
@@ -17,12 +25,6 @@ module ActiveMcp
       end
 
       def initialize(*args, context: {})
-      end
-
-      def prompt_name
-      end
-
-      def description
       end
 
       def visible?(context: {})

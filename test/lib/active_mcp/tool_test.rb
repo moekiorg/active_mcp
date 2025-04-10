@@ -35,10 +35,10 @@ module ActiveMcp
 
       tool = tool_class.new
 
-      assert_equal true, tool.validate_arguments({name: "Test"})
-      assert_equal true, tool.validate_arguments({name: "Test", age: 30})
+      assert_equal true, tool.validate({name: "Test"})
+      assert_equal true, tool.validate({name: "Test", age: 30})
 
-      result = tool.validate_arguments({age: 30})
+      result = tool.validate({age: 30})
       assert result.is_a?(Hash)
       assert result[:error].present?
       assert_match(/name/, result[:error])

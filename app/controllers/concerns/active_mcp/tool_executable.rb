@@ -20,11 +20,11 @@ module ActiveMcp
         }
       end
 
-      tool = schema.visible_tools.find do |tc|
-        tc.tool_name == tool_name
+      tool_class = schema.visible_tools&.find do |tc|
+        tc.tool_name_value == tool_name
       end
 
-      unless tool
+      unless tool_class
         return {
           isError: true,
           content: [
@@ -36,7 +36,7 @@ module ActiveMcp
         }
       end
 
-      unless tool.visible?(context:)
+      unless tool_class.visible?(context:)
         return {
           isError: true,
           content: [
@@ -64,7 +64,9 @@ module ActiveMcp
         end
       end
 
-      validation_result = tool.validate_arguments(arguments)
+      tool = tool_class.new
+
+      validation_result = tool.validate(arguments)
 
       if validation_result.is_a?(Hash) && validation_result[:error]
         return {

@@ -6,11 +6,7 @@ module ActiveMcp
     test "should initialize with base uri when the primitive is resource" do
       completion = ActiveMcp::Completion.new
       template = Class.new(ActiveMcp::Resource::Base) do
-        class << self
-          def uri_template
-            "data://app/users/{name}.json"
-          end
-        end
+        uri_template "data://app/users/{name}.json"
 
         argument :name, complete: ->(value, _) do
           ["Foo", "Bar"].filter { _1.match(value) }

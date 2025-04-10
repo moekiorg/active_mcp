@@ -4,7 +4,15 @@ module ActiveMcp
   module Tool
     class Base
       class << self
-        attr_reader :schema
+        attr_reader :tool_name_value, :description_value, :schema
+
+        def tool_name(value)
+          @tool_name_value = value
+        end
+
+        def description(value)
+          @description_value = value
+        end
 
         def argument(name, type, required: false, description: "")
           @schema ||= default_schema
@@ -21,31 +29,25 @@ module ActiveMcp
             "required" => []
           }
         end
+
+        def visible?(context: {})
+          true
+        end
       end
 
       def initialize
       end
 
-      def tool_name
-      end
-
-      def description
-      end
-
-      def visible?(context: {})
-        true
-      end
-
-      def call(context: {}, **args)
-        raise NotImplementedError, "#{self.class.name}#call must be implemented"
-      end
-
-      def validate_arguments(args)
+      def validate(args)
         return true unless self.class.schema
 
         JSON::Validator.validate!(self.class.schema, args)
       rescue JSON::Schema::ValidationError => e
         {error: e.message}
+      end
+
+      def call(context: {}, **args)
+        raise NotImplementedError, "#{self.class.name}#call must be implemented"
       end
     end
   end

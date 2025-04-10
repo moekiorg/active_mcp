@@ -8,11 +8,7 @@ module ActiveMcp
         @controller = ActiveMcp::BaseController.new
 
         @schema_class = Class.new(ActiveMcp::Schema::Base) do
-          def prompts
-            [
-              DummyPrompt.new(greeting: "Hello!")
-            ]
-          end
+          prompt DummyPrompt
         end
       end
 
@@ -21,6 +17,7 @@ module ActiveMcp
           post "index", params: {method: Method::PROMPTS_GET, params: {
             name: "dummy",
             arguments: {
+              greeting: "Hello!",
               name: "UserA"
             }
           }}
@@ -77,6 +74,7 @@ module ActiveMcp
           post "index", params: {method: Method::PROMPTS_GET, jsonrpc: "2.0", params: {
             name: "dummy",
             arguments: {
+              greeting: "Hello!",
               name: "UserA"
             }
           }}

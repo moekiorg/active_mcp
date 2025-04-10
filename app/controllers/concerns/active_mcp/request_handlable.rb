@@ -50,7 +50,7 @@ module ActiveMcp
         @format = :jsonrpc
         render "active_mcp/prompts_list", formats: :json
       when Method::PROMPTS_GET
-        @prompt = schema.visible_prompts.find { _1.prompt_name == params[:params][:name] }
+        @prompt = schema.visible_prompts.find { _1.prompt_name_value == params[:params][:name] }
         @format = :jsonrpc
         render "active_mcp/prompts_get", formats: :json
       else
@@ -91,7 +91,7 @@ module ActiveMcp
         @format = :json
         render "active_mcp/prompts_list", formats: :json
       when Method::PROMPTS_GET
-        @prompt = schema.visible_prompts&.find { _1.prompt_name == params[:params][:name] }
+        @prompt = schema.visible_prompts&.find { _1.prompt_name_value == params[:params][:name] }
         @format = :json
         render "active_mcp/prompts_get", formats: :json
       else

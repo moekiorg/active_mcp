@@ -1,11 +1,7 @@
 class NewsTool < ActiveMcp::Tool::Base
-  def tool_name
-    "news"
-  end
+  tool_name "news"
 
-  def description
-    "Get latest news from specified category"
-  end
+  description "Get latest news from specified category"
 
   argument :category, :string, required: true, description: "News category (tech, business, sports, etc.)"
   argument :limit, :integer, required: false, description: "Maximum number of news items to retrieve"

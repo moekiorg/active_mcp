@@ -8,11 +8,7 @@ module ActiveMcp
         @controller = ActiveMcp::BaseController.new
 
         @schema_class = Class.new(ActiveMcp::Schema::Base) do
-          def resources
-            [
-              DummyResource.new(name: "UserA")
-            ]
-          end
+          resource DummyResource
         end
       end
 

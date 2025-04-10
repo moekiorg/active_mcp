@@ -38,8 +38,7 @@ A Ruby on Rails engine for the [Model Context Protocol (MCP)](https://modelconte
     - [Creating Resource Templates](#creating-resource-templates)
   - [💬 MCP Prompts](#-mcp-prompts)
     - [Creating Prompt](#creating-prompt)
-  - [📥 Using Context in the Schema](#-using-context-in-the-schema)
-  - [💡 Best Practices](#-best-practices)
+  - [� Best Practices](#-best-practices)
     - [1. Create Specific Tool Classes](#1-create-specific-tool-classes)
     - [2. Validate and Sanitize Inputs](#2-validate-and-sanitize-inputs)
     - [3. Return Structured Responses](#3-return-structured-responses)
@@ -95,13 +94,9 @@ $ rails generate active_mcp:tool create_note
 
 ```ruby
 class CreateNoteTool < ActiveMcp::Tool::Base
-  def tool_name
-    "create_note"
-  end
+  tool_name "create_note"
 
-  def description
-    "Create Note"
-  end
+  description "Create Note"
 
   argument :title, :string, required: true
   argument :content, :string, required: true
@@ -118,11 +113,7 @@ end
 
 ```ruby
 class MySchema < ActiveMcp::Schema::Base
-  def tools
-    [
-      CreateNoteTool.new
-    ]
-  end
+  tools CreateNoteTool
 end
 ```
 
@@ -223,13 +214,9 @@ MCP tools are Ruby classes that inherit from `ActiveMcp::Tool::Base` and define 
 
 ```ruby
 class SearchUsersTool < ActiveMcp::Tool::Base
-  def tool_name
-    "Search Users"
-  end
+  tool_name "Search Users"
 
-  def description
-    'Search users by criteria'
-  end
+  description 'Search users by criteria'
 
   argument :email, :string, required: false, description: 'Email to search for'
   argument :name, :string, required: false, description: 'Name to search for'
@@ -278,13 +265,9 @@ Control access to tools by overriding the `visible?` class method:
 
 ```ruby
 class AdminOnlyTool < ActiveMcp::Tool::Base
-  def tool_name
-    "admin_only_tool"
-  end
+  tool_name "admin_only_tool"
 
-  def description
-    "Admin-only tool"
-  end
+  description "Admin-only tool"
 
   argument :command, :string, required: true, description: "Admin command"
 
@@ -350,11 +333,7 @@ Resources are Ruby classes `**Resource`:
 
 ```ruby
 class UserResource < ActiveMcp::Resource::Base
-  class << self
-    def mime_type
-      "application/json"
-    end
-  end
+  mime_type "application/json"
 
   def initialize(id:)
     @user = User.find(id)
@@ -390,10 +369,8 @@ end
 
 ```ruby
 class MySchema < ActiveMcp::Schema::Base
-  def resources
-    User.all.each do |user|
-      UserResource.new(id: user.id)
-    end
+  resource UserResource, items: User.all.each do |user|
+    { id: user.id }
   end
 end
 ```
@@ -415,11 +392,7 @@ end
 
 ```ruby
 class ImageResource < ActiveMcp::Resource::Base
-  class << self
-    def mime_type
-      "image/png"
-    end
-  end
+  mime_type "image/png"
 
   def resource_name
     "profile_image"
@@ -462,30 +435,20 @@ Resource teamplates are Ruby classes `**Resource`:
 
 ```ruby
 class UserResource < ActiveMcp::Resource::Base
-  class << self
-    def resource_template_name
-      "users"
-    end
+  resource_template_name "users"
 
-    def uri_template
-      "data://localhost/users/{id}"
-    end
+  uri_template "data://localhost/users/{id}"
 
-    def mime_type
-      "application/json"
-    end
+  mime_type "application/json"
 
-    def description
-      "This is a test."
-    end
-
-    def visible?(context:)
-      # Your logic...
-    end
-  end
+  description "This is a test."
 
   argument :id, complete: ->(value, context) do
     User.all.pluck(:id).filter { _1.match(value) }
+  end
+
+  def self.visible?(context:)
+    # Your logic...
   end
 
   def initialize(id:)
@@ -512,10 +475,8 @@ end
 
 ```ruby
 class MySchema < ActiveMcp::Schema::Base
-  def resources
-    User.all.each do |user|
-      UserResource.new(id: user.id)
-    end
+  resource UserResource, items: User.all.each do |user|
+    { id: user.id }
   end
 end
 ```
@@ -530,23 +491,15 @@ Resources are Ruby classes `**Prompt`:
 
 ```ruby
 class HelloPrompt < ActiveMcp::Prompt::Base
+  prompt_name "hello"
+
+  description "This is a test."
+
   argument :name, required: true, description: "User name", complete: ->(value, context) do
     User.all.pluck(:name).filter { _1.match(value) }
   end
 
-  def initialize(greeting:)
-    @greeting = greeting
-  end
-
-  def prompt_name
-    "hello"
-  end
-
-  def description
-    "This is a test."
-  end
-
-  def visible?(context:)
+  def self.visible?(context:)
     # Your logic...
   end
 
@@ -554,7 +507,7 @@ class HelloPrompt < ActiveMcp::Prompt::Base
     [
       ActiveMcp::Message::Text.new(
         role: "user",
-        text: "#{@greeting} #{name}"
+        text: "Hello! #{name}"
       ),
       ActiveMcp::Message::Image.new(
         role: "assistant",
@@ -577,41 +530,7 @@ end
 
 ```ruby
 class MySchema < ActiveMcp::Schema::Base
-  def prompts
-    [
-      HelloPrompt.new(greeting: "Hello!")
-    ]
-  end
-end
-```
-
-## 📥 Using Context in the Schema
-
-```ruby
-class MySchema < ActiveMcp::Schema::Base
-  def prompts
-    user = User.find_by_token(context[:auth_info][:token])
-
-    user.greetings.map do |greeting|
-      GreetingPrompt.new(greeting: greeting)
-    end
-  end
-end
-```
-
-```ruby
-class GreetingPrompt < ActiveMcp::Prompt::Base
-  def initialize(greeting:)
-    @greeting = greeting
-  end
-
-  def prompt_name
-    "greeting_#{@greeting.text}"
-  end
-
-  def messages
-    # ...
-  end
+  prompt HelloPrompt
 end
 ```
 

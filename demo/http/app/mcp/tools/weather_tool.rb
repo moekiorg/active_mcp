@@ -1,14 +1,10 @@
 class WeatherTool < ActiveMcp::Tool::Base
+  tool_name "weather"
+
+  description "Get weather information for the specified city"
+
   argument :city, :string, required: true, description: "City name to get weather information"
   argument :country, :string, required: false, description: "Country name (optional)"
-
-  def tool_name
-    "weather"
-  end
-
-  def description
-    "Get weather information for the specified city"
-  end
 
   def call(city:, country: nil, context: {})
     weather_data = get_mock_weather_data(city, country)

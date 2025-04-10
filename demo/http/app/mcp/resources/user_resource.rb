@@ -1,21 +1,11 @@
 class UserResource < ActiveMcp::Resource::Base
-  class << self
-    def resource_template_name
-      "User"
-    end
+  resource_template_name "User"
 
-    def uri_template
-      "data://localhost/user/{name}"
-    end
+  uri_template "data://localhost/user/{name}"
 
-    def mime_type
-      "application/json"
-    end
+  mime_type "application/json"
 
-    def description
-      "The user's profile"
-    end
-  end
+  description "The user's profile"
 
   argument :name, complete: ->(value) do
     ["UserA", "UserB"].filter { _1.match(value) }

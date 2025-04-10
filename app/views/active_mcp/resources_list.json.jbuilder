@@ -6,7 +6,7 @@ json.result do
     json.array!(@resources) do |resource|
       json.name resource.resource_name
       json.uri resource.uri
-      json.mimeType resource.class.mime_type
+      json.mimeType resource.class.mime_type_value
       json.description resource.description
     end
   end

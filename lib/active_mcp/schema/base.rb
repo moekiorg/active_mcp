@@ -1,46 +1,55 @@
 module ActiveMcp
   module Schema
     class Base
-      attr_reader :context
+      class << self
+        attr_reader :tools, :resources, :prompts
+
+        def tool(value)
+          @tools ||= []
+          @tools << value
+        end
+
+        def resource(value, items: [])
+          @resources ||= []
+          @resources << {klass: value, items:}
+        end
+
+        def prompt(value)
+          @prompts ||= []
+          @prompts << value
+        end
+      end
 
       def initialize(context: {})
         @context = context
       end
 
-      def tools
-        []
-      end
-
-      def resources
-        []
-      end
-
-      def prompts
-        []
-      end
-
       def visible_resources
-        resources&.filter do |resource|
-          !resource.respond_to?(:visible?) || resource.visible?(context: @context)
+        visibles = self.class.resources&.filter do |resource|
+          !resource[:klass].respond_to?(:visible?) || resource[:klass].visible?(context: @context)
         end
+        visibles&.map do |resource|
+          resource[:items].map do |item|
+            resource[:klass].new(**item)
+          end
+        end&.flatten || []
       end
 
       def visible_resource_templates
-        resource_instances = resources&.filter do |resource|
-          resource.class.respond_to?(:uri_template) && (!resource.respond_to?(:visible?) || resource.visible?(context: @context))
+        visibles = self.class.resources&.filter do |resource|
+          resource[:klass].respond_to?(:uri_template) && (!resource[:klass].respond_to?(:visible?) || resource[:klass].visible?(context: @context))
         end
-
-        resource_instances.map(&:class).uniq
+        visibles&.map { _1[:klass] } || []
       end
 
       def visible_tools
-        tools&.filter do |tool|
+        self.class.tools&.filter do |tool|
           !tool.respond_to?(:visible?) || tool.visible?(context: @context)
         end
       end
 
       def visible_prompts
-        prompts&.filter do |resource|
+        self.class.prompts&.filter do |resource|
           !resource.respond_to?(:visible?) || resource.visible?(context: @context)
         end
       end
