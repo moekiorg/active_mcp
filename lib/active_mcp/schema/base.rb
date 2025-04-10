@@ -7,6 +7,18 @@ module ActiveMcp
         @context = context
       end
 
+      def tools
+        []
+      end
+
+      def resources
+        []
+      end
+
+      def prompts
+        []
+      end
+
       def visible_resources
         resources&.filter do |resource|
           !resource.respond_to?(:visible?) || resource.visible?(context: @context)
