@@ -1,3 +1,3 @@
 module ActiveMcp
-  VERSION = "0.10.9"
+  VERSION = "1.0.0"
 end
