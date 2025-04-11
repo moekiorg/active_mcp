@@ -1,6 +1,10 @@
-# Active MCP 🔌
+<div align="center">
+<img src="./website/public/logo.png" alt="Active MCP" width="200"></i>
+</div>
 
 <div align="center">
+
+<h1>Active MCP</h1>
 
 [![Gem Version](https://badge.fury.io/rb/active_mcp.svg)](https://badge.fury.io/rb/active_mcp)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -12,39 +16,38 @@ A Ruby on Rails engine for the [Model Context Protocol (MCP)](https://modelconte
 
 ## 📖 Table of Contents
 
-- [Active MCP 🔌](#active-mcp-)
-  - [📖 Table of Contents](#-table-of-contents)
-  - [✨ Features](#-features)
-  - [📦 Installation](#-installation)
-  - [🚀 Setup](#-setup)
-  - [🔌 MCP Connection Methods](#-mcp-connection-methods)
-    - [1. Direct HTTP Connection](#1-direct-http-connection)
-    - [2. Standalone MCP Server](#2-standalone-mcp-server)
-  - [🛠 Rails Generators](#-rails-generators)
-    - [Install Generator](#install-generator)
-    - [Tool Generator](#tool-generator)
-    - [Resource Generator](#resource-generator)
-  - [🧰 Creating MCP Tools](#-creating-mcp-tools)
-  - [📋 Input Schema](#-input-schema)
-  - [🔐 Authorization \& Authentication](#-authorization--authentication)
-    - [Authorization for Tools](#authorization-for-tools)
-    - [Authentication Options](#authentication-options)
-      - [1. Server Configuration](#1-server-configuration)
-      - [2. Token Verification in Tools](#2-token-verification-in-tools)
-  - [📦 MCP Resources](#-mcp-resources)
-    - [Creating Resources](#creating-resources)
-    - [Resource Types](#resource-types)
-  - [📦 MCP Resource Templates](#-mcp-resource-templates)
-    - [Creating Resource Templates](#creating-resource-templates)
-  - [💬 MCP Prompts](#-mcp-prompts)
-    - [Creating Prompt](#creating-prompt)
-  - [💡 Best Practices](#-best-practices)
-    - [1. Create Specific Tool Classes](#1-create-specific-tool-classes)
-    - [2. Validate and Sanitize Inputs](#2-validate-and-sanitize-inputs)
-    - [3. Return Structured Responses](#3-return-structured-responses)
-  - [🧪 Development](#-development)
-  - [👥 Contributing](#-contributing)
-  - [📄 License](#-license)
+- [📖 Table of Contents](#-table-of-contents)
+- [✨ Features](#-features)
+- [📦 Installation](#-installation)
+- [🚀 Setup](#-setup)
+- [🔌 MCP Connection Methods](#-mcp-connection-methods)
+  - [1. Direct HTTP Connection](#1-direct-http-connection)
+  - [2. Standalone MCP Server](#2-standalone-mcp-server)
+- [🛠 Rails Generators](#-rails-generators)
+  - [Install Generator](#install-generator)
+  - [Tool Generator](#tool-generator)
+  - [Resource Generator](#resource-generator)
+- [🧰 Creating MCP Tools](#-creating-mcp-tools)
+- [📋 Input Schema](#-input-schema)
+- [🔐 Authorization \& Authentication](#-authorization--authentication)
+  - [Authorization for Tools](#authorization-for-tools)
+  - [Authentication Options](#authentication-options)
+    - [1. Server Configuration](#1-server-configuration)
+    - [2. Token Verification in Tools](#2-token-verification-in-tools)
+- [📦 MCP Resources](#-mcp-resources)
+  - [Creating Resources](#creating-resources)
+  - [Resource Types](#resource-types)
+- [📦 MCP Resource Templates](#-mcp-resource-templates)
+  - [Creating Resource Templates](#creating-resource-templates)
+- [💬 MCP Prompts](#-mcp-prompts)
+  - [Creating Prompt](#creating-prompt)
+- [💡 Best Practices](#-best-practices)
+  - [1. Create Specific Tool Classes](#1-create-specific-tool-classes)
+  - [2. Validate and Sanitize Inputs](#2-validate-and-sanitize-inputs)
+  - [3. Return Structured Responses](#3-return-structured-responses)
+- [🧪 Development](#-development)
+- [👥 Contributing](#-contributing)
+- [📄 License](#-license)
 
 ## ✨ Features
 
