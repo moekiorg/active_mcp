@@ -10,7 +10,7 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Rails](https://img.shields.io/badge/Rails-%3E%3D%206.0.0-red.svg)](https://rubyonrails.org/)
 
-A Ruby on Rails engine for the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) - connect your Rails apps to AI tools with minimal effort.
+A Ruby on Rails engine for the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/)
 
 </div>
 
