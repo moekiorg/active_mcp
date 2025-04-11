@@ -66,7 +66,7 @@ module ActiveMcp
 
       tool = tool_class.new
 
-      validation_result = tool.validate(arguments)
+      validation_result = tool.validate(arguments, context)
 
       if validation_result.is_a?(Hash) && validation_result[:error]
         return {

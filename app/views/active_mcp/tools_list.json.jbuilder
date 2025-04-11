@@ -6,7 +6,7 @@ json.result do
     json.array!(@tools) do |tool|
       json.name tool.tool_name_value
       json.description tool.description_value
-      json.inputSchema tool.schema
+      json.inputSchema tool.render_schema(@context)
     end
   end
 end

@@ -16,6 +16,7 @@ class SearchUsersTool < ActiveMcp::Tool::Base
   argument :email, :string, required: false, description: "Email to search for"
   argument :name, :string, required: false, description: "Name to search for"
   argument :limit, :integer, required: false, description: "Maximum number of results"
+  argument :role, :string, required: false, visible: ->(context) { context[:role] == "admin" }
 
   def call(email: nil, name: nil, limit: 10, context: {})
     criteria = {}

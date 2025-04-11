@@ -13,6 +13,7 @@ class SearchUsersTool < ActiveMcp::Tool::Base
 
   argument :query, :string, required: true, description: "Search query"
   argument :limit, :integer, required: false, description: "Maximum results"
+  argument :role, :string, required: false, visible: ->(context) { context[:role] == "admin" }
 
   def call(query:, limit: 10, context: {})
     users = User.where("name LIKE ? OR email LIKE ?", "%#{query}%", "%#{query}%")

@@ -16,29 +16,33 @@ module ActiveMcp
       tool_class = Class.new(ActiveMcp::Tool::Base) do
         argument :name, :string, required: true, description: "Name description"
         argument :age, :integer, required: false
+        argument :role, :string, required: false, visible: -> (context) { context[:role] == "admin" }
       end
 
-      schema = tool_class.schema
+      schema = tool_class.render_schema({ role: "editor" })
       assert_equal "object", schema["type"]
       assert_equal "string", schema["properties"]["name"]["type"]
       assert_equal "Name description", schema["properties"]["name"]["description"]
       assert_equal "integer", schema["properties"]["age"]["type"]
       assert_includes schema["required"], "name"
       refute_includes schema["required"], "age"
+      assert_nil schema["properties"]["role"]
     end
 
     test "should validate arguments against schema" do
       tool_class = Class.new(ActiveMcp::Tool::Base) do
         argument :name, :string, required: true
         argument :age, :integer, required: false
+        argument :role, :string, required: true, visible: ->(context) { context[:role] == "admin" }
       end
 
       tool = tool_class.new
 
-      assert_equal true, tool.validate({name: "Test"})
-      assert_equal true, tool.validate({name: "Test", age: 30})
+      assert_equal true, tool.validate({name: "Test"}, {})
+      assert_equal true, tool.validate({name: "Test", age: 30}, {})
+      assert_not_equal true, tool.validate({name: "Test", age: 30}, {role: "admin"})
 
-      result = tool.validate({age: 30})
+      result = tool.validate({age: 30}, {})
       assert result.is_a?(Hash)
       assert result[:error].present?
       assert_match(/name/, result[:error])
@@ -58,7 +62,7 @@ module ActiveMcp
       tool_class = Class.new(ActiveMcp::Tool::Base) do
         argument :param, :string, required: true
 
-        def call(param:, auth_info: nil, **args)
+        def call(param:, auth_info: nil, **_args)
           auth_type = auth_info&.dig(:type)
           auth_token = auth_info&.dig(:token)
 
