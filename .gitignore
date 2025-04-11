@@ -52,3 +52,5 @@
 node_modules
 
 coverage
+
+website/.vitepress/cache

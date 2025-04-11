@@ -1,0 +1,25 @@
+/* .vitepress/theme/custom.css */
+:root {
+  --vp-c-brand-1: #d50707;
+  --vp-c-brand-2: #d50707;
+  --vp-button-brand-bg: #d50707;
+}
+
+[data-v-89d2fc22] .image-src {
+  max-width: 400px;
+  max-height: 300px;
+}
+
+@media screen and (min-width: 700px) {
+  [data-v-89d2fc22] .image-src {
+    max-width: 500px;
+    max-height: 300px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  [data-v-89d2fc22] .image-src {
+    max-width: 800px;
+    max-height: 500px;
+  }
+}
