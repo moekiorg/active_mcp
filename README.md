@@ -103,6 +103,8 @@ class CreateNoteTool < ActiveMcp::Tool::Base
 
   argument :title, :string, required: true
   argument :content, :string, required: true
+  argument :published_at, :string, required: true,
+    visible: ->(context) { context[:role] == "admin" }
 
   def call(title:, content:, context:)
     note = Note.create(title: title, content: content)

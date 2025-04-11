@@ -29,5 +29,7 @@ module ActiveMcp
     def schema
       nil
     end
+
+    attr_reader :context
   end
 end
