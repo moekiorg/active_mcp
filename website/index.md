@@ -6,7 +6,7 @@ hero:
   text: "Rails engine for the Model Context Protocol"
   tagline: Seamlessly integrate MCP with your Rails application
   image:
-    src: /code.png
+    src: code.png
     alt: Active MCP sample
   actions:
     - theme: brand

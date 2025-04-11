@@ -6,7 +6,7 @@ export default defineConfig({
   description: "Rails engine for the Model Context Protocol (MCP)",
   lastUpdated: true,
   themeConfig: {
-    logo: "logo.png",
+    logo: "/logo.png",
     nav: [
       { text: "Home", link: "/" },
       { text: "Guide", link: "/guide/" },
